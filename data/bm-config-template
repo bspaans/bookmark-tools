@@ -1,0 +1,75 @@
+################################################################################
+#
+#   pybm-match configuration file
+#
+################################################################################
+
+
+
+################################################################################
+#   settings
+################################################################################
+
+
+set bookmarks = .bookmarks
+set loglevel = 4
+set threshold = 1.0
+
+
+# The commands to be executed after matching
+# %file%, %match% and %bookmark% can be used 
+
+set exec_best = echo %file%
+#mv %file% %match%
+set exec_latter = echo %file%
+#ln -s %file% %match%
+
+# Only %file% can be used
+set exec_unmatched =  
+# set exec_conflicting?
+# set exec_all_done
+# set exec_before_start
+
+# If strict = 0 => move file to best matching bookmark
+# if strict = 1 => move file if there is at least and at most one match
+
+set strict = 0
+
+# If strict = 0, you can set symlink to 1, which will place symlinks to 
+# the file in the best matching bookmarks in the other matching bookmarks.
+set symlink = 1
+
+# Directories:
+#   0.  treat in the same way as files
+#   1.  look at its contents
+#   2.  treat as file, only look at contents if no matches
+set handle_directories = 2
+
+################################################################################
+#   matches
+#
+#   format:
+#          BOOKMARK matches expression EXPRESSION [WEIGHT]
+#          BOOKMARK matches extensions EXTENSIONS [WEIGHT]
+#          BOOKMARK matches itself [WEIGHT]
+#          BOOKMARK matches regex REGEX [WEIGHT]
+#          BOOKMARK matches sentence WORDS [WEIGHT]
+#          BOOKMARK matches filesize OPERATOR FLOAT FILESUFFIX
+#          BOOKMARK matches time OPERATOR FLOAT TIMESUFFIX
+#         
+#   where: 
+#          
+#          WEIGHT:        (weight = FLOAT)
+#          EXPRESSION:    A shell expression. Following UNIX design: 
+#                         a return code of 0 means a match.
+#          EXTENSIONS:    file extension separated by spaces 
+#                         (starting dots and trailing commas will be ignored)
+#          OPERATOR:      ==, <=, <, >, >=, !=
+#          FILESUFFIX:    k, m, g, t, p
+#          TIMESUFFIX:    years, months, weeks, days, hours, minutes, seconds
+#
+#  Rule qualifiers (expression, extensions, itself, etc.) don't have to be typed 
+#  out exactly. Like bookmarks they are matched on prefix.
+#
+################################################################################
+

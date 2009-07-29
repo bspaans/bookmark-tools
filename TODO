@@ -1,0 +1,7 @@
++       Add `export environment' to bm
++       cdbm script
++       lsbm script
++       bash function script. To be sourced in .bashrc  or w/e
+
+DONE    Fix tab completion
+DONE    In setup.py: copy bm_completion to /etc/bash_completion.d/

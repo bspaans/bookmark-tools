@@ -1,0 +1,256 @@
+#!/usr/bin/python
+#
+# Command line bookmark tool
+# Copyright 2008, 2009 Bart Spaans
+
+
+import os
+import sys
+from subprocess import call
+from btools.pybookmark import *
+
+# Configuration options
+SYSTEM_WIDE_BOOKMARKS = False
+BOOKMARK_DATA = ".bookmarks"
+SYMLINK_DIR = ""
+UPDATE_SYMLINKS = False
+GTK_BOOKMARK_FILE = ""
+UPDATE_GTK_BOOKMARKS = False
+OUTPUT_COLOR = True
+
+
+RED = "\033[0;31m"
+GREEN = "\033[0;32m"
+BLUE = "\033[0;34m"
+GRAY = "\033[1;30m"
+NOCOLOR = "\033[0m"
+
+
+themes = [("gray-blue-green", GRAY, BLUE, GREEN),
+          ("gray-red-green", GRAY, RED, GREEN),
+          ("gray-gray-green", GRAY, GRAY, GREEN),
+          ("gray-gray-red", GRAY, GRAY, RED),
+          ("gray-green-red", GRAY, GREEN, RED),
+          ("gray-green-blue", GRAY, GREEN, BLUE),
+         ]
+theme = 0
+
+
+
+# Front end
+
+def cli_display():
+    file = get_conf_location()
+    if not OUTPUT_COLOR:
+        return display_bookmarks(file)
+    else:
+        return display_colored_bookmarks(file)
+
+def cli_add(args):
+    """Add directory to the bookmarks. This function is equivalent to 
+    cli_add_current if args is empty or the first argument doesn't 
+    specify a directory."""
+
+    if args == []:
+        return cli_add_current([])
+
+    if not os.path.isdir(args[0]):
+        return cli_add_current(args)
+
+    dir = os.path.realpath(args[0])
+    tag = " ".join(args[1:])
+    add_bookmark(get_conf_location(), tag, dir)
+    cli_display()
+
+    
+
+def cli_add_current(args):
+    """Add the current directory. 
+    If called without arguments the top-level directory name will be used as tag."""
+    dir = os.getcwd()
+    if args == []:
+        tag = os.path.basename(dir)
+    else:
+        tag = " ".join(args)
+    add_bookmark(get_conf_location(), tag, dir)
+    cli_display()
+ 
+def get_exec_index(args):
+    for i, x in enumerate(args):
+        if x in ["--exec", "-e", "--execute"]:
+            return i
+    return -1
+
+
+def cli_print_bookmark(args):
+    """Print bookmark matching if and only if one tag is matching. Execute command if given."""
+    execargs = []
+    execi = get_exec_index(args)
+    if execi > -1:
+        execargs = args[execi + 1:]
+        args = args[:execi]
+    b = get_bookmark(" ".join(args), read_bookmarks(get_conf_location()))
+
+    # Check exact match    
+    if len(b) > 1:
+        for bm, dest in b:
+            if bm == " ".join(args):
+                b = [(bm, dest)]
+
+    if len(b) == 1:
+        if "{}" in execargs:
+            execargs[execargs.index("{}")] = b[0][1]
+        if execargs != []:
+            print " ".join(execargs)
+            call(execargs, shell = True)
+        else:
+            print b[0][1]
+
+
+def cli_print_all_matching_bookmarks(args):
+    """Output all matching tags. Execute command if given."""
+    execargs = []
+    execi = get_exec_index(args)
+    if execi > -1:
+        execargs = args[execi + 1:]
+        args = args[:execi]
+    for tag, dest in get_bookmark(" ".join(args), read_bookmarks(get_conf_location())):
+        if "{}" in execargs:
+            i = execargs.index("{}")
+            tmp = execargs[i]
+            execargs[i] = dest
+            call(execargs)
+            execargs[i] = tmp
+        else:
+            print "%s [%s]" % (dest, tag)
+
+
+def cli_clear(args):
+    """Clear the bookmark index."""
+    r = raw_input("Are you sure you want to clear your bookmark file [No/yes]? ")
+    if str.lower(r) in ["y", "ye", "yes", "yeah", "yaaar", "aye"]:
+        print "Ok, let's do this thing...",
+        clear_bookmarks(get_conf_location())
+        print "DONE"
+    elif r == "Open the pod bay doors, HAL":
+        print "I'm sorry, Dave. I'm afraid I can't do that."
+    else:
+        print "Phew!"
+
+
+def cli_remove(args):
+    """Remove only matching tag from the index."""
+    bms = read_bookmarks(get_conf_location())
+    b = get_bookmark(" ".join(args), bms)
+    if len(b) == 1:
+        bms.remove(b[0])
+        write_bookmarks(get_conf_location(), bms)
+        cli_display()
+
+def cli_remove_all_matching(args):
+    """Remove all matching tags from the index."""
+    bms = read_bookmarks(get_conf_location())
+    res = list(bms)
+    for b in  get_bookmark(" ".join(args), bms):
+        res.remove(b)
+    write_bookmarks(get_conf_location(), res)
+    cli_display()
+
+def cli_sort_dirs():
+    bms = sorted(read_bookmarks(get_conf_location()), key=lambda x: x[1])
+    write_bookmarks( get_conf_location(), bms)
+    cli_display()
+
+def cli_sort_tags():
+    bms = sorted(read_bookmarks(get_conf_location()), key=lambda x: x[0])
+    write_bookmarks( get_conf_location(), bms)
+    cli_display()
+
+def cli_help():
+    commands = [(["-a", "--add"], "[DIRECTORY] [TAG]",
+                 "Adds DIRECTORY under TAG. If no directory is given this command is the same as --add-current."),
+                (["--add-current", "--current"], "[TAG]",
+                 "Adds the current directory. If no arguments are given the tag will be set to the top level directory automatically."),
+                (["-c", "--clear"], "", "Clear the index."),
+                (["-d", "-r", "--delete", "--remove"], "TAG",
+                 "Remove entry matching tag from the index."),
+                (["-da", "-ra", "--delete-all-matching", "--remove-all-matching"], "TAG", "Remove all entries matching TAG."),
+                (["-h", "--help"], "", "This help screen."),
+                (["-l", "--list"], "", "List the whole index. Default action."),
+                (["-m", "--match"], "TAG", "Output all entries that match TAG on prefix."),
+                (["-sd", "--sort-dirs"], "", "Sort index on directory and save"),
+                (["-st", "--sort-tags"], "", "Sort index on tags and save."),
+                (["-v", "--version"], "", "Output version information"),
+                (["-?"], "", "Output location of the bookmark file."),
+
+
+
+                ]
+    prog = os.sys.argv[0]
+    cli_version()
+    print
+    print "Usage: %s [INDEX]                      Return entry at index" % prog
+    print "       %s [TAG]                        Return entry with TAG" % prog
+    print "       %s [TAG] --exec [COMMAND]       Executes COMMAND. Use {} to get bookmark." % prog
+    print "       %s [OPTION] [ARGUMENTS]" % prog
+    print
+    print "Options:"
+    for com, args, description in commands:
+            print "\n\t", 
+            for c in com:
+                    print "%s %s  " % (c, args),
+            print "\n\t%s" % description
+
+    print
+    print "Examples:"
+    print "       %s -a test                       Adds current directory under name test." % prog
+    print "       %s -a ../ test2                  Adds parent directory under test2." % prog
+    print "       %s test                          Returns directory tagged test." % prog
+    print "       %s 0                             Jump to the first entry." % prog
+    print "       %s test --exec ls -al {}         Finds directory tagged test, and lists its contents." % prog
+    print "       %s -m c                          Outputs all the entries which tags begin with a c." % prog
+    print
+
+def cli_version():
+    print "pybm %s - Command line bookmarking tool written in Python" % VERSION
+    print "Copyright 2008, 2009, Bart Spaans <onderstekop@gmail.com>"
+
+def command_line_interface():
+    if len(sys.argv) == 1:
+        return cli_display()
+    command = str.lower(sys.argv[1])
+    args = sys.argv[2:]
+
+    if command in ["-a", "--add"]:
+        cli_add(args)
+    elif command in ["--add-current", "--current"]:
+        cli_add_current(args)
+    elif command in ["-d", "-r", "--delete", "--remove"]:
+        cli_remove(args)
+    elif command in ["-da", "-ra", "--delete-all-matching", "--remove-all-matching"]:
+        cli_remove_all_matching(args)
+    elif command in ["-l", "--list"]:
+        cli_display()
+    elif command in ["-c", "--clear"]:
+        cli_clear(args)
+    elif command in ["-h", "--help"]:
+        cli_help()
+    elif command in ["-m", "--match", "--match-any"] and len(args) > 0:
+        cli_print_all_matching_bookmarks(args)
+    elif command in ["-m", "-la", "--list-all"]:
+        cli_print_all_matching_bookmarks([""])
+    elif command in ["-sd", "--sort-dirs"]:
+        cli_sort_dirs()
+    elif command in ["-st", "--sort-tags"]:
+        cli_sort_tags()
+    elif command in ["-?", "--bookmark-file"]:
+        print get_conf_location()
+    elif command in ["--version", "-v"]:
+        cli_version()
+    elif command[0] != "-":
+        cli_print_bookmark(sys.argv[1:])
+    else:
+        print "Command line option '%s' not known." % command
+
+if __name__ == "__main__":
+    command_line_interface()

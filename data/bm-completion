@@ -1,0 +1,12 @@
+bmcomplete() 
+{
+    local cur opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    opts=$(bm -m ${cur} | awk '{print $2}' | sed 's/\[\(.*\)\]/\1 /' | tr -d '\n')
+
+    COMPREPLY=( $(compgen -W "${opts}" ${cur}) )
+    return 0
+}
+complete -F bmcomplete cdbm
+complete -F bmcomplete lsbm

@@ -1,0 +1,4 @@
+recursive-include data *
+recursive-include scripts *
+include TODO
+

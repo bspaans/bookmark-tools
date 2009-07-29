@@ -1,0 +1,110 @@
+#!/usr/bin/env python
+# 
+# For my little blue bear.
+
+import sys
+import os
+import btools.pybookmark as pybookmark
+import subprocess
+
+VERSION = "0.99"
+
+def make_bookmark(bookmark, parent):
+    bm = " ".join(bookmark)
+    p = " ".join(parent)
+    known = pybookmark.read_bookmarks(pybookmark.get_conf_location())
+    if bm == "":
+        print "Error: missing bookmark"
+        print "Parent: %s"
+        print "Usage: mkbm BOOKMARK [OPTIONS]"
+        sys.exit(1)
+    if p == "":
+        dest = os.getcwd()
+    else:
+        if os.path.isdir(p):
+            dest = os.path.realpath(p)
+        else:
+            d = pybookmark.get_bookmark(p, known)
+            if len(d) == 0:
+                print "Error: no matches for parent bookmark:", p
+                sys.exit(1)
+            elif len(d) == 1:
+                dest = d[0][1]
+            else:
+                #warning what to do?
+                print "Error: Parent bookmark matches multiple directories"
+                sys.exit(1)
+    dest = os.path.join(dest, bm)
+    cmd = "mkdir -vp \"%s\"" % dest
+    ret = subprocess.Popen(cmd, shell = True).wait()
+    if ret == 0:
+        pybookmark.add_bookmark(pybookmark.get_conf_location(), bm, dest)
+        print "Added new bookmark %s to %s." % (bm, dest)
+    else:
+        print "Error: making bookmark directory failed."
+
+
+def cli_help():
+    cli_version()
+    prog = sys.argv[0]
+    print
+    print "Usage: %s BOOKMARK [OPTIONS]" % prog
+    print
+    cli_options()
+    cli_examples()
+
+def cli_options():
+    commands = [(["-p", "--parent"], "(DIRECTORY|BOOKMARK)",
+                "Parent directory or bookmark of the new bookmark.")]
+    print "Options:"
+    for com, args, description in commands:
+            print "\n\t", 
+            for c in com:
+                    print "%s %s  " % (c, args),
+            print "\n\t%s" % description
+    print
+
+def cli_examples():
+    print "Examples:"
+    print "     mkbm new_bookmark               Create new bookmark in current dir"
+    print "     mkbm new_bookmark -p other      Create new bookmark in other bookmark"
+    print "     mkbm new_bookmark -p /home/     Create new bookmark in /home/"
+    print
+
+def cli_version():
+    print "mkbm %s - Make bookmark" % VERSION
+    print "Copyright 2008, 2009, Bart Spaans <onderstekop@gmail.com>"
+
+
+
+def command_line_interface():
+    if len(sys.argv) == 1:
+        return cli_help()
+
+    bm = []
+    parent = []
+
+    inparent = False
+    for x in sys.argv[1:]:
+        if x in ["-p", "--parent"]:
+            inparent = True
+            continue
+        elif x in ["-h", "--help"]:
+            return cli_help()
+        elif x[0] == "-":
+            print "Warning: unknown option:", x
+
+        if not inparent:
+            bm.append(x)
+        else:
+            parent.append(x)
+
+    if inparent and parent == []:
+        print "Error: missing parent argument"
+        sys.exit(1)
+    make_bookmark(bm, parent)
+
+
+
+if __name__ == '__main__':
+    command_line_interface()
