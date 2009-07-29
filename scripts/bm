@@ -142,10 +142,18 @@ def cli_remove(args):
     """Remove only matching tag from the index."""
     bms = read_bookmarks(get_conf_location())
     b = get_bookmark(" ".join(args), bms)
+
+    if len(b) > 1:
+        for bm, dest in b:
+            if bm == " ".join(args):
+                b = [(bm, dest)]
+
     if len(b) == 1:
         bms.remove(b[0])
         write_bookmarks(get_conf_location(), bms)
         cli_display()
+    else:
+        print "Could not remove bookmark %s. Matched %d directories." % (" ".join(args), len(b))
 
 def cli_remove_all_matching(args):
     """Remove all matching tags from the index."""
