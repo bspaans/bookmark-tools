@@ -140,6 +140,11 @@ def cli_clear(args):
 
 def cli_remove(args):
     """Remove only matching tag from the index."""
+
+    if args == []:
+        dir = os.getcwd()
+        args = [os.path.basename(dir)]
+
     bms = read_bookmarks(get_conf_location())
     b = get_bookmark(" ".join(args), bms)
 
@@ -157,6 +162,8 @@ def cli_remove(args):
 
 def cli_remove_all_matching(args):
     """Remove all matching tags from the index."""
+    if args == []:
+        return cli_clear([])
     bms = read_bookmarks(get_conf_location())
     res = list(bms)
     for b in  get_bookmark(" ".join(args), bms):
@@ -181,7 +188,7 @@ def cli_help():
                  "Adds the current directory. If no arguments are given the tag will be set to the top level directory automatically."),
                 (["-c", "--clear"], "", "Clear the index."),
                 (["-d", "-r", "--delete", "--remove"], "TAG",
-                 "Remove entry matching tag from the index."),
+                 "Remove entry matching tag from the index. If no TAG is given, the top level directory will be used."),
                 (["-da", "-ra", "--delete-all-matching", "--remove-all-matching"], "TAG", "Remove all entries matching TAG."),
                 (["-h", "--help"], "", "This help screen."),
                 (["-l", "--list"], "", "List the whole index. Default action."),
