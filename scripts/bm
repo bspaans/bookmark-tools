@@ -187,6 +187,8 @@ def cli_usage(prog):
     print "       %s [TAG] --exec [COMMAND]       Executes COMMAND. Use {} to get bookmark." % prog
     print "       %s [OPTION] [ARGUMENTS]" % prog
 
+
+
 def cli_examples(prog):
     print "Examples:"
     print "       %s -a test                       Adds current directory under name test." % prog

@@ -4,10 +4,22 @@
 
 import sys
 import os
+import btools.common as common
 import btools.pybookmark as pybookmark
 import subprocess
 
-VERSION = "0.99"
+name = "mkbm"
+description = "Make new bookmarks and directories"
+
+commands = [(["-h", "--help"], "", "Help screen"),
+            (["-p", "--parent"], "(DIRECTORY|BOOKMARK)",
+            "Parent directory or bookmark of the new bookmark.")]
+usage = ["BOOKMARK [OPTIONS]"]
+
+examples = [("new_bookmark", "Create new bookmark in current dir"),
+            ("new_bookmark -p other", "Create new bookmark in other bookmark"),
+            ("new_bookmark -p /home/", "Create new bookmark in /home/")]
+
 
 def make_bookmark(bookmark, parent):
     bm = " ".join(bookmark)
@@ -45,35 +57,7 @@ def make_bookmark(bookmark, parent):
 
 
 def cli_help():
-    cli_version()
-    prog = sys.argv[0]
-    print
-    print "Usage: %s BOOKMARK [OPTIONS]" % prog
-    print
-    cli_options()
-    cli_examples()
-
-def cli_options():
-    commands = [(["-p", "--parent"], "(DIRECTORY|BOOKMARK)",
-                "Parent directory or bookmark of the new bookmark.")]
-    print "Options:"
-    for com, args, description in commands:
-            print "\n\t", 
-            for c in com:
-                    print "%s %s  " % (c, args),
-            print "\n\t%s" % description
-    print
-
-def cli_examples():
-    print "Examples:"
-    print "     mkbm new_bookmark               Create new bookmark in current dir"
-    print "     mkbm new_bookmark -p other      Create new bookmark in other bookmark"
-    print "     mkbm new_bookmark -p /home/     Create new bookmark in /home/"
-    print
-
-def cli_version():
-    print "mkbm %s - Make bookmark" % VERSION
-    print "Copyright 2008, 2009, Bart Spaans <onderstekop@gmail.com>"
+    common.cli_module_help( globals() )
 
 
 
@@ -92,7 +76,8 @@ def command_line_interface():
         elif x in ["-h", "--help"]:
             return cli_help()
         elif x[0] == "-":
-            print "Warning: unknown option:", x
+            common.warning("Unknown option: %s" % x)
+            continue
 
         if not inparent:
             bm.append(x)

@@ -41,13 +41,50 @@ def replace_variables(dest, variables):
         res.append(d)
     return " ".join(res)
 
+def cli_module_help(module):
+    cli_output_help( module["name"], module["description"], 
+                    module["usage"], module["commands"], module["examples"] )
+
+def cli_output_help(prog, description, usage, commands, examples, option_title = "Options:"):
+    cli_version(prog, description)
+    cli_usage(prog, usage)
+    cli_help(commands, option_title)
+    cli_examples(prog, examples)
 
 def cli_version(name, description):
+    name = os.path.basename(name)
     print "%s %s - %s" % (name, VERSION, description)
     print "Copyright 2008, 2009, Bart Spaans <onderstekop@gmail.com>"
 
+def cli_usage(prog, usagelist):
+    prog = os.path.basename(prog)
+    if type(usagelist) == str:
+        usagelist = [usagelist]
+    print
+    print "Usage:", prog, usagelist[0]
+    for u in usagelist[1:]:
+        print "      ", prog, u
+    print
+
+
+def cli_examples(prog, examples):
+    prog = os.path.basename(prog)
+    print "Examples:"
+    maxcommandlen = -1
+    for command, description in examples:
+        if len(command) > maxcommandlen:
+            maxcommandlen = len(command)
+    padding = maxcommandlen + 4
+    for command, description in examples:
+        print "    ", prog, command,
+        print " " * ((maxcommandlen - len(command)) + 4),
+        print description
+
+
+
+
+
 def cli_help(commands, title = "Commands:"):
-    print 
     print title
     for com, args, description in commands:
             print "\n\t", 
