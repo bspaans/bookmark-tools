@@ -1,0 +1,3 @@
+#!/bin/bash
+
+./bmsuggest "$@" --exec "./mvbm %file% -p . %bookmark%"

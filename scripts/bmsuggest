@@ -1,0 +1,222 @@
+#!/usr/bin/env python
+#
+# Suggest a bookmark.
+# Looks in index first and does a naive lookup,
+# then uses regular expressions to get the best result.
+
+import os
+import sys
+import re
+import subprocess
+
+from btools.matching import common
+
+common.loglevel = 2
+
+pattern_collections = { "movies" : "/usr/share/bm/movies.patterns",
+                        "tv" : "/usr/share/bm/tv.patterns",
+                        "albums": "/usr/share/bm/albums.patterns",
+                        "artists" : "/usr/share/bm/artists.patterns"}
+
+
+_cache = {}
+
+VERSION = "1.0"
+
+def get_patterns_from_file(file):
+    
+    if _cache.has_key(file):
+        return _cache[file]
+ 
+    common.info("Loading pattern file %s" % file)
+    f = open(file, "r")
+    con = [ x.split("-") for x in f.read().splitlines() ]
+    _cache[file] = con
+    common.info("%d patterns loaded from file %s" % (len(con), file))
+    return con
+
+def get_text_matches(search, file = "parsed-movies.list.uniq"):
+    
+    # Read a file made out of bookmarks
+    con = get_patterns_from_file(file)
+    common.info("Finding text matches for %s in %s" % (search, file))
+    f = open(file, "r")
+    results = []
+    for bm in con:
+        if all([ b in search for b in bm ]):
+            m = "-".join(bm)
+            common.debug("Found text match for %s: %s" % (search, m))
+            results.append(m)
+    f.close()
+
+    common.info("%d text matches" % len(results))
+    return results
+
+def prepare_regex(line):
+    escape = ["(", ")", "*", "?", "+", ".", "[", "]"]
+    l = line
+    for x in escape:
+        l = l.replace(x, "\\" + x)
+    l = ".*" + l.replace("-", ".*") + ".*"
+    return l
+
+def get_best(results, search):
+
+    common.info("Doing regex search for %s in text matches" % search)
+    r = []
+    for res in results:
+        reg = prepare_regex(res)
+        if re.match(reg, search, re.IGNORECASE):
+            common.debug("%s matches" % res)
+            r.append(res)
+        else:
+            common.debug("%s doesn't match" % res)
+
+    common.info("%d regex matches" % len(r))
+    common.info("Finding longest match")
+    n = -1
+    best = ""
+    for res in r:
+        if len(res) > n:
+            common.debug("Longest is currently: %s" % res)
+            best = res
+            n = len(res)
+    common.info("Best match is: %s" % best)
+    return best
+
+def cli_match(files, options):
+
+    for file in files:
+        x = file.lower()
+        res = get_text_matches(x, options["pattern_file"])
+        best = get_best(res, x)
+        if options["exec_bm"] != "" and best != "":
+            e = options["exec_bm"]
+            common.info("Executing bm_exec hook: %s" % e)
+            hook = common.replace_variables(e, {"file": file,
+                                                "filepath" : os.path.realpath(x),
+                                                "bookmark": best })
+            new = subprocess.Popen(hook, shell = True, stdout = subprocess.PIPE).communicate()
+            if new[0] != "":
+                n = new[0].splitlines()[0]
+                best = n
+                common.debug("Changed best bookmark to %s" % best)
+            else:
+                common.error("bm-exec argument didn't return a new bookmark")
+        print file, best
+        if options["exec_hook"] != "" and best != "":
+            e = options["exec_hook"]
+            hook = common.replace_variables(e, {"file": file,
+                                                "filepath" : os.path.realpath(x),
+                                                "bookmark": best })
+            common.info("Executing exec hook: %s" % hook)
+            subprocess.Popen(hook, shell = True).wait()
+
+
+def cli_help():
+    cli_version()
+    print
+    cli_usage()
+    print
+
+    commands = [
+            (["-b", "--bookmark-exec"], "COMMAND", "Executes shell COMMAND to refine best bookmark. Variables %file%, %filepath% and %bookmark% will be replaced."),
+            (["-d", "--defaults"], "", "Output default pattern collections"),
+            (["-e", "--exec"], "COMMAND", "Executes shell COMMAND after each match. Variables %file%, %filepath% and %bookmark% will be replaced"),
+            (["-h", "--help"], "", "This help screen"),
+            (["-l", "--load"], "DEFAULT", "Load one of the default collections"),
+            (["-p", "--patterns"], "FILE", "Use patterns from FILE"),
+            ]
+
+    print "Options:"
+    for com, args, description in commands:
+            print "\n\t", 
+            for c in com:
+                    print "%s %s  " % (c, args),
+            print "\n\t%s" % description
+
+    print
+    print "Examples:"
+    print "       bmsuggest test.avi -l movies      Suggest bookmark based on movie patterns"
+    print "       bmsuggest test.avi -l movies --exec \"echo %filepath% %bookmark%\""
+
+def cli_version():
+    print "bmsuggest %s - Suggests bookmarks for files" % VERSION
+    print "Copyright 2008, 2009, Bart Spaans <onderstekop@gmail.com>"
+
+def cli_usage():
+    print "Usage: bmsuggest [FILES] [OPTIONS]"
+
+
+def cli_default_patterns():
+    for x in pattern_collections.keys():
+        print x
+
+def parse_options(args, options):
+    argumentsPending = False
+    last = ""
+    res = options
+
+    for a in args:
+        if not argumentsPending:
+            if a in ["-h", "--help"]:
+                cli_help()
+                sys.exit(0)
+            elif a in ["-p", "--patterns"]:
+                last = "pattern_file"
+                argumentsPending = True
+            elif a in ["-d", "--defaults"]:
+                cli_default_patterns()
+                sys.exit(0)
+            elif a in ["-l", "--load"]:
+                last = "load_default_pattern"
+                argumentsPending = True
+            elif a in ["-e", "--exec"]:
+                last = "exec_hook"
+                argumentsPending = True
+            elif a in ["-b", "--bookmark-exec"]:
+                last = "exec_bm"
+                argumentsPending = True
+            else:
+                common.warning("Unknown option %s" % a)
+        else:
+            if last in ["pattern_file", "exec_hook", "exec_bm"]:
+                res[last] = a
+                argumentsPending = False
+            elif last == "load_default_pattern":
+                if pattern_collections.has_key(a):
+                    res["pattern_file"] = pattern_collections[a]
+                    argumentsPending = False
+                else:
+                    common.error("Unknown pattern collection %s" % a)
+    if argumentsPending:
+        common.error("Expecting arguments")
+    return res
+
+   
+def command_line_interface():
+    args = sys.argv
+
+    if len(args) == 1:
+        return cli_help()
+
+    files = []
+    inOptions = False
+    options = {"pattern_file": "parsed-movies.list.uniq",
+               "exec_hook": "",
+               "exec_bm" : ""}
+    for i, a in enumerate(args):
+        if a[0] == "-":
+            inOptions = True
+            options = parse_options(args[i:], options)
+            break
+        if not inOptions and i != 0:
+            if os.path.isfile(a):
+                files.append(a)
+            else:
+                common.warning("Ignoring %s. Not a file." % a)
+
+    cli_match(files, options)
+
+if __name__ == '__main__':
+    command_line_interface()

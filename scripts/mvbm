@@ -1,0 +1,176 @@
+#!/usr/bin/env python
+
+import sys
+import os
+import subprocess
+
+from btools.matching import common
+from btools import pybookmark
+
+def prepare_command(mvoptions, files, bmoptions, bm):
+    if mvoptions != []:
+        e = "mv " + " ".join(mvoptions) + " " + " ".join(files) + " "
+    else:
+        e = "mv " +  " ".join(files) + " "
+
+    bookmark = bm
+    b = pybookmark.get_bookmark(bookmark,
+            pybookmark.read_bookmarks(bmoptions["bm_file"]))
+
+    # Check exact match    
+    if len(b) > 1:
+        for bm, dest in b:
+            if bm == bookmark:
+                b = [(bm, dest)]
+
+    if len(b) == 1:
+        if not bmoptions["exact_match"] or b[0][0] == bookmark:
+            e += b[0][1]
+        else:
+            if bmoptions["strict"]:
+                common.error("No exact match for %s." % bookmark)
+            else:
+                return make_new(bookmark, bmoptions, e)
+    elif len(b) == 0:
+        if bmoptions["strict"]:
+            common.error("Not a known bookmark %s." % bookmark)
+        else:
+            return make_new(bookmark, bmoptions, e)
+    else:
+        common.error("More than one matching directory for bookmark %s." % bookmark)
+    return e
+
+def make_new(bookmark, bmoptions, cmd):
+    if bmoptions["parent"] == "":
+        mk = "mkbm %s" % bookmark
+        dest = os.path.realpath("./%s" % bookmark)
+    else:
+        mk = "mkbm %s -p %s" % (bookmark, bmoptions["parent"])
+        p = bmoptions["parent"]
+        if os.path.isdir(p):
+            dest = os.path.realpath(os.path.join(bmoptions["parent"], bookmark))
+        else:
+            d = pybookmark.get_bookmark(p, pybookmark.read_bookmarks(bmoptions["bm_file"]))
+            if len(d) == 0:
+                common.error("No matches for parent bookmark %s" % p)
+            elif len(d) == 1:
+                dest = os.path.realpath(os.path.join(d[0][1], bookmark))
+            else:
+                common.error("Parent %s matches more than one directory" % p)
+
+    ret = subprocess.Popen(mk, shell = True).wait()
+    if ret == 0:
+        return cmd + dest
+    else:
+        common.error("Couldn't create new bookmark")
+
+def cli_help():
+    cli_version()
+    print
+    cli_usage()
+    print
+    commands = [
+            (["-e", "--exact"], "", "Match bookmarks exactly. Not on prefix"),
+            (["-h", "--help"], "", "This help screen"),
+            (["-p", "--parent"], "(BOOKMARK|DIRECTORY)", "If strictness is turned off (default), make the bookmark in parent."),
+            (["-s", "--strict"], "", "Don't make bookmark if it doesn't exist."),
+            ]
+    print "BM-OPTIONS:"
+    for com, args, description in commands:
+            print "\n\t", 
+            for c in com:
+                    print "%s %s  " % (c, args),
+            print "\n\t%s" % description
+
+    print
+    print "Examples:"
+
+def cli_version():
+    print "mvbm - Move files to bookmarks"
+    print "Copyright 2008, 2009 Bart Spaans <onderstekop@gmail.com>"
+
+def cli_usage():
+    print "Usage: mvbm [MV-OPTIONS] FILES [BM-OPTIONS] BOOKMARK"
+
+
+def command_line_interface():
+    args = sys.argv
+    if len(args) == 1:
+        return cli_help()
+    if len(args) == 2 and args[1] in ["-h", "--help"]:
+        return cli_help()
+
+
+    files = []
+    options = []
+    bm = []
+    bmoptions = {"exact_match": False,
+                 "parent" : "",
+                 "strict" : False,
+                 "bm_file" : pybookmark.get_conf_location()}
+    argumentsPending = False
+    inOptions = True
+    inBmOptions = False
+    for a in args[1:]:
+        if inOptions:
+            if a[0] == "-":
+                options.append(a)
+            else:
+                inOptions = False
+        if not inOptions:
+            if a[0] == "-":
+                inBmOptions = True
+                if a in ["-p", "--parent"]:
+                    last = "parent"
+                    argumentsPending = True
+                elif a in ["-s", "--strict"]:
+                    bmoptions["strict"] = True
+                elif a in ["-e", "--exact"]:
+                    bmoptions["exact_match"] = True
+                elif a in ["-h", "--help"]:
+                    return cli_help()
+                else:
+                    common.warning("Unknown option %s" % a)
+            elif argumentsPending:
+                if last in ["parent"]:
+                    bmoptions[last] = a
+                    argumentsPending = False
+            else:
+                if not inBmOptions:
+                    files.append(a)
+                else:
+                    bm.append(a)
+
+    if argumentsPending:
+        common.error("Expecting argument")
+
+    if not inBmOptions:
+        if len(files) > 1:
+            bm = files[-1]
+            files = files[:-1]
+    else:
+        bm = " ".join(bm)
+
+    if files == []:
+        common.error("Missing source file(s)")
+    if bm == "":
+        common.error("Missing destination bookmark")
+
+    sourcefiles = []
+    for f in files:
+        if not os.path.exists(f):
+            common.warning("Ignoring %s. Not a file." % f)
+        else:
+            sourcefiles.append(f)
+
+    if sourcefiles == []:
+        common.error("No valid source files")
+
+    ret = subprocess.Popen(prepare_command(options, sourcefiles, bmoptions, bm),
+            shell = True).wait()
+    if ret != 0:
+        common.error("Could not move file to bookmark.")
+    
+
+if __name__ == "__main__":
+    command_line_interface()
