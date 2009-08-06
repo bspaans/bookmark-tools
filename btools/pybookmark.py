@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # Command line bookmark tool - shared back-end functions as used by bm
+#
 # Copyright 2008, 2009 Bart Spaans
 
 
@@ -8,8 +9,6 @@ import sys
 import btools.common as common
 from subprocess import call
 
-# Configuration options
-SYSTEM_WIDE_BOOKMARKS = False
 BOOKMARK_DATA = ".bookmarks"
 
 
@@ -18,13 +17,10 @@ def get_conf_location():
     c = os.getcwd()
     if os.path.exists(os.path.join(c, BOOKMARK_DATA)):
             return os.path.join(c, BOOKMARK_DATA)
-    if not SYSTEM_WIDE_BOOKMARKS:
-        if "HOME" in os.environ:
-            return os.path.join(os.environ["HOME"],  BOOKMARK_DATA)
-        else:
-            raise Exception("HOME variable not found in environment.")
+    if "HOME" in os.environ:
+        return os.path.join(os.environ["HOME"],  BOOKMARK_DATA)
     else:
-        return BOOKMARK_DATA
+        raise Exception("HOME variable not found in environment.")
 
 
 def read_bookmarks(file):
@@ -72,6 +68,7 @@ def add_bookmark(file, tag, dest):
 
 
 def clear_bookmarks(file):
+    """Empties the bookmark file."""
     write_bookmarks(file, [])
 
 
@@ -91,7 +88,7 @@ def display_colored_bookmarks(file):
 
 def bookmarks_to_symlinks(bookmarks, dest_dir):
     """Makes symbolic links out of tags in dest_dir. 
-    If you set CDPATH to dest_dir in your environment,
+    If add dest_dir to your environment's CDPATH,
     the tags will be seemlessly integrated."""
 
     for tag, src in bookmarks:
