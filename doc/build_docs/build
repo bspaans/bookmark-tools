@@ -2,6 +2,7 @@
 
 import os
 import sys
+import time
 
 def prepare_usage(name, usage):
     maxlen = -1
@@ -42,13 +43,18 @@ def prepare_examples(name, examples):
 def fill_template(mod_dict, template):
     prog = mod_dict["name"]
     desc = mod_dict["description"]
+    longdesc = desc if not mod_dict.has_key("long_description") else mod_dict["long_description"]
     usage = prepare_usage(prog, mod_dict["usage"])
     options = prepare_options(mod_dict["commands"])
     examples = prepare_examples(prog, mod_dict["examples"])
 
+    t = time.localtime()
+    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    date = months[t.tm_mon - 1] + " " + str(t.tm_year)
+
     d = { "prog": prog, "description": desc, 
           "usage": usage, "options": options,
-          "examples": examples }
+         "examples": examples, "date": date }
 
     for r in d:
         template = template.replace("%" + r + "%", str(d[r]))
