@@ -46,9 +46,9 @@ def cli_version(name, description):
     print "%s %s - %s" % (name, VERSION, description)
     print "Copyright 2008, 2009, Bart Spaans <onderstekop@gmail.com>"
 
-def cli_help(commands):
+def cli_help(commands, title = "Commands:"):
     print 
-    print "Commands:"
+    print title
     for com, args, description in commands:
             print "\n\t", 
             for c in com:
