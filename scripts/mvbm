@@ -16,7 +16,7 @@ commands = [
     (["-p", "--parent"], "(BOOKMARK|DIRECTORY)", "If strictness is turned off (default), make the bookmark in parent."),
     (["-s", "--strict"], "", "Don't make bookmark if it doesn't exist."),
     ]
-examples = []
+examples = [("test.txt docs", "Moves test.txt to the 'docs' bookmark (which will be created if it doesn't exist)")]
 
 
 def prepare_command(mvoptions, files, bmoptions, bm):

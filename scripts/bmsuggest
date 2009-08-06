@@ -33,7 +33,9 @@ commands = [
 
 examples = [("test.avi -l movies", "Suggest bookmark based on movie patterns"),
             ("test.avi -l movies --exec \"echo %filepath% %bookmark%\"", 
-             "Execute statement for best suggestion")]
+             "Execute statement for best suggestion"),
+            ("test.avi -l movies --exec \"mvbm %filepath% -p . %bookmark%\"",
+             "Moves test.avi to the best suggestion. The bookmark will be created if it doesn't exist.") ]
 
 def get_patterns_from_file(file):
     
