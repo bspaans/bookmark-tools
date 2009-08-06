@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./bmsuggest "$@" --bookmark-exec "./parse-series %file% %bookmark%" --exec "./mvbm %file% -p . %bookmark%" 
+bmsuggest "$@" --bookmark-exec "parse-series %file% %bookmark%" --exec "mvbm %file% -p . %bookmark%" 

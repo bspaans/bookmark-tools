@@ -31,5 +31,7 @@ else:
 
 if r is not None:
     print "-".join([bm, r])
+else:
+    print bm
 
 

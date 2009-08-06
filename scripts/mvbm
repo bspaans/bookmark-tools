@@ -4,7 +4,7 @@ import sys
 import os
 import subprocess
 
-from btools.matching import common
+from btools import common
 from btools import pybookmark
 
 def prepare_command(mvoptions, files, bmoptions, bm):

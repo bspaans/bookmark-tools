@@ -9,7 +9,7 @@ import sys
 import re
 import subprocess
 
-from btools.matching import common
+from btools import common
 
 common.loglevel = 2
 
@@ -35,7 +35,7 @@ def get_patterns_from_file(file):
     common.info("%d patterns loaded from file %s" % (len(con), file))
     return con
 
-def get_text_matches(search, file = "parsed-movies.list.uniq"):
+def get_text_matches(search, file):
     
     # Read a file made out of bookmarks
     con = get_patterns_from_file(file)
@@ -202,7 +202,7 @@ def command_line_interface():
 
     files = []
     inOptions = False
-    options = {"pattern_file": "parsed-movies.list.uniq",
+    options = {"pattern_file": "/usr/share/bm/movies.patterns",
                "exec_hook": "",
                "exec_bm" : ""}
     for i, a in enumerate(args):
