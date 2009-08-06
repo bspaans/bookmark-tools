@@ -2,7 +2,7 @@ import os
 import subprocess
 
 import btools.pybookmark as pybookmark
-import common
+import btools.common as common
 from ConfParser import ConfParser
 
 class FileMatcher:

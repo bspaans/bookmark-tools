@@ -1,5 +1,5 @@
 from Rule import Rule
-import common
+import btools.common as common
 
 import os
 import re

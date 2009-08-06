@@ -2,7 +2,7 @@ import os
 import re
 
 
-import common
+import btools.common as common
 import btools.pybookmark as pybookmark
 import RuleParsers
 
