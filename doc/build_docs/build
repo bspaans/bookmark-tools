@@ -22,6 +22,8 @@ def prepare_usage(name, usage):
     return result
 
 def prepare_options(options):
+    if options == []:
+        return "This command doesn't take any options.\n"
     result = ""
     for com, args, description in options:
         result += ".TP\n"
@@ -32,6 +34,8 @@ def prepare_options(options):
 
 
 def prepare_examples(name, examples):
+    if examples == []:
+        return "No examples available.\n"
     result = ""
     for command, description in examples:
         result += ".TP\n"
@@ -61,7 +65,7 @@ def fill_template(mod_dict, template):
     return template
 
 def build_documentation(dest = "."):
-    files = [ "bm", "bm-match", "mkbm", "mvbm",  "bmsuggest" ]
+    files = [ "bm", "bm-match", "mkbm", "mvbm",  "bmsuggest", "bm-add-series"]
 
     t = open("man.template", "r")
     template = t.read()

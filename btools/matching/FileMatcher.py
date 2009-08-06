@@ -91,7 +91,7 @@ class FileMatcher:
     def exec_unmatched(self, file):
         e = str.strip(self.variables["exec_unmatched"])
         if e != "":
-            e = common.replace_variables(e.replace("%file%", os.path.realpath(file)), self.variables)
+            e = common.replace_variables(e.replace("%file%", os.path.realpath(file).replace("'", "\'")), self.variables)
             common.info("Executing: %s" % e)
             subprocess.Popen(e, shell = True)
         else:
@@ -109,7 +109,7 @@ class FileMatcher:
             x = bms[0]
             e = self.variables[key]
             if e != "":
-                e = e.replace("%file%", os.path.realpath(file))
+                e = e.replace("%file%", os.path.realpath(file).replace("'", "\'"))
                 e = e.replace("%bookmark%", x[0])
                 e = e.replace("%match%", x[1])
                 e = common.replace_variables(e, self.variables)
