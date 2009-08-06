@@ -7,6 +7,18 @@ import subprocess
 from btools import common
 from btools import pybookmark
 
+name = "mvbm"
+description = "Move files to bookmark"
+usage = ["[MV-OPTIONS] FILES [BM-OPTIONS] BOOKMARK"]
+commands = [
+    (["-e", "--exact"], "", "Match bookmarks exactly. Not on prefix"),
+    (["-h", "--help"], "", "This help screen"),
+    (["-p", "--parent"], "(BOOKMARK|DIRECTORY)", "If strictness is turned off (default), make the bookmark in parent."),
+    (["-s", "--strict"], "", "Don't make bookmark if it doesn't exist."),
+    ]
+examples = []
+
+
 def prepare_command(mvoptions, files, bmoptions, bm):
     if mvoptions != []:
         e = "mv " + " ".join(mvoptions) + " " + " ".join(files) + " "
@@ -65,32 +77,7 @@ def make_new(bookmark, bmoptions, cmd):
         common.error("Couldn't create new bookmark")
 
 def cli_help():
-    cli_version()
-    print
-    cli_usage()
-    print
-    commands = [
-            (["-e", "--exact"], "", "Match bookmarks exactly. Not on prefix"),
-            (["-h", "--help"], "", "This help screen"),
-            (["-p", "--parent"], "(BOOKMARK|DIRECTORY)", "If strictness is turned off (default), make the bookmark in parent."),
-            (["-s", "--strict"], "", "Don't make bookmark if it doesn't exist."),
-            ]
-    print "BM-OPTIONS:"
-    for com, args, description in commands:
-            print "\n\t", 
-            for c in com:
-                    print "%s %s  " % (c, args),
-            print "\n\t%s" % description
-
-    print
-    print "Examples:"
-
-def cli_version():
-    print "mvbm - Move files to bookmarks"
-    print "Copyright 2008, 2009 Bart Spaans <onderstekop@gmail.com>"
-
-def cli_usage():
-    print "Usage: mvbm [MV-OPTIONS] FILES [BM-OPTIONS] BOOKMARK"
+    common.cli_module_help(globals())
 
 
 def command_line_interface():

@@ -1,0 +1,45 @@
+.TH bmsuggest 1 "Aug 2009" "btools collection" "User Commands"
+.SH NAME
+bmsuggest \- Suggests bookmarks for file names.
+.SH SYNOPSIS
+.B bmsuggest
+[FILES] [OPTIONS]
+.br
+
+.SH DESCRIPTION
+Suggests bookmarks for file names.
+.SH OPTIONS
+.TP
+-b COMMAND  --bookmark-exec COMMAND  
+Executes shell COMMAND to refine best bookmark. Variables %file%, %filepath% and %bookmark% will be replaced.
+.TP
+-d   --defaults   
+Output default pattern collections
+.TP
+-e COMMAND  --exec COMMAND  
+Executes shell COMMAND after each match. Variables %file%, %filepath% and %bookmark% will be replaced
+.TP
+-h   --help   
+This help screen
+.TP
+-l DEFAULT  --load DEFAULT  
+Load one of the default collections
+.TP
+-p FILE  --patterns FILE  
+Use patterns from FILE
+
+." Use .TP to indent.
+.SH EXAMPLES
+.TP
+bmsuggest test.avi -l movies
+.br
+Suggest bookmark based on movie patterns
+.TP
+bmsuggest test.avi -l movies --exec "echo %filepath% %bookmark%"
+.br
+Execute statement for best suggestion
+
+.SH SEE ALSO
+cdbm(1), mkbm(1), btools(5)
+.SH AUTHOR
+Bart Spaans (bart.spaans@gmail.com)

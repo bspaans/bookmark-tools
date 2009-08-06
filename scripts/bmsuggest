@@ -12,16 +12,28 @@ import subprocess
 from btools import common
 
 common.loglevel = 2
-
-pattern_collections = { "movies" : "/usr/share/bm/movies.patterns",
-                        "tv" : "/usr/share/bm/tv.patterns",
-                        "albums": "/usr/share/bm/albums.patterns",
-                        "artists" : "/usr/share/bm/artists.patterns"}
-
+pattern_collections = common.pattern_collections
 
 _cache = {}
 
-VERSION = "1.0"
+name = "bmsuggest"
+description = "Suggests bookmarks for file names."
+usage = ["[FILES] [OPTIONS]"]
+commands = [
+    (["-b", "--bookmark-exec"], "COMMAND", 
+     "Executes shell COMMAND to refine best bookmark. Variables %file%, "
+     "%filepath% and %bookmark% will be replaced."),
+    (["-d", "--defaults"], "", "Output default pattern collections"),
+    (["-e", "--exec"], "COMMAND", "Executes shell COMMAND after each match. "
+     "Variables %file%, %filepath% and %bookmark% will be replaced"),
+    (["-h", "--help"], "", "This help screen"),
+    (["-l", "--load"], "DEFAULT", "Load one of the default collections"),
+    (["-p", "--patterns"], "FILE", "Use patterns from FILE"),
+    ]
+
+examples = [("test.avi -l movies", "Suggest bookmark based on movie patterns"),
+            ("test.avi -l movies --exec \"echo %filepath% %bookmark%\"", 
+             "Execute statement for best suggestion")]
 
 def get_patterns_from_file(file):
     
@@ -114,39 +126,7 @@ def cli_match(files, options):
 
 
 def cli_help():
-    cli_version()
-    print
-    cli_usage()
-    print
-
-    commands = [
-            (["-b", "--bookmark-exec"], "COMMAND", "Executes shell COMMAND to refine best bookmark. Variables %file%, %filepath% and %bookmark% will be replaced."),
-            (["-d", "--defaults"], "", "Output default pattern collections"),
-            (["-e", "--exec"], "COMMAND", "Executes shell COMMAND after each match. Variables %file%, %filepath% and %bookmark% will be replaced"),
-            (["-h", "--help"], "", "This help screen"),
-            (["-l", "--load"], "DEFAULT", "Load one of the default collections"),
-            (["-p", "--patterns"], "FILE", "Use patterns from FILE"),
-            ]
-
-    print "Options:"
-    for com, args, description in commands:
-            print "\n\t", 
-            for c in com:
-                    print "%s %s  " % (c, args),
-            print "\n\t%s" % description
-
-    print
-    print "Examples:"
-    print "       bmsuggest test.avi -l movies      Suggest bookmark based on movie patterns"
-    print "       bmsuggest test.avi -l movies --exec \"echo %filepath% %bookmark%\""
-
-def cli_version():
-    print "bmsuggest %s - Suggests bookmarks for files" % VERSION
-    print "Copyright 2008, 2009, Bart Spaans <onderstekop@gmail.com>"
-
-def cli_usage():
-    print "Usage: bmsuggest [FILES] [OPTIONS]"
-
+    common.cli_module_help(globals())
 
 def cli_default_patterns():
     for x in pattern_collections.keys():

@@ -1,10 +1,38 @@
 import os
 import sys
 
-VERSION = "1.0rc4"
 
 loglevel = 4
 template = "/usr/share/bm/bm-config-template"
+
+VERSION = "1.0rc4"
+OUTPUT_COLOR = True
+
+RED = "\033[0;31m"
+GREEN = "\033[0;32m"
+BLUE = "\033[0;34m"
+GRAY = "\033[1;30m"
+NOCOLOR = "\033[0m"
+
+
+themes = [("gray-blue-green", GRAY, BLUE, GREEN),
+          ("gray-red-green", GRAY, RED, GREEN),
+          ("gray-gray-green", GRAY, GRAY, GREEN),
+          ("gray-gray-red", GRAY, GRAY, RED),
+          ("gray-green-red", GRAY, GREEN, RED),
+          ("gray-green-blue", GRAY, GREEN, BLUE),
+         ]
+theme = themes[0]
+
+
+
+pattern_collections = { "movies" : "/usr/share/bm/movies.patterns",
+                        "tv" : "/usr/share/bm/tv.patterns",
+                        "albums": "/usr/share/bm/albums.patterns",
+                        "artists" : "/usr/share/bm/artists.patterns"}
+
+
+
 
 def debug(msg):
     if loglevel >= 3:
@@ -105,20 +133,3 @@ def cli_help(commands, title = "Commands:"):
     print
 
 
-OUTPUT_COLOR = True
-
-RED = "\033[0;31m"
-GREEN = "\033[0;32m"
-BLUE = "\033[0;34m"
-GRAY = "\033[1;30m"
-NOCOLOR = "\033[0m"
-
-
-themes = [("gray-blue-green", GRAY, BLUE, GREEN),
-          ("gray-red-green", GRAY, RED, GREEN),
-          ("gray-gray-green", GRAY, GRAY, GREEN),
-          ("gray-gray-red", GRAY, GRAY, RED),
-          ("gray-green-red", GRAY, GREEN, RED),
-          ("gray-green-blue", GRAY, GREEN, BLUE),
-         ]
-theme = themes[0]

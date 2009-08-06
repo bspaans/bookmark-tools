@@ -1,0 +1,31 @@
+.TH mvbm 1 "Aug 2009" "btools collection" "User Commands"
+.SH NAME
+mvbm \- Move files to bookmark
+.SH SYNOPSIS
+.B mvbm
+[MV-OPTIONS] FILES [BM-OPTIONS] BOOKMARK
+.br
+
+.SH DESCRIPTION
+Move files to bookmark
+.SH OPTIONS
+.TP
+-e   --exact   
+Match bookmarks exactly. Not on prefix
+.TP
+-h   --help   
+This help screen
+.TP
+-p (BOOKMARK|DIRECTORY)  --parent (BOOKMARK|DIRECTORY)  
+If strictness is turned off (default), make the bookmark in parent.
+.TP
+-s   --strict   
+Don't make bookmark if it doesn't exist.
+
+." Use .TP to indent.
+.SH EXAMPLES
+
+.SH SEE ALSO
+cdbm(1), mkbm(1), btools(5)
+.SH AUTHOR
+Bart Spaans (bart.spaans@gmail.com)
