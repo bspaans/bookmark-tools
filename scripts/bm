@@ -11,14 +11,21 @@ from btools.pybookmark import *
 import btools.common as common
 
 
+name = "bm"
+description = "Command line bookmarking tool"
+
 commands = [(["-a", "--add"], "[DIRECTORY] [TAG]",
-             "Adds DIRECTORY under TAG. If no directory is given this command is the same as --add-current."),
+             "Adds DIRECTORY under TAG. If no directory is given this command is "
+             "the same as --add-current."),
             (["--add-current", "--current"], "[TAG]",
-             "Adds the current directory. If no arguments are given the tag will be set to the top level directory automatically."),
+             "Adds the current directory. If no arguments are given the tag will be set to "
+             "the top level directory automatically."),
             (["-c", "--clear"], "", "Clear the index."),
             (["-d", "-r", "--delete", "--remove"], "TAG",
-             "Remove entry matching tag from the index. If no TAG is given, the top level directory will be used."),
-            (["-da", "-ra", "--delete-all-matching", "--remove-all-matching"], "TAG", "Remove all entries matching TAG."),
+             "Remove entry matching tag from the index. If no TAG is given, the top level "
+             "directory will be used."),
+            (["-da", "-ra", "--delete-all-matching", 
+              "--remove-all-matching"], "TAG", "Remove all entries matching TAG."),
             (["-h", "--help"], "", "This help screen."),
             (["-l", "--list"], "", "List the whole index. Default action."),
             (["-m", "--match"], "TAG", "Output all entries that match TAG on prefix."),
@@ -27,7 +34,17 @@ commands = [(["-a", "--add"], "[DIRECTORY] [TAG]",
             (["-v", "--version"], "", "Output version information"),
             (["-?"], "", "Output location of the bookmark file."),
             ]
+usage = [ ("[INDEX]", "Return entry at index"),
+          ("[TAG]", "Return entry with TAG"),
+          ("[TAG] --exec [COMMAND]", "Executes COMMAND. Use {} to get bookmark."),
+          "[OPTION] [ARGUMENTS]", ]
 
+examples = [("-a test", "Adds current directory under name test." ),
+        ("-a ../ test2", "Adds parent directory under test2."),
+        ("test", "Returns directory tagged test."),
+        ("0", "Jump to the first entry."),
+        ("test --exec ls -al {}", "Finds directory tagged test, and lists its contents."),
+        ("-m c", "Outputs all the entries which tags begin with a c."),]
 
 # Front end
 
@@ -174,36 +191,7 @@ def cli_sort_tags():
     cli_display()
 
 def cli_help():
-    prog = os.sys.argv[0]
-    cli_version()
-    cli_usage(prog)
-    common.cli_help(commands, "Options:")
-    cli_examples(prog)
-
-def cli_usage(prog):
-    print
-    print "Usage: %s [INDEX]                      Return entry at index" % prog
-    print "       %s [TAG]                        Return entry with TAG" % prog
-    print "       %s [TAG] --exec [COMMAND]       Executes COMMAND. Use {} to get bookmark." % prog
-    print "       %s [OPTION] [ARGUMENTS]" % prog
-
-
-
-def cli_examples(prog):
-    print "Examples:"
-    print "       %s -a test                       Adds current directory under name test." % prog
-    print "       %s -a ../ test2                  Adds parent directory under test2." % prog
-    print "       %s test                          Returns directory tagged test." % prog
-    print "       %s 0                             Jump to the first entry." % prog
-    print "       %s test --exec ls -al {}         Finds directory tagged test, and lists its contents." % prog
-    print "       %s -m c                          Outputs all the entries which tags begin with a c." % prog
-    print
-
-
-
-def cli_version():
-    common.cli_version("bm", "Command line bookmarking tool")
-
+    common.cli_module_help( globals() )
 
 
 def command_line_interface():
@@ -237,7 +225,7 @@ def command_line_interface():
     elif command in ["-?", "--bookmark-file"]:
         print get_conf_location()
     elif command in ["--version", "-v"]:
-        cli_version()
+        common.cli_version(name, description)
     elif command[0] != "-":
         cli_print_bookmark(sys.argv[1:])
     else:

@@ -60,10 +60,22 @@ def cli_usage(prog, usagelist):
     prog = os.path.basename(prog)
     if type(usagelist) == str:
         usagelist = [usagelist]
+
+    maxlen = -1
+    for u in usagelist:
+        if type(u) == str and len(u) > maxlen:
+            maxlen = len(u)
+        elif type(u) == tuple and len(u[0]) > maxlen:
+            maxlen = len(u[0])
     print
-    print "Usage:", prog, usagelist[0]
-    for u in usagelist[1:]:
-        print "      ", prog, u
+    print "Usage:", 
+    for u in usagelist:
+        if type(u) == str:
+            print prog, u, "\n      ",
+        else:
+            print prog, u[0],
+            print " " * ((maxlen - len(u[0])) + 3),
+            print u[1], "\n      ",
     print
 
 
