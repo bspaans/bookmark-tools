@@ -11,13 +11,13 @@
 
 import os
 import sys
-
-
 import btools.common as common
 from btools.matching.FileMatcher import FileMatcher
 
-commands = [
-            (["-h", "--help"], "", 
+
+name = "bm-match"
+description = "Weighted bookmark matching"
+commands = [ (["-h", "--help"], "", 
             "This help screen."),
             (["-i", "--inspect"], "FILE", 
             "Outputs weighted table of matching destination bookmarks."),
@@ -26,7 +26,10 @@ commands = [
             (["-nf", "--force-new"], "",
             "Same as -n, but overwrites file if it already exists."),
             ]
-
+usage = [("COMMAND [ARGUMENTS]", "Execute command"),
+         ("[FILES]", "Match FILES")]
+examples = [("-nf", "Force a new empty configuration file in the current directory"),
+            ("test.txt", "Match and move test.txt using the rules in .bm-match")]
 
 
 def get_FileSorter():
@@ -66,24 +69,7 @@ def cli_new_config_file(forcenew = False):
 
 
 def cli_output_help(args):
-    common.cli_version("bm-match", "Weighted bookmark matching")
-    cli_help(prog = args[0])
-    common.cli_help(commands)
-    cli_examples(prog = args[0])
-
-def cli_help(prog):
-    print
-    print "Finds a bookmark destination with the rules of a simple configuration file."
-    print 
-    print "Usage: %s COMMAND [ARGUMENTS]     Execute command" % prog
-    print "       %s [FILES]                 Match FILES" % prog
-
-
-def cli_examples(prog):
-    print "Examples:"
-    print "    %s -nf               Force a new empty configuration file in the current directory" % prog
-    print "    %s test.txt          Match and move test.txt using the rules in .bm-match" % prog
-    print
+    common.cli_module_help(globals())
 
 
 def cli_match(args):

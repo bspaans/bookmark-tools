@@ -68,14 +68,14 @@ def cli_usage(prog, usagelist):
         elif type(u) == tuple and len(u[0]) > maxlen:
             maxlen = len(u[0])
     print
-    print "Usage:", 
+    print "Usage: ", 
     for u in usagelist:
         if type(u) == str:
-            print prog, u, "\n      ",
+            print prog, u, "\n\t",
         else:
             print prog, u[0],
             print " " * ((maxlen - len(u[0])) + 3),
-            print u[1], "\n      ",
+            print u[1], "\n\t",
     print
 
 
@@ -88,7 +88,7 @@ def cli_examples(prog, examples):
             maxcommandlen = len(command)
     padding = maxcommandlen + 4
     for command, description in examples:
-        print "    ", prog, command,
+        print "\t", prog, command,
         print " " * ((maxcommandlen - len(command)) + 4),
         print description
 
@@ -102,7 +102,7 @@ def cli_help(commands, title = "Commands:"):
             print "\n\t", 
             for c in com:
                     print "%s %s  " % (c, args),
-            print "\n\t%s" % description
+            print "\n\t    %s" % description
     print
 
 
