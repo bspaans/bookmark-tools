@@ -1,9 +1,9 @@
 import os
 import sys
 
+VERSION = "1.0rc4"
+
 loglevel = 4
-
-
 template = "/usr/share/bm/bm-config-template"
 
 def debug(msg):
@@ -42,9 +42,23 @@ def replace_variables(dest, variables):
     return " ".join(res)
 
 
+def cli_version(name, description):
+    print "%s %s - %s" % (name, VERSION, description)
+    print "Copyright 2008, 2009, Bart Spaans <onderstekop@gmail.com>"
+
+def cli_help(commands):
+    print 
+    print "Commands:"
+    for com, args, description in commands:
+            print "\n\t", 
+            for c in com:
+                    print "%s %s  " % (c, args),
+            print "\n\t%s" % description
+    print
+
+
 OUTPUT_COLOR = True
 
-VERSION = "1.0rc4"
 RED = "\033[0;31m"
 GREEN = "\033[0;32m"
 BLUE = "\033[0;34m"

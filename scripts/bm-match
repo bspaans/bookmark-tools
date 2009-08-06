@@ -16,7 +16,17 @@ import sys
 import btools.common as common
 from btools.matching.FileMatcher import FileMatcher
 
-VERSION = "0.99"
+commands = [
+            (["-h", "--help"], "", 
+            "This help screen."),
+            (["-i", "--inspect"], "FILE", 
+            "Outputs weighted table of matching destination bookmarks."),
+            (["-n", "--new"], "",
+            "Initialize new config file from template."),
+            (["-nf", "--force-new"], "",
+            "Same as -n, but overwrites file if it already exists."),
+            ]
+
 
 
 def get_FileSorter():
@@ -56,40 +66,20 @@ def cli_new_config_file(forcenew = False):
 
 
 def cli_output_help(args):
-    cli_version()
+    common.cli_version("bm-match", "Weighted bookmark matching")
     cli_help(prog = args[0])
+    common.cli_help(commands)
     cli_examples(prog = args[0])
 
 def cli_help(prog):
-    commands = [
-                (["-h", "--help"], "", 
-                "This help screen."),
-                (["-i", "--inspect"], "FILE", 
-                "Outputs weighted table of matching destination bookmarks."),
-                (["-n", "--new"], "",
-                "Initialize new config file from template."),
-                (["-nf", "--force-new"], "",
-                "Same as -n, but overwrites file if it already exists."),
-                ]
     print
     print "Finds a bookmark destination with the rules of a simple configuration file."
     print 
     print "Usage: %s COMMAND [ARGUMENTS]     Execute command" % prog
     print "       %s [FILES]                 Match FILES" % prog
-    print 
-    print "Commands:"
-    for com, args, description in commands:
-            print "\n\t", 
-            for c in com:
-                    print "%s %s  " % (c, args),
-            print "\n\t%s" % description
 
-def cli_version():
-    print "pybm-match %s - Bookmark matching" % VERSION
-    print "Copyright 2009, Bart Spaans <onderstekop@gmail.com>"
 
 def cli_examples(prog):
-    print
     print "Examples:"
     print "    %s -nf               Force a new empty configuration file in the current directory" % prog
     print "    %s test.txt          Match and move test.txt using the rules in .bm-match" % prog
