@@ -1,4 +1,5 @@
 recursive-include data *
 recursive-include scripts *
+recursive-include doc/man *
 include TODO
 
