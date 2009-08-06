@@ -5,38 +5,22 @@
 
 import os
 import sys
+import btools.common as common
 from subprocess import call
 
 # Configuration options
 SYSTEM_WIDE_BOOKMARKS = False
 BOOKMARK_DATA = ".bookmarks"
-OUTPUT_COLOR = True
-
-VERSION = "1.0rc4"
-RED = "\033[0;31m"
-GREEN = "\033[0;32m"
-BLUE = "\033[0;34m"
-GRAY = "\033[1;30m"
-NOCOLOR = "\033[0m"
-
-
-themes = [("gray-blue-green", GRAY, BLUE, GREEN),
-          ("gray-red-green", GRAY, RED, GREEN),
-          ("gray-gray-green", GRAY, GRAY, GREEN),
-          ("gray-gray-red", GRAY, GRAY, RED),
-          ("gray-green-red", GRAY, GREEN, RED),
-          ("gray-green-blue", GRAY, GREEN, BLUE),
-         ]
-theme = 0
 
 
 def get_conf_location():
+    """Returns the location of the bookmark file."""
     c = os.getcwd()
     if os.path.exists(os.path.join(c, BOOKMARK_DATA)):
             return os.path.join(c, BOOKMARK_DATA)
     if not SYSTEM_WIDE_BOOKMARKS:
         if "HOME" in os.environ:
-            return os.environ["HOME"] + "/" + BOOKMARK_DATA
+            return os.path.join(os.environ["HOME"],  BOOKMARK_DATA)
         else:
             raise Exception("HOME variable not found in environment.")
     else:
@@ -99,9 +83,9 @@ def display_bookmarks(file):
 
 def display_colored_bookmarks(file):
     """Outputs colorized bookmarks."""
-    t = themes[theme]
+    t = common.theme
     for i, (tag, dest) in enumerate(read_bookmarks(file)):
-        print "%s%d.%s %s %s [%s] %s" % (t[1], i, t[2], dest, t[3], tag, NOCOLOR)
+        print "%s%d.%s %s %s [%s] %s" % (t[1], i, t[2], dest, t[3], tag, common.NOCOLOR)
 
 
 

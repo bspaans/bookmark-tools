@@ -13,7 +13,7 @@ import os
 import sys
 
 
-import btools.matching.common as common
+import btools.common as common
 from btools.matching.FileMatcher import FileMatcher
 
 VERSION = "0.99"

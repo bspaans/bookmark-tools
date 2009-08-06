@@ -8,40 +8,14 @@ import os
 import sys
 from subprocess import call
 from btools.pybookmark import *
-
-# Configuration options
-SYSTEM_WIDE_BOOKMARKS = False
-BOOKMARK_DATA = ".bookmarks"
-SYMLINK_DIR = ""
-UPDATE_SYMLINKS = False
-GTK_BOOKMARK_FILE = ""
-UPDATE_GTK_BOOKMARKS = False
-OUTPUT_COLOR = True
-
-
-RED = "\033[0;31m"
-GREEN = "\033[0;32m"
-BLUE = "\033[0;34m"
-GRAY = "\033[1;30m"
-NOCOLOR = "\033[0m"
-
-
-themes = [("gray-blue-green", GRAY, BLUE, GREEN),
-          ("gray-red-green", GRAY, RED, GREEN),
-          ("gray-gray-green", GRAY, GRAY, GREEN),
-          ("gray-gray-red", GRAY, GRAY, RED),
-          ("gray-green-red", GRAY, GREEN, RED),
-          ("gray-green-blue", GRAY, GREEN, BLUE),
-         ]
-theme = 0
-
+import btools.common as common
 
 
 # Front end
 
 def cli_display():
     file = get_conf_location()
-    if not OUTPUT_COLOR:
+    if not common.OUTPUT_COLOR:
         return display_bookmarks(file)
     else:
         return display_colored_bookmarks(file)

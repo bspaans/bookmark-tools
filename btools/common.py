@@ -40,3 +40,23 @@ def replace_variables(dest, variables):
                 d = ""
         res.append(d)
     return " ".join(res)
+
+
+OUTPUT_COLOR = True
+
+VERSION = "1.0rc4"
+RED = "\033[0;31m"
+GREEN = "\033[0;32m"
+BLUE = "\033[0;34m"
+GRAY = "\033[1;30m"
+NOCOLOR = "\033[0m"
+
+
+themes = [("gray-blue-green", GRAY, BLUE, GREEN),
+          ("gray-red-green", GRAY, RED, GREEN),
+          ("gray-gray-green", GRAY, GRAY, GREEN),
+          ("gray-gray-red", GRAY, GRAY, RED),
+          ("gray-green-red", GRAY, GREEN, RED),
+          ("gray-green-blue", GRAY, GREEN, BLUE),
+         ]
+theme = themes[0]
