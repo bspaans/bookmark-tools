@@ -68,6 +68,8 @@ def cli_add(args):
 
     dir = os.path.realpath(args[0])
     tag = " ".join(args[1:])
+    if tag == "":
+        tag = os.path.basename(dir)
     add_bookmark(get_conf_location(), tag, dir)
     cli_display()
 
