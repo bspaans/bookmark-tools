@@ -1,0 +1,37 @@
+.TH mkbm 1 "%date%" "btools collection" "User Commands"
+.SH NAME
+mkbm \- Make new bookmarks and directories
+.SH SYNOPSIS
+.B mkbm
+BOOKMARK [OPTIONS]
+.br
+
+.SH DESCRIPTION
+Make new bookmarks and directories
+.SH OPTIONS
+.TP
+-h   --help   
+Help screen
+.TP
+-p (DIRECTORY|BOOKMARK)  --parent (DIRECTORY|BOOKMARK)  
+Parent directory or bookmark of the new bookmark.
+
+." Use .TP to indent.
+.SH EXAMPLES
+.TP
+mkbm new_bookmark
+.br
+Create new bookmark in current dir
+.TP
+mkbm new_bookmark -p other
+.br
+Create new bookmark in other bookmark
+.TP
+mkbm new_bookmark -p /home/
+.br
+Create new bookmark in /home/
+
+.SH SEE ALSO
+cdbm(1), mkbm(1), btools(5)
+.SH AUTHOR
+Bart Spaans (bart.spaans@gmail.com)

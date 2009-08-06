@@ -1,0 +1,42 @@
+.TH bm-match 1 "%date%" "btools collection" "User Commands"
+.SH NAME
+bm-match \- Weighted bookmark matching
+.SH SYNOPSIS
+.B bm-match
+COMMAND [ARGUMENTS]   Execute command
+.br
+.B bm-match
+[FILES]               Match FILES
+.br
+
+.SH DESCRIPTION
+Weighted bookmark matching
+.SH OPTIONS
+.TP
+-h   --help   
+This help screen.
+.TP
+-i FILE  --inspect FILE  
+Outputs weighted table of matching destination bookmarks.
+.TP
+-n   --new   
+Initialize new config file from template.
+.TP
+-nf   --force-new   
+Same as -n, but overwrites file if it already exists.
+
+." Use .TP to indent.
+.SH EXAMPLES
+.TP
+bm-match -nf
+.br
+Force a new empty configuration file in the current directory
+.TP
+bm-match test.txt
+.br
+Match and move test.txt using the rules in .bm-match
+
+.SH SEE ALSO
+cdbm(1), mkbm(1), btools(5)
+.SH AUTHOR
+Bart Spaans (bart.spaans@gmail.com)

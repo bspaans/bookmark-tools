@@ -86,7 +86,6 @@ def cli_examples(prog, examples):
     for command, description in examples:
         if len(command) > maxcommandlen:
             maxcommandlen = len(command)
-    padding = maxcommandlen + 4
     for command, description in examples:
         print "\t", prog, command,
         print " " * ((maxcommandlen - len(command)) + 4),

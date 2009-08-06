@@ -1,0 +1,16 @@
+.TH %prog% 1 "%date%" "btools collection" "User Commands"
+.SH NAME
+%prog% \- %description%
+.SH SYNOPSIS
+%usage%
+.SH DESCRIPTION
+%description%
+.SH OPTIONS
+%options%
+." Use .TP to indent.
+.SH EXAMPLES
+%examples%
+.SH SEE ALSO
+cdbm(1), mkbm(1), btools(5)
+.SH AUTHOR
+Bart Spaans (bart.spaans@gmail.com)

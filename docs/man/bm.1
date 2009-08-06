@@ -1,30 +1,88 @@
-.TH bm 1 "August 2009" "btools" "User Commands"
+.TH bm 1 "%date%" "btools collection" "User Commands"
 .SH NAME
-bm \- command line bookmarking tool
+bm \- Command line bookmarking tool
 .SH SYNOPSIS
 .B bm
-[INDEX]
+[INDEX]                  Return entry at index
 .br
 .B bm
-[TAG]
+[TAG]                    Return entry with TAG
 .br
 .B bm
-[TAG] --exec [COMMAND]
+[TAG] --exec [COMMAND]   Executes COMMAND. Use {} to get bookmark.
 .br
 .B bm
-[ACTION] [ARGUMENTS]
+[OPTION] [ARGUMENTS]
+.br
+
 .SH DESCRIPTION
+Command line bookmarking tool
 .SH OPTIONS
-%OPTIONS%
+.TP
+-a [DIRECTORY] [TAG]  --add [DIRECTORY] [TAG]  
+Adds DIRECTORY under TAG. If no directory is given this command is the same as --add-current.
+.TP
+--add-current [TAG]  --current [TAG]  
+Adds the current directory. If no arguments are given the tag will be set to the top level directory automatically.
+.TP
+-c   --clear   
+Clear the index.
+.TP
+-d TAG  -r TAG  --delete TAG  --remove TAG  
+Remove entry matching tag from the index. If no TAG is given, the top level directory will be used.
+.TP
+-da TAG  -ra TAG  --delete-all-matching TAG  --remove-all-matching TAG  
+Remove all entries matching TAG.
+.TP
+-h   --help   
+This help screen.
+.TP
+-l   --list   
+List the whole index. Default action.
+.TP
+-m TAG  --match TAG  
+Output all entries that match TAG on prefix.
+.TP
+-sd   --sort-dirs   
+Sort index on directory and save
+.TP
+-st   --sort-tags   
+Sort index on tags and save.
+.TP
+-v   --version   
+Output version information
+.TP
+-?   
+Output location of the bookmark file.
+
 ." Use .TP to indent.
-.SH RETURN VALUES
-Returns 0.
-.SH FILES
-Files associated with command
 .SH EXAMPLES
-%EXAMPLES%
+.TP
+bm -a test
+.br
+Adds current directory under name test.
+.TP
+bm -a ../ test2
+.br
+Adds parent directory under test2.
+.TP
+bm test
+.br
+Returns directory tagged test.
+.TP
+bm 0
+.br
+Jump to the first entry.
+.TP
+bm test --exec ls -al {}
+.br
+Finds directory tagged test, and lists its contents.
+.TP
+bm -m c
+.br
+Outputs all the entries which tags begin with a c.
+
 .SH SEE ALSO
 cdbm(1), mkbm(1), btools(5)
-.SH BUGS
 .SH AUTHOR
 Bart Spaans (bart.spaans@gmail.com)
