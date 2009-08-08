@@ -110,12 +110,14 @@ def cli_print_bookmark(args):
 
     if len(b) == 1:
         if "{}" in execargs:
-            execargs[execargs.index("{}")] = b[0][1]
+            execargs[execargs.index("{}")] = "\"%s\"" % b[0][1].replace("'", "\'")
         if execargs != []:
             print " ".join(execargs)
             call(execargs, shell = True)
         else:
             print b[0][1]
+    else:
+        sys.exit(1)
 
 
 def cli_print_all_matching_bookmarks(args):
@@ -129,7 +131,7 @@ def cli_print_all_matching_bookmarks(args):
         if "{}" in execargs:
             i = execargs.index("{}")
             tmp = execargs[i]
-            execargs[i] = dest
+            execargs[i] = "\"%s\"" % dest
             call(execargs)
             execargs[i] = tmp
         else:
@@ -169,7 +171,7 @@ def cli_remove(args):
         write_bookmarks(get_conf_location(), bms)
         cli_display()
     else:
-        print "Could not remove bookmark %s. Matched %d directories." % (" ".join(args), len(b))
+        common.error("Could not remove bookmark %s. Matched %d directories." % (" ".join(args), len(b)))
 
 def cli_remove_all_matching(args):
     """Remove all matching tags from the index."""
