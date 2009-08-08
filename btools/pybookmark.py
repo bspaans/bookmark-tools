@@ -6,6 +6,7 @@
 
 import os
 import sys
+import math
 import btools.common as common
 from subprocess import call
 
@@ -74,15 +75,24 @@ def clear_bookmarks(file):
 
 def display_bookmarks(file):
     """Outputs the bookmarks."""
-    for i, (tag, dest) in enumerate(read_bookmarks(file)):
-        print "%d. %s [%s]" % (i, dest, tag)
+    bm = read_bookmarks(file)
+
+    nrpad = "%%%dd" % (int(math.ceil(math.log10(len(bm)))) + 1)
+    pathpad = "%%-%ds" % (max(map(lambda x: len(x[1]), bm)) + 2)
+
+    for i, (tag, dest) in enumerate(bm):
+        print "%s. %s [%s]" % (nrpad % i, pathpad % dest, tag)
 
 
 def display_colored_bookmarks(file):
     """Outputs colorized bookmarks."""
     t = common.theme
-    for i, (tag, dest) in enumerate(read_bookmarks(file)):
-        print "%s%d.%s %s %s [%s] %s" % (t[1], i, t[2], dest, t[3], tag, common.NOCOLOR)
+    bm = read_bookmarks(file)
+
+    nrpad = "%%%dd" % (int(math.ceil(math.log10(len(bm)))) + 1)
+    pathpad = "%%-%ds" % (max(map(lambda x: len(x[1]), bm)) + 2)
+    for i, (tag, dest) in enumerate(bm):
+        print "%s%s.%s  %s %s [%s] %s" % (t[1], (nrpad % i), t[2], pathpad % dest, t[3], tag, common.NOCOLOR)
 
 
 

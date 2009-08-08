@@ -3,6 +3,8 @@
 +       lsbm script
 +       bash function script. To be sourced in .bashrc  or w/e
 +	flatten script, to move files out of subdirectories into the parent tree
++	better TODO script
++	add long_description attribute to scripts for man-page generation
 
 DONE    Fix tab completion
 DONE    In setup.py: copy bm_completion to /etc/bash_completion.d/
