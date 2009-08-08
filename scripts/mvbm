@@ -20,6 +20,7 @@ examples = [("test.txt docs", "Moves test.txt to the 'docs' bookmark (which will
 
 
 def prepare_command(mvoptions, files, bmoptions, bm):
+    files = map(lambda x: "\"" + x.replace("'", "\'") + "\"", files)
     if mvoptions != []:
         e = "mv " + " ".join(mvoptions) + " " + " ".join(files) + " "
     else:
