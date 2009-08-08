@@ -1,0 +1,51 @@
+#!/usr/bin/env python
+
+import sys
+import re
+from btools import common
+
+name = "bm-add-series"
+description = "Tries to extract a season number from a filename and adds it to the bookmark. Can be used as a bmsuggest -b hook."
+usage = ["FILE BOOKMARK"]
+commands = [(["-h", "--help"], "", "Help screen")]
+examples = [("Some.Series.S04E04.avi some-series", "Returns some-series-4")]
+
+search = [ (re.compile(".*s.?([0-9]+).?e.?([0-9]+).*", re.IGNORECASE), 1), 
+           (re.compile(".*(s|season|seizoen).?([0-9]+).?(e|episode|ep).?([0-9]+).*", re.IGNORECASE), 2),
+           (re.compile(".*(s|season|seizoen).?([0-9]+).*", re.IGNORECASE), 2),
+           ]
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        if len(sys.argv) == 2 and sys.argv[1] in ["-h", "--help"]:
+            common.cli_module_help(globals())
+        else:
+            print "Usage: %s FILE BOOKMARK" % name
+        sys.exit(1)
+
+    file = sys.argv[1]
+    bm = sys.argv[2]
+
+    res = []
+
+    for s, group in search:
+        m = s.match(file)
+        if m:
+            res.append(m.group(group))
+
+
+    if len(res) == 1:
+        r = int(res[0])
+    elif len(res) == 0:
+        r = None
+    else:
+        a = res[0]
+        if all( a == x for x in res[1:]):
+            r = a
+
+    if r is not None:
+        print "-".join([bm, str(r)])
+    else:
+        print bm
+
+

@@ -1,0 +1,24 @@
+.TH bm-add-series 1 "Aug 2009" "btools collection" "User Commands"
+.SH NAME
+bm-add-series \- Tries to extract a season number from a filename and adds it to the bookmark. Can be used as a bmsuggest -b hook.
+.SH SYNOPSIS
+.B bm-add-series
+FILE BOOKMARK
+.br
+
+.SH DESCRIPTION
+Tries to extract a season number from a filename and adds it to the bookmark. Can be used as a bmsuggest -b hook.
+.SH OPTIONS
+This command doesn't take any options.
+
+." Use .TP to indent.
+.SH EXAMPLES
+.TP
+bm-add-series Some.Series.S04E04.avi some-series
+.br
+Returns some-series-4
+
+.SH SEE ALSO
+cdbm(1), mkbm(1), btools(5)
+.SH AUTHOR
+Bart Spaans (bart.spaans@gmail.com)
