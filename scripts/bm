@@ -98,7 +98,11 @@ def cli_export(args = []):
         out = sys.stdout
     else:
         if len(args) == 1:
-            out = open(args[0], "w")
+            try:
+                out = open(args[0], "wb")
+            except:
+                common.error("Couldn't open '%s' for reading" % args[0])
+            os.fchmod(out.fileno(), 0755)
         else:
             common.error("Expecting only one file argument after export command")
 
@@ -118,6 +122,8 @@ def cli_export(args = []):
             homeUsed = True
         bm, dir = pipes.quote(bm), pipes.quote(dir) 
         out.write("mkbm %s %s\n" % (bm, dir))
+
+
 
 
 def get_exec_index(args):
