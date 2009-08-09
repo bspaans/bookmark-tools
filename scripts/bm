@@ -6,6 +6,7 @@
 
 import os
 import sys
+import pipes
 from subprocess import call
 from btools.pybookmark import *
 import btools.common as common
@@ -26,6 +27,7 @@ commands = [(["-a", "--add"], "[DIRECTORY] [TAG]",
              "directory will be used."),
             (["-da", "-ra", "--delete-all-matching", 
               "--remove-all-matching"], "TAG", "Remove all entries matching TAG."),
+            (["-e", "--export"], "[FILE]", "Writes a shell script that can be used to reproduce the bookmarks and directories. If FILE is not given, the script is written to stdout."),
             (["-h", "--help"], "", "This help screen."),
             (["-l", "--list"], "", "List the whole index. Default action."),
             (["-m", "--match"], "TAG", "Output all entries that match TAG on prefix."),
@@ -86,6 +88,38 @@ def cli_add_current(args):
     add_bookmark(get_conf_location(), tag, dir)
     cli_display()
  
+
+def cli_export(args = []):
+    home = ""
+    if "HOME" in os.environ:
+        home = os.environ["HOME"]
+    
+    if args == []:
+        out = sys.stdout
+    else:
+        if len(args) == 1:
+            out = open(args[0], "w")
+        else:
+            common.error("Expecting only one file argument after export command")
+
+    out.write("# btools - Bookmark environment\n")
+
+    homeUsed = False
+    env = read_bookmarks(get_conf_location())
+    for bm, dir in env:
+        if dir.startswith(home) and home != "":
+            if not homeUsed:
+                out.write("if [ ! $HOME ] ; then \n")
+                out.write("    echo %s\n" % pipes.quote("Warning: HOME environment variable not set. Using original directory: %s" % home))
+                out.write("    HOME=%s\n" % pipes.quote(home))
+                out.write("fi\n\n")
+
+            dir = "$HOME" + dir[len(home):]
+            homeUsed = True
+        bm, dir = pipes.quote(bm), pipes.quote(dir) 
+        out.write("mkbm %s %s\n" % (bm, dir))
+
+
 def get_exec_index(args):
     for i, x in enumerate(args):
         if x in ["--exec", "-e", "--execute"]:
@@ -212,6 +246,8 @@ def command_line_interface():
         cli_remove(args)
     elif command in ["-da", "-ra", "--delete-all-matching", "--remove-all-matching"]:
         cli_remove_all_matching(args)
+    elif command in ["-e", "--export"]:
+        cli_export(args)
     elif command in ["-l", "--list"]:
         cli_display()
     elif command in ["-c", "--clear"]:
