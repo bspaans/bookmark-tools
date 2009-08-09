@@ -1,0 +1,4 @@
+#!/bin/sh
+for x in ../man/* ; do 
+   manhtml $x ../html/$(basename $x).html ; 
+done

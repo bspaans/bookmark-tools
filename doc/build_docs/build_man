@@ -1,0 +1,102 @@
+#!/usr/bin/env python
+
+import os
+import sys
+import time
+
+def prepare_usage(name, usage):
+    maxlen = -1
+    for u in usage:
+        if type(u) == str and len(u) > maxlen:
+            maxlen = len(u)
+        elif type(u) == tuple and len(u[0]) > maxlen:
+            maxlen = len(u[0])
+
+    result = ""
+    for u in usage:
+        if type(u) == str:
+            result += ".B %s\n%s\n.br\n" % (name, u)
+        else:
+            result += ".B %s\n%s" % (name, u[0])
+            result += " " * ((maxlen - len(u[0])) + 3) + u[1] + "\n.br\n"
+    return result
+
+def prepare_options(options):
+    if options == []:
+        return "This command doesn't take any options.\n"
+    result = ""
+    for com, args, description in options:
+        result += ".TP\n"
+        for c in com:
+            result += "%s %s  " % (c, args)
+        result += "\n" + description + "\n"
+    return result
+
+
+def prepare_examples(name, examples):
+    if examples == []:
+        return "No examples available.\n"
+    result = ""
+    for command, description in examples:
+        result += ".TP\n"
+        result += name + " " + command + "\n.br\n"
+        result += description + "\n"
+    return result
+
+
+def fill_template(mod_dict, template):
+    prog = mod_dict["name"]
+    desc = mod_dict["description"]
+    longdesc = desc if not mod_dict.has_key("long_description") else mod_dict["long_description"]
+    usage = prepare_usage(prog, mod_dict["usage"])
+    options = prepare_options(mod_dict["commands"])
+    examples = prepare_examples(prog, mod_dict["examples"])
+
+    t = time.localtime()
+    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    date = months[t.tm_mon - 1] + " " + str(t.tm_year)
+
+    d = { "prog": prog, "description": desc, 
+          "usage": usage, "options": options,
+         "examples": examples, "date": date }
+
+    for r in d:
+        template = template.replace("%" + r + "%", str(d[r]))
+    return template
+
+def build_documentation(dest = "."):
+    files = [ "bm", "bm-match", "mkbm", "mvbm",  "bmsuggest", "bm-add-series"]
+
+    t = open("man.template", "r")
+    template = t.read()
+    t.close()
+
+    results = {}
+
+    for f in files:
+        results[f] = {}
+        execfile("../../scripts/" + f, results[f])
+        man = fill_template(results[f], template)
+
+        d = os.path.join(dest, "%s.1" % results[f]["name"])
+        mandump = open(d, "w")
+        mandump.write(man)
+        print "Written %s." % d
+        mandump.close()
+
+if __name__ == "__main__":
+    if len(sys.argv) == 2:
+        dest = sys.argv[1]
+        if os.path.isdir(dest):
+            build_documentation(dest)
+        else:
+            print "Error: second argument is not a valid directory."
+            print "Usage: %s [DEST]" % sys.argv[0]
+    else:
+        build_documentation()
+
+
+
+
+
+
