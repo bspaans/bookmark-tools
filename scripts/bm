@@ -27,7 +27,7 @@ commands = [(["-a", "--add"], "[DIRECTORY] [TAG]",
              "directory will be used."),
             (["-da", "-ra", "--delete-all-matching", 
               "--remove-all-matching"], "TAG", "Remove all entries matching TAG."),
-            (["-e", "--export"], "[FILE]", "Writes a shell script that can be used to reproduce the bookmarks and directories. If FILE is not given, the script is written to stdout."),
+            (["-e", "--export"], "[FILE]", "Writes a shell script that can be used to reproduce the bookmarks and directories. If FILE is not given, the script will be written to stdout."),
             (["-h", "--help"], "", "This help screen."),
             (["-l", "--list"], "", "List the whole index. Default action."),
             (["-m", "--match"], "TAG", "Output all entries that match TAG on prefix."),
@@ -46,7 +46,7 @@ examples = [("-a test", "Adds current directory under name test." ),
         ("test", "Returns directory tagged test."),
         ("0", "Jump to the first entry."),
         ("test --exec ls -al {}", "Finds directory tagged test, and lists its contents."),
-        ("-m c", "Outputs all the entries which tags begin with a c."),]
+        ("-m c", "Outputs all the entries beginning with a c."),]
 
 # Front end
 
