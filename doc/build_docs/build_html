@@ -1,4 +1,13 @@
 #!/bin/sh
+
+links=""
 for x in ../man/* ; do 
+   echo "Generating ../html/$(basename $x).html"
    manhtml $x ../html/$(basename $x).html ; 
+   links="$links $(basename $x)"
 done
+
+echo -n "Building navigation..."
+./build_nav $links > ../html/nav.html
+echo "OK"
+

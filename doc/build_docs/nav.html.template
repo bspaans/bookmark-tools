@@ -1,0 +1,13 @@
+<html>
+	<head>
+		<title>Navigation</title>
+	<head>
+	<body>
+	<h1>Docs</h1>
+
+	%links%
+
+	<p/>
+	<a href="/" target="_top">Back to main</a>
+	</body>
+</html>
