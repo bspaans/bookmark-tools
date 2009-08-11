@@ -2,7 +2,7 @@ from distutils.core import setup
 import glob
 
 setup(name="btools",
-      version="1.0rc4",
+      version="0.9rc1",
       description="Command line bookmarking tools",
       author="Bart Spaans",
       author_email = "onderstekop@gmail.com",
