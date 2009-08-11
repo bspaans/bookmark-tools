@@ -6,7 +6,7 @@ f = open("nav.html.template")
 
 links = "<ul>\n"
 for x in sys.argv[1:]:
-	links += "<li><a href='%s' target='main'>%s</a></li>" % (x + ".html", x)
+	links += "\t<li><a href='%s' target='main'>%s</a></li>\n" % (x + ".html", x)
 
 links += "</ul>"
 
