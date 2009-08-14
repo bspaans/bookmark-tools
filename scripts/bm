@@ -31,6 +31,7 @@ commands = [(["-a", "--add"], "[DIRECTORY] [TAG]",
             (["-h", "--help"], "", "This help screen."),
             (["-l", "--list"], "", "List the whole index. Default action."),
             (["-m", "--match"], "TAG", "Output all entries that match TAG on prefix."),
+            (["-s", "--symlink"], "[DEST_DIR]", "Turns bookmarks into symbolic links. Makes them in the current directory if no DEST_DIR is given."),
             (["-sd", "--sort-dirs"], "", "Sort index on directory and save"),
             (["-st", "--sort-tags"], "", "Sort index on tags and save."),
             (["-v", "--version"], "", "Output version information"),
@@ -224,6 +225,18 @@ def cli_remove_all_matching(args):
     write_bookmarks(get_conf_location(), res)
     cli_display()
 
+def cli_symlink(args):
+    if args == []:
+        dir = "."
+    else:
+        dir = " ".join(args)
+
+    if os.path.isdir(dir):
+        dir = os.path.realpath(dir)
+        bookmarks_to_symlinks(read_bookmarks(get_conf_location()) , dir)
+    else:
+        common.error("Not a valid directory: %s" % dir)
+
 def cli_sort_dirs():
     bms = sorted(read_bookmarks(get_conf_location()), key=lambda x: x[1])
     write_bookmarks( get_conf_location(), bms)
@@ -264,6 +277,8 @@ def command_line_interface():
         cli_print_all_matching_bookmarks(args)
     elif command in ["-m", "-la", "--list-all"]:
         cli_print_all_matching_bookmarks([""])
+    elif command in ["-s", "--symlink"]:
+        cli_symlink(args)
     elif command in ["-sd", "--sort-dirs"]:
         cli_sort_dirs()
     elif command in ["-st", "--sort-tags"]:

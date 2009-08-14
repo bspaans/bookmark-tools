@@ -102,7 +102,7 @@ def bookmarks_to_symlinks(bookmarks, dest_dir):
     the tags will be seemlessly integrated."""
 
     for tag, src in bookmarks:
-        dest = dest_dir + tag
+        dest = os.path.join(dest_dir, tag)
         print "Linking %s to %s." % (dest, src)
         os.symlink(src, dest)
 
