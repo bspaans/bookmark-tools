@@ -12,17 +12,38 @@ name="blog"
 description="Command line blog tool"
 usage=""
 commands=[(["-h", "--help"], "", "Help screen"),
-          (["init"], "", "Initialize a new blog in the current directory")]
+          (["add"], "FILES", "Adds files to the weblog index"),
+          (["config"], "(list [VARIABLE]|set VARIABLE VALUE|unset VARIABLE)",
+           "Resp. lists, sets and unsets configuration variables."),
+          (["init"], "", "Initialize a new blog in the current directory"),
+         ]
 examples = []
 
 def blog_location():
     return path.join(path.realpath("."), ".blog")
 
+def existing_blog_location():
+    loc = blog_location()
+    if path.exists(loc):
+        return loc
+    common.error("Not in a weblog directory. Use `blog init` to start one.")
+
 def conf_location(blogloc):
     return path.join(blogloc, "config")
 
-def get_index(blogloc):
+def get_index_location(blogloc):
     return path.join(blogloc, "index")
+
+def get_index(blogloc):
+    loc = get_index_location(blogloc)
+    f = open(loc, "r")
+    res1 = {}
+    res2 = {}
+    for x in f.read().splitlines():
+        path, obj = x.split()
+        res1[obj] = path
+        res2[path] = obj
+    return res1, res2
 
 def get_object_ids(blogloc):
     obj = os.listdir(path.join(blogloc, "objects"))
@@ -31,8 +52,11 @@ def get_object_ids(blogloc):
 def new_object_id(blogloc):
     obj = get_object_ids(blogloc)
     return 1 if obj == [] else max(obj) + 1
-    
-def write_conf(loc, conf):
+ 
+def touch(file):
+    open(file, "w").close()
+
+def write_dict(loc, conf):
     lines = []
     for var, val in conf.items():
         lines.append("%s = \"%s\"" % (var, val.replace("\"", "\\\"")))
@@ -59,19 +83,14 @@ def blog_init(title = "Untitled Weblog", authors = "", url="", feed=""):
         os.mkdir(path.join(loc, x))
 
     conf = conf_location(loc)
-    f = open(conf, "w")
-    default = os.linesep.join([
-        "title = \"%s\"" % title, 
-        "authors= \"%s\"" % authors,
-        "url = \"%s\"" % url,
-        "feed = \"%s\"" % feed,
-        ""
-        ])
-    f.write(default)
-    f.close()
+    write_dict(conf, {"title": title, "authors": authors,
+                      "url": url, "feed": feed})
+    touch(get_index_location(loc))
 
-    f = open(get_index(loc), "w")
-    f.close()
+    for x in ["add-hook", "remove-hook", "publish-hook"]:
+        for y in ["post", "pre"]:
+            common.debug("Touch %s/hooks/%s-%s" % (loc, y, x))
+            touch(path.join(loc, "hooks", "%s-%s" % (y,x)))
     common.info("New blog succesfully created")
 
 def add_file_to_blog(file, blogloc=".blog", title="", authors="", url=""):
@@ -83,10 +102,9 @@ def add_file_to_blog(file, blogloc=".blog", title="", authors="", url=""):
 
     file = os.path.realpath(file)
 
-    f = open(get_index(blogloc), "r")
-    for x in f.read().splitlines():
-        if file == x.split()[0]:
-            common.warning("File %s already in weblog" % x)
+    objd, filed = get_index(blogloc)
+    if filed.has_key(file):
+            common.warning("File %s already in weblog" % file)
             return -1
 
 
@@ -98,9 +116,13 @@ def add_file_to_blog(file, blogloc=".blog", title="", authors="", url=""):
     dest = file[len(blogloc) - 5:]
     os.symlink(path.join("..", "..", dest), path.join(blogloc, "objects", str(id)))
 
-    f = open(get_index(blogloc), "a")
+    f = open(get_index_location(blogloc), "a")
     f.write("%s %d\n" % (file, id))
     f.close()
+
+    meta = path.join(blogloc, "meta", str(id))
+    write_dict(meta, {"title": path.basename(file.replace("-", " ").replace("_", " ").replace(".", " ")),
+                      "pubdate": "", "author": ""})
     return id
 
 def get_config(location):
@@ -135,10 +157,20 @@ def command_line_interface():
         cli_help()
     elif command in ["add"]:
         cli_add(args)
-    elif command in ["init"]:
-        cli_init(args)
     elif command in ["config"]:
         cli_config(args)
+    elif command in ["help"]:
+        pass
+    elif command in ["init"]:
+        cli_init(args)
+    elif command in ["meta"]:
+        pass
+    elif command in ["publish"]:
+        pass
+    elif command in ["rm", "remove"]:
+        pass
+    elif command in ["status"]:
+        pass
     else:
         common.error("Unknown command: %s" % command)
 
@@ -170,14 +202,14 @@ def cli_add(args):
     if args == []:
         common.error("Expecting files")
 
-    loc = blog_location()
+    loc = existing_blog_location()
     for x in args:
         id = add_file_to_blog(x, loc)
         if id != -1:
             common.debug("Created object id %d for %s" % (id, x))
 
 def cli_config(args):
-    loc = blog_location()
+    loc = existing_blog_location()
     confloc = conf_location(loc)
     conf = get_config(confloc)
 
@@ -198,7 +230,7 @@ def cli_config(args):
             val = " ".join(args[2:])
             print "%s: %s" % (var, pipes.quote(val))
             conf[var] = val
-            write_conf(confloc, conf)
+            write_dict(confloc, conf)
         else:
             common.error("Expecting variable and value")
     elif com in ["unset"]:
@@ -208,7 +240,7 @@ def cli_config(args):
                     del conf[x]
                 else:
                     common.warning("%s was not set to begin with" % x)
-            write_conf(confloc, conf)
+            write_dict(confloc, conf)
         else:
             common.error("Expecting variable")
 
