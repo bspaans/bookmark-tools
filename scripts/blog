@@ -2,7 +2,9 @@
 
 import os
 import os.path as path
+import pipes
 import sys
+import re
 
 import btools.common as common
 
@@ -30,6 +32,15 @@ def new_object_id(blogloc):
     obj = get_object_ids(blogloc)
     return 1 if obj == [] else max(obj) + 1
     
+def write_conf(loc, conf):
+    lines = []
+    for var, val in conf.items():
+        lines.append("%s = \"%s\"" % (var, val.replace("\"", "\\\"")))
+    lines.append("")
+
+    f = open(loc, "w")
+    f.write(os.linesep.join(lines))
+    f.close()
 
 def blog_init(title = "Untitled Weblog", authors = "", url="", feed=""):
     loc = blog_location()
@@ -74,7 +85,7 @@ def add_file_to_blog(file, blogloc=".blog", title="", authors="", url=""):
 
     f = open(get_index(blogloc), "r")
     for x in f.read().splitlines():
-        if x == file:
+        if file == x.split()[0]:
             common.warning("File %s already in weblog" % x)
             return -1
 
@@ -88,7 +99,7 @@ def add_file_to_blog(file, blogloc=".blog", title="", authors="", url=""):
     os.symlink(path.join("..", "..", dest), path.join(blogloc, "objects", str(id)))
 
     f = open(get_index(blogloc), "a")
-    f.write("%s\n" % file)
+    f.write("%s %d\n" % (file, id))
     f.close()
     return id
 
@@ -98,8 +109,20 @@ def get_config(location):
     f = open(location, "r")
     con = f.read()
     f.close()
+
+    config = {}
+
+    r = re.compile("\ *([a-z]+[a-z0-9]*)\ *=\ *\"(.*)\"", re.IGNORECASE)
+    line = 1
     for x in con.splitlines():
-        print x
+        m = r.match(x)
+        if m:
+            var, val = m.groups()
+            config[var] = val
+        else:
+            common.error("Parse error on line %d" % line)
+        line += 1
+    return config
 
 def command_line_interface():
     if len(sys.argv) == 1:
@@ -154,8 +177,44 @@ def cli_add(args):
             common.debug("Created object id %d for %s" % (id, x))
 
 def cli_config(args):
-    get_config()
+    loc = blog_location()
+    confloc = conf_location(loc)
+    conf = get_config(confloc)
 
+    if args == []:
+        return cli_config_list_all(conf)
+
+    com = args[0]
+
+    if com in ["list"]:
+        if len(args) == 1:
+            return cli_config_list_all(conf)
+        else:
+            for x in args[1:]:
+                print "%s: %s" % (x, pipes.quote(conf.get(x, '')))
+    elif com in ["set"]:
+        if len(args) >= 3:
+            var = args[1]
+            val = " ".join(args[2:])
+            print "%s: %s" % (var, pipes.quote(val))
+            conf[var] = val
+            write_conf(confloc, conf)
+        else:
+            common.error("Expecting variable and value")
+    elif com in ["unset"]:
+        if len(args) >= 2:
+            for x in args[1:]:
+                if conf.has_key(x):
+                    del conf[x]
+                else:
+                    common.warning("%s was not set to begin with" % x)
+            write_conf(confloc, conf)
+        else:
+            common.error("Expecting variable")
+
+def cli_config_list_all(conf):
+    for var, val in conf.items():
+        print "%s: %s" % (var, pipes.quote(val))
 
 def cli_help():
     common.cli_module_help(globals())
