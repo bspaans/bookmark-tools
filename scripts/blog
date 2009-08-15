@@ -1,0 +1,164 @@
+#!/usr/bin/env python
+
+import os
+import os.path as path
+import sys
+
+import btools.common as common
+
+name="blog"
+description="Command line blog tool"
+usage=""
+commands=[(["-h", "--help"], "", "Help screen"),
+          (["init"], "", "Initialize a new blog in the current directory")]
+examples = []
+
+def blog_location():
+    return path.join(path.realpath("."), ".blog")
+
+def conf_location(blogloc):
+    return path.join(blogloc, "config")
+
+def get_index(blogloc):
+    return path.join(blogloc, "index")
+
+def get_object_ids(blogloc):
+    obj = os.listdir(path.join(blogloc, "objects"))
+    return sorted([ int(x) for x in obj ])
+
+def new_object_id(blogloc):
+    obj = get_object_ids(blogloc)
+    return 1 if obj == [] else max(obj) + 1
+    
+
+def blog_init(title = "Untitled Weblog", authors = "", url="", feed=""):
+    loc = blog_location()
+    if path.exists(loc):
+        print "Blog already exists"
+        return 0
+
+    try:
+        common.debug("Creating %s" % loc)
+        os.mkdir(loc)
+    except:
+        common.error("Couldn't create directory %s" % loc)
+
+    for x in ["objects", "meta", "hooks"]:
+        common.debug("Creating %s" % path.join(loc, x))
+        os.mkdir(path.join(loc, x))
+
+    conf = conf_location(loc)
+    f = open(conf, "w")
+    default = os.linesep.join([
+        "title = \"%s\"" % title, 
+        "authors= \"%s\"" % authors,
+        "url = \"%s\"" % url,
+        "feed = \"%s\"" % feed,
+        ""
+        ])
+    f.write(default)
+    f.close()
+
+    f = open(get_index(loc), "w")
+    f.close()
+    common.info("New blog succesfully created")
+
+def add_file_to_blog(file, blogloc=".blog", title="", authors="", url=""):
+    if not path.isfile(file):
+        common.error("File %s doesn't exist or is not a file." % file)
+
+
+    id = new_object_id(blogloc)
+
+    file = os.path.realpath(file)
+
+    f = open(get_index(blogloc), "r")
+    for x in f.read().splitlines():
+        if x == file:
+            common.warning("File %s already in weblog" % x)
+            return -1
+
+
+    if not file.startswith(blogloc[:-5]):
+        common.error("File %s does not live in the blog directory")
+    if file.startswith(blogloc):
+        common.error("Can't add files in .blog to the weblog")
+
+    dest = file[len(blogloc) - 5:]
+    os.symlink(path.join("..", "..", dest), path.join(blogloc, "objects", str(id)))
+
+    f = open(get_index(blogloc), "a")
+    f.write("%s\n" % file)
+    f.close()
+    return id
+
+def get_config(location):
+    if not path.isfile(location):
+        common.error("Configuration file '%s' does not exist" % location)
+    f = open(location, "r")
+    con = f.read()
+    f.close()
+    for x in con.splitlines():
+        print x
+
+def command_line_interface():
+    if len(sys.argv) == 1:
+        return cli_help()
+
+    args = sys.argv[2:]
+    command = sys.argv[1]
+
+    if command in ["-h", "--help"]:
+        cli_help()
+    elif command in ["add"]:
+        cli_add(args)
+    elif command in ["init"]:
+        cli_init(args)
+    elif command in ["config"]:
+        cli_config(args)
+    else:
+        common.error("Unknown command: %s" % command)
+
+def cli_init(args):
+    argumentPending = False
+    option = ""
+    res = {}
+    for x in args:
+        if not argumentPending:
+            if x in ["--title", "--url", "--feed", "--authors"]:
+                option = x[2:]
+                argumentPending = True
+            elif x[0] == "-":
+                common.error("Unknown option %s" % x)
+            else:
+                common.error("Expecting option, got: %s" % x)
+        else:
+            if option != "":
+                res[option] = x
+                argumentPending = False
+    if argumentPending:
+        common.error("Expecting value for %s" % option)
+    blog_init(title=res.get("title", "Untitled Weblog"), 
+              url=res.get("url", ""),
+              feed=res.get("feed", ""),
+              authors=res.get("authors", ""))
+
+def cli_add(args):
+    if args == []:
+        common.error("Expecting files")
+
+    loc = blog_location()
+    for x in args:
+        id = add_file_to_blog(x, loc)
+        if id != -1:
+            common.debug("Created object id %d for %s" % (id, x))
+
+def cli_config(args):
+    get_config()
+
+
+def cli_help():
+    common.cli_module_help(globals())
+
+if __name__ == "__main__":
+    command_line_interface()

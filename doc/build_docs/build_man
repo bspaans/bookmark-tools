@@ -65,7 +65,7 @@ def fill_template(mod_dict, template):
     return template
 
 def build_documentation(dest = "."):
-    files = [ "bm", "bm-match", "mkbm", "mvbm",  "bmsuggest", "bm-add-series"]
+    files = [ "bm", "bm-match", "mkbm", "mvbm",  "bmsuggest", "bm-add-series", "blog"]
 
     t = open("man.template", "r")
     template = t.read()
