@@ -28,7 +28,7 @@ commands = [(["-a", "--add"], "[DIRECTORY] [TAG]",
             (["-da", "-ra", "--delete-all-matching", 
               "--remove-all-matching"], "TAG", "Remove all entries matching TAG."),
             (["-e", "--export"], "[FILE]", "Writes a shell script that can be used to reproduce the bookmarks and directories. If FILE is not given, the script will be written to stdout."),
-            (["-h", "--help"], "", "This help screen."),
+            (["-h", "--help"], "[COMMANDS]", "Output help. If COMMANDS are given, output only the help for that command"),
             (["-l", "--list"], "", "List the whole index. Default action."),
             (["-m", "--match"], "TAG", "Output all entries that match TAG on prefix."),
             (["-s", "--symlink"], "[DEST_DIR]", "Turns bookmarks into symbolic links. Makes them in the current directory if no DEST_DIR is given."),
@@ -272,7 +272,10 @@ def command_line_interface():
     elif command in ["-c", "--clear"]:
         cli_clear(args)
     elif command in ["-h", "--help"]:
-        cli_help()
+        if args == []:
+            cli_help()
+        else:
+            common.cli_command_help(args, commands)
     elif command in ["-m", "--match", "--match-any"] and len(args) > 0:
         cli_print_all_matching_bookmarks(args)
     elif command in ["-m", "-la", "--list-all"]:

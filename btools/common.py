@@ -121,8 +121,6 @@ def cli_examples(prog, examples):
 
 
 
-
-
 def cli_help(commands, title = "Commands:"):
     print title
     for com, args, description in commands:
@@ -132,4 +130,14 @@ def cli_help(commands, title = "Commands:"):
             print "\n\t    %s" % description
     print
 
+
+def cli_command_help(args, cmd):
+    for a in args:
+        for c in cmd:
+            if a in c[0]:
+                fmt = "%s"
+                if len(c[0]) > 1:
+                    fmt = "(%s)"
+                print "Usage: %s %s" % (fmt % ", ".join(c[0]) , c[1])
+                print "      ", c[2]
 

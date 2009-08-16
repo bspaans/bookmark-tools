@@ -10,11 +10,13 @@ import btools.common as common
 
 name="blog"
 description="Command line blog tool"
+long_description="Blog is a minimalist, extendible command line weblog and publishing tool. It is used by adding files to it and by setting up some usuable hooks."
 usage=["COMMAND [ARGUMENTS]"]
 commands=[(["-h", "--help"], "", "Help screen"),
           (["add"], "FILES", "Adds files to the weblog index"),
           (["config"], "(list [VARIABLE]|set VARIABLE VALUE|unset VARIABLE)",
            "Resp. lists, sets and unsets configuration variables."),
+          (["help"], "COMMANDS", "Output help for the given commands."), 
           (["init"], "", "Initialize a new blog in the current directory"),
           (["remove", "rm"], "OBJECTS", "Remove objects from the weblog index. Does not remove the file itself."),
          ]
@@ -76,13 +78,18 @@ def get_object_id_by_file(file, loc):
 def execute_hook(blogloc, hook, env = {}):
     hook = path.join(blogloc, "hooks", hook)
 
+
     if not path.exists(hook):
         common.warning("Hook '%s' does not exist" % hook)
         return
 
     if ((os.stat(hook).st_mode & 0777) & 0100) == 64:
         common.debug("Executing hook %s." % hook)
-        return subprocess.Popen(hook, shell=True).wait()
+        env.update(os.environ)
+        conf = get_config(conf_location(blogloc))
+        for x in conf:
+            env["conf-%s" % x] = conf[x]
+        return subprocess.Popen(hook, shell=True, env=env).wait()
     else:
         common.debug("Ignoring hook %s. Not executable." % hook)
 
@@ -93,6 +100,11 @@ def remove_object(object, loc):
     if id < 0:
         common.error("Cannot remove '%s'. Not a valid object" % object)
 
+    env = {"object": object, "id" : str(id) }
+    ret = execute_hook(loc, "pre-remove-hook", env)
+    if ret is not None and ret != 0:
+        common.warning("'%s' object removal blocked by pre-remove-hook." % object)
+        return
     common.debug("Removing files")
     os.remove( path.join(loc, "meta", str(id)))
     os.remove( path.join(loc, "objects", str(id)))
@@ -104,6 +116,7 @@ def remove_object(object, loc):
         if oid != id:
             f.write("%s %s\n" % (file, oid))
     f.close()
+    execute_hook(loc, "post-remove-hook", env)
 
 
 def touch(file):
@@ -140,7 +153,7 @@ def blog_init(title = "Untitled Weblog", authors = "", url="", feed=""):
                       "url": url, "feed": feed})
     touch(get_index_location(loc))
 
-    for x in ["add-hook", "remove-hook", "publish-hook"]:
+    for x in ["add-hook", "remove-hook", "publish-hook", "set-config-hook", "unset-config-hook"]:
         for y in ["post", "pre"]:
             common.debug("Touching %s/hooks/%s-%s" % (loc, y, x))
             touch(path.join(loc, "hooks", "%s-%s" % (y,x)))
@@ -149,12 +162,6 @@ def blog_init(title = "Untitled Weblog", authors = "", url="", feed=""):
 def add_file_to_blog(file, blogloc=".blog", title="", authors="", url=""):
     if not path.isfile(file):
         common.error("File %s doesn't exist or is not a file." % file)
-
-    ret = execute_hook(blogloc, "pre-add-hook")
-    if ret is not None and ret != 0:
-        common.info("pre-add-hook blocked this file")
-        return -1
-
 
     id = new_object_id(blogloc)
 
@@ -171,6 +178,12 @@ def add_file_to_blog(file, blogloc=".blog", title="", authors="", url=""):
     if file.startswith(blogloc):
         common.error("Can't add files in .blog to the weblog")
 
+    env = {"file": file, "title": title, "authors": authors, "url": url}
+    ret = execute_hook(blogloc, "pre-add-hook", env)
+    if ret is not None and ret != 0:
+        common.info("pre-add-hook blocked this file")
+        return -1
+
     dest = file[len(blogloc) - 5:]
     os.symlink(path.join("..", "..", dest), path.join(blogloc, "objects", str(id)))
 
@@ -181,6 +194,7 @@ def add_file_to_blog(file, blogloc=".blog", title="", authors="", url=""):
     meta = path.join(blogloc, "meta", str(id))
     write_dict(meta, {"title": path.basename(file.replace("-", " ").replace("_", " ").replace(".", " ")),
                       "pubdate": "", "author": ""})
+    execute_hook(blogloc, "post-add-hook", env)
     return id
 
 def get_config(location):
@@ -218,7 +232,7 @@ def command_line_interface():
     elif command in ["config"]:
         cli_config(args)
     elif command in ["help"]:
-        pass
+        cli_help_cmd(args)
     elif command in ["init"]:
         cli_init(args)
     elif command in ["meta"]:
@@ -284,21 +298,37 @@ def cli_config(args):
                 print "%s: %s" % (x, pipes.quote(conf.get(x, '')))
     elif com in ["set"]:
         if len(args) >= 3:
+
             var = args[1]
             val = " ".join(args[2:])
+            
+            env = {"variable": var, "value": val}
+            ret = execute_hook(loc, "pre-set-config-hook", env)
+            if ret is not None and ret != 0:
+                common.warning("pre-set-config-hook blocked this unset.")
+                return 
+
             print "%s: %s" % (var, pipes.quote(val))
             conf[var] = val
             write_dict(confloc, conf)
+            execute_hook(loc, "post-set-config-hook", env)
         else:
             common.error("Expecting variable and value")
     elif com in ["unset"]:
         if len(args) >= 2:
+            env = {"variables": " ".join(args[1:]) }
+            ret = execute_hook(loc, "pre-unset-config-hook", env)
+            if ret is not None and ret != 0:
+                common.warning("pre-unset-config-hook blocked this unset.")
+                return 
+
             for x in args[1:]:
                 if conf.has_key(x):
                     del conf[x]
                 else:
                     common.warning("%s was not set to begin with" % x)
             write_dict(confloc, conf)
+            execute_hook(loc, "post-unset-config-hook", env)
         else:
             common.error("Expecting variable")
 
@@ -315,6 +345,9 @@ def cli_remove(args):
 
 def cli_help():
     common.cli_module_help(globals())
+
+def cli_help_cmd(args):
+    common.cli_command_help(args, commands)
 
 if __name__ == "__main__":
     command_line_interface()
