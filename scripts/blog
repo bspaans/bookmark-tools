@@ -16,8 +16,13 @@ commands=[(["-h", "--help"], "", "Help screen"),
           (["config"], "(list [VARIABLE]|set VARIABLE VALUE|unset VARIABLE)",
            "Resp. lists, sets and unsets configuration variables."),
           (["init"], "", "Initialize a new blog in the current directory"),
+          (["remove", "rm"], "OBJECTS", "Remove objects from the weblog index. Does not remove the file itself."),
          ]
 examples = []
+
+class Object:
+    def __init__(file, id, meta):
+        pass
 
 def blog_location():
     return path.join(path.realpath("."), ".blog")
@@ -53,6 +58,43 @@ def new_object_id(blogloc):
     obj = get_object_ids(blogloc)
     return 1 if obj == [] else max(obj) + 1
  
+def get_object_id(object, loc):
+    if str.isdigit(object):
+        return get_object_id_by_possible_invalid_id(int(object), loc)
+    else:
+        return get_object_id_by_file(object, loc)
+
+def get_object_id_by_possible_invalid_id(id, loc):
+    if not id in get_object_ids(loc):
+        return -1
+    return id
+
+def get_object_id_by_file(file, loc):
+    file = path.realpath(file)
+    ids, files = get_index(loc)
+    if not files.has_key(file):
+        return -1
+    return files[file]
+
+
+def remove_object(object, loc):
+    id = get_object_id(object, loc)
+    if id < 0:
+        common.error("Cannot remove '%s'. Not a valid object" % object)
+
+    common.debug("Removing files")
+    os.remove( path.join(loc, "meta", str(id)))
+    os.remove( path.join(loc, "objects", str(id)))
+
+    common.debug("Rewriting index")
+    ids, paths = get_index(loc)
+    f = open( get_index_location(loc), "w")
+    for file, oid in paths.items():
+        if oid != id:
+            f.write("%s %s\n" % (file, oid))
+    f.close()
+
+
 def touch(file):
     open(file, "w").close()
 
@@ -89,7 +131,7 @@ def blog_init(title = "Untitled Weblog", authors = "", url="", feed=""):
 
     for x in ["add-hook", "remove-hook", "publish-hook"]:
         for y in ["post", "pre"]:
-            common.debug("Touch %s/hooks/%s-%s" % (loc, y, x))
+            common.debug("Touching %s/hooks/%s-%s" % (loc, y, x))
             touch(path.join(loc, "hooks", "%s-%s" % (y,x)))
     common.info("New blog succesfully created")
 
@@ -104,8 +146,8 @@ def add_file_to_blog(file, blogloc=".blog", title="", authors="", url=""):
 
     objd, filed = get_index(blogloc)
     if filed.has_key(file):
-            common.warning("File %s already in weblog" % file)
-            return -1
+        common.warning("File %s already in weblog" % file)
+        return -1
 
 
     if not file.startswith(blogloc[:-5]):
@@ -168,7 +210,7 @@ def command_line_interface():
     elif command in ["publish"]:
         pass
     elif command in ["rm", "remove"]:
-        pass
+        cli_remove(args)
     elif command in ["status"]:
         pass
     else:
@@ -247,6 +289,13 @@ def cli_config(args):
 def cli_config_list_all(conf):
     for var, val in conf.items():
         print "%s: %s" % (var, pipes.quote(val))
+
+def cli_remove(args):
+    loc = existing_blog_location()
+    if args == []:
+        common.error("Expecting objects")
+    for x in args:
+        remove_object(x, loc)
 
 def cli_help():
     common.cli_module_help(globals())
