@@ -5,12 +5,12 @@ import os.path as path
 import pipes
 import sys
 import re
-
+import subprocess
 import btools.common as common
 
 name="blog"
 description="Command line blog tool"
-usage=""
+usage=["COMMAND [ARGUMENTS]"]
 commands=[(["-h", "--help"], "", "Help screen"),
           (["add"], "FILES", "Adds files to the weblog index"),
           (["config"], "(list [VARIABLE]|set VARIABLE VALUE|unset VARIABLE)",
@@ -20,9 +20,6 @@ commands=[(["-h", "--help"], "", "Help screen"),
          ]
 examples = []
 
-class Object:
-    def __init__(file, id, meta):
-        pass
 
 def blog_location():
     return path.join(path.realpath("."), ".blog")
@@ -75,6 +72,20 @@ def get_object_id_by_file(file, loc):
     if not files.has_key(file):
         return -1
     return files[file]
+
+def execute_hook(blogloc, hook, env = {}):
+    hook = path.join(blogloc, "hooks", hook)
+
+    if not path.exists(hook):
+        common.warning("Hook '%s' does not exist" % hook)
+        return
+
+    if ((os.stat(hook).st_mode & 0777) & 0100) == 64:
+        common.debug("Executing hook %s." % hook)
+        return subprocess.Popen(hook, shell=True).wait()
+    else:
+        common.debug("Ignoring hook %s. Not executable." % hook)
+
 
 
 def remove_object(object, loc):
@@ -138,6 +149,11 @@ def blog_init(title = "Untitled Weblog", authors = "", url="", feed=""):
 def add_file_to_blog(file, blogloc=".blog", title="", authors="", url=""):
     if not path.isfile(file):
         common.error("File %s doesn't exist or is not a file." % file)
+
+    ret = execute_hook(blogloc, "pre-add-hook")
+    if ret is not None and ret != 0:
+        common.info("pre-add-hook blocked this file")
+        return -1
 
 
     id = new_object_id(blogloc)
