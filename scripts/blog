@@ -39,7 +39,7 @@ def existing_blog_location(base = ".", depth = 3):
         p, _ = path.split(p)
         depth -= 1
 
-    common.error("Not in a weblog directory. Use `blog init` to start one.")
+    common.error("Not in a weblog directory. Use `blog init` to start a new one.")
 
 def conf_location(blogloc):
     return path.join(blogloc, "config")
@@ -87,10 +87,9 @@ def get_object_id_by_file(file, loc):
 def execute_hook(blogloc, hook, env = {}):
     hook = path.join(blogloc, "hooks", hook)
 
-
     if not path.exists(hook):
         common.warning("Hook '%s' does not exist" % hook)
-        return
+        return 0
 
     if ((os.stat(hook).st_mode & 0777) & 0100) == 64:
         common.debug("Executing hook %s." % hook)
@@ -101,6 +100,7 @@ def execute_hook(blogloc, hook, env = {}):
         return subprocess.Popen(hook, shell=True, env=env).wait()
     else:
         common.debug("Ignoring hook %s. Not executable." % hook)
+        return 0
 
 
 
@@ -162,7 +162,9 @@ def blog_init(title = "Untitled Weblog", authors = "", url="", feed=""):
                       "url": url, "feed": feed})
     touch(get_index_location(loc))
 
-    for x in ["add-hook", "remove-hook", "publish-hook", "set-config-hook", "unset-config-hook"]:
+    for x in ["add-hook", "remove-hook", "publish-hook", 
+              "set-config-hook", "unset-config-hook",
+              "set-meta-hook", "unset-meta-hook"]:
         for y in ["post", "pre"]:
             common.debug("Touching %s/hooks/%s-%s" % (loc, y, x))
             touch(path.join(loc, "hooks", "%s-%s" % (y,x)))
@@ -369,13 +371,27 @@ def cli_meta(args):
             common.error("Expecting variable and value for meta set command.")
         var = args[2]
         val = " ".join(args[3:])
+        env = {"variable": var, "value": val}
+        ret = execute_hook(loc, "pre-set-meta-hook", env)
+        if ret is not None and ret != 0:
+            common.warning("pre-set-meta-hook blocked this unset.")
+            return 
+
         common.info("Setting %s to %s" % (var, val))
         meta = read_dict_from_file( metaloc )
         meta[var] = val
         write_dict(metaloc, meta)
+        execute_hook(loc, "post-set-meta-hook", env)
     elif args[1] == "unset":
         if len(args) < 3:
             common.error("Expecting variables to unset")
+
+        env = {"variables": " ".join(args[2:]) }
+        ret = execute_hook(loc, "pre-unset-meta-hook", env)
+        if ret is not None and ret != 0:
+            common.warning("pre-unset-meta-hook blocked this unset.")
+            return 
+
         meta = read_dict_from_file( metaloc )
         for x in args[2:]:
             if meta.has_key(x):
@@ -383,6 +399,7 @@ def cli_meta(args):
             else:
                 common.warning("%s was not set to begin with" % x)
         write_dict(metaloc, meta)
+        execute_hook(loc, "post-unset-meta-hook", env)
     else:
         common.error("Unknown command '%s'" % args[1])
 
