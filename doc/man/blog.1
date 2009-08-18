@@ -22,14 +22,26 @@ Resp. lists, sets and unsets configuration variables.
 help COMMANDS  
 Output help for the given commands.
 .TP
+info OBJECTS  
+Provides same functionality as multiple `meta OBJECT list` commands
+.TP
 init   
 Initialize a new blog in the current directory
+.TP
+log   
+Outputs the publication log of this index ordered on publication date.
 .TP
 meta OBJECT [(list|set VARIABLE VALUE|unset VARIABLES)]  
 Shows, sets or unsets meta information on an object.
 .TP
+publish   
+Execute the publish hooks
+.TP
 remove OBJECTS  rm OBJECTS  
 Remove objects from the weblog index. Does not remove the file itself.
+.TP
+status   
+Output the status of the files in the index
 
 ." Use .TP to indent.
 .SH EXAMPLES

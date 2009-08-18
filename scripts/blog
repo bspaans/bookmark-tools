@@ -22,6 +22,7 @@ commands=[(["-h", "--help"], "", "Help screen"),
           (["help"], "COMMANDS", "Output help for the given commands."), 
           (["info"], "OBJECTS", "Provides same functionality as multiple `meta OBJECT list` commands"),
           (["init"], "", "Initialize a new blog in the current directory"),
+          (["log"], "", "Outputs the publication log of this index ordered on publication date."),
           (["meta"], "OBJECT [(list|set VARIABLE VALUE|unset VARIABLES)]", "Shows, sets or unsets meta information on an object."), 
           (["publish"], "", "Execute the publish hooks"),
           (["remove", "rm"], "OBJECTS", "Remove objects from the weblog index. Does not remove the file itself."),
@@ -44,7 +45,7 @@ def existing_blog_location(base = ".", depth = 3):
         p, _ = path.split(p)
         depth -= 1
 
-    common.error("Not in a weblog directory. Use `blog init` to start a new one.")
+    common.error("Not in a weblog directory. Use the init command to start a new one.")
 
 def conf_location(blogloc):
     return path.join(blogloc, "config")
@@ -353,7 +354,7 @@ def output_status(loc):
     print "-" * 50, "\n"
 
     for i in ids:
-        fmt = "%%-%ds" % (maxname + 4)
+        fmt = "%%-%ds" % (maxname + 7)
         
         status = "Published on "
         if not exists[i]:
@@ -365,7 +366,47 @@ def output_status(loc):
         else:
             status += time.strftime("%A, %D", time.localtime(published[i]))
         print fmt % names[i], status
+    if ids == []:
+        print "Empty index. Try adding some files with the add command"
     print
+
+
+def output_log(loc):
+    ids = get_object_ids(loc)
+
+    meta = {}
+    published = {}
+    names = {}
+    maxname = 0
+
+    for i in ids:
+        meta[i] = get_meta(loc, i)
+        pub = meta[i].get("pubdate", "")
+        if pub == "":
+            published[i] = 0
+        else:
+            published[i] = time.mktime(time.strptime(pub))
+
+
+        file = path.realpath(path.join(loc, "objects", str(i)))
+        names[i] = file[len(loc) - 5:]
+        if len(names[i]) > maxname:
+            maxname = len(names[i])
+
+    print "Location:", loc
+    print "-" * 50
+    print
+
+    s = sorted(published.items(), key=lambda x: x[1], reverse=True)
+
+    if ids == []:
+        print "Empty index"
+    for id, pub in s:
+        fmt = "%%-%ds" % (maxname + 7)
+        pub = time.strftime("%A, %D", time.localtime(pub)) if pub != 0 else "Unpublished"
+        print fmt % names[id], pub
+    print
+
 
 def command_line_interface():
     if len(sys.argv) == 1:
@@ -386,6 +427,8 @@ def command_line_interface():
         cli_init(args)
     elif command in ["info"]:
         cli_info(args)
+    elif command in ["log"]:
+        cli_log(args)
     elif command in ["meta"]:
         cli_meta(args)
     elif command in ["publish"]:
@@ -484,6 +527,12 @@ def cli_config(args):
             common.error("Expecting variable")
     else:
         common.error("Unknown config command '%s'" % com)
+
+def cli_log(args):
+    if args != []:
+        common.warning("Not expecting any arguments (yet)")
+    loc = existing_blog_location()
+    output_log(loc)
 
 def cli_meta(args):
     if args == []:
