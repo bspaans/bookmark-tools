@@ -57,6 +57,7 @@ def fill_template(mod_dict, template):
     date = months[t.tm_mon - 1] + " " + str(t.tm_year)
 
     d = { "prog": prog, "description": desc, 
+          "long_description": longdesc,
           "usage": usage, "options": options,
          "examples": examples, "date": date }
 

@@ -4,7 +4,7 @@
 .SH SYNOPSIS
 %usage%
 .SH DESCRIPTION
-%description%
+%long_description%
 .SH OPTIONS
 %options%
 ." Use .TP to indent.
