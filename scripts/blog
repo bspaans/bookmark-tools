@@ -412,9 +412,27 @@ def command_line_interface():
     if len(sys.argv) == 1:
         return cli_help()
 
-    args = sys.argv[2:]
-    command = sys.argv[1]
+    if sys.argv[1][0] == "-":
+        args, command = parse_and_set_global_options(sys.argv[1:])
+    else:
+        args = sys.argv[2:]
+        command = sys.argv[1]
+    parse_and_exec_command(command, args)
 
+def parse_and_set_global_options(args):
+    argumentPending = False
+    for i, x in enumerate(args):
+        if not argumentPending:
+            if x[0] == "-":
+                print "Unknown command", x
+            else:
+                return args[i+1:], x
+        else:
+            #set/unset something
+            pass
+    common.error("Expecting commands besides options.")
+
+def parse_and_exec_command(command, args):
     if command in ["-h", "--help"]:
         cli_help()
     elif command in ["add"]:
