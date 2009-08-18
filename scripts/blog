@@ -7,7 +7,7 @@ import sys
 import re
 import subprocess
 import time
-
+import hashlib
 
 import btools.common as common
 
@@ -23,7 +23,9 @@ commands=[(["-h", "--help"], "", "Help screen"),
           (["info"], "OBJECTS", "Provides same functionality as multiple `meta OBJECT list` commands"),
           (["init"], "", "Initialize a new blog in the current directory"),
           (["meta"], "OBJECT [(list|set VARIABLE VALUE|unset VARIABLES)]", "Shows, sets or unsets meta information on an object."), 
+          (["publish"], "", "Execute the publish hooks"),
           (["remove", "rm"], "OBJECTS", "Remove objects from the weblog index. Does not remove the file itself."),
+          (["status"], "", "Output the status of the files in the index"),
          ]
 examples = []
 
@@ -253,7 +255,22 @@ def publish_blog(loc):
         file = path.realpath( path.join(loc, "objects", str(i)))
         if not path.exists(file):
             common.error("File %s (object: %d) no longer exists." % (file, i))
+        f = open(file, "r")
+        contents = f.read()
+        f.close()
+
         meta = get_meta(loc, i)
+       
+        edited = False
+        md5sum = hashlib.md5(contents).hexdigest()
+        prevmd5 = meta.get("md5sum", "")
+        if prevmd5 == "" or md5sum != prevmd5:
+            edited = True
+            update_dict( path.join(loc, "meta", str(i) ), "md5sum", md5sum)
+            if prevmd5 != "":
+                update_dict( path.join(loc, "meta", str(i) ), "lastedit", time.ctime())
+
+
         pub = meta.get("pubdate", "")
 
         published = True
@@ -262,8 +279,16 @@ def publish_blog(loc):
             update_dict( path.join(loc, "meta", str(i) ), "pubdate", time.ctime())
             common.info("Publishing previously unpublished %s" % file)
         else:
-            common.info("Publishing already published %s" % file)
-        fenv = {"file": file, "object": str(id), "published": str(int(published)) }
+            if not edited:
+                common.info("Publishing already published %s" % file)
+            else:
+                common.info("Publishing edited object %s" % file)
+
+
+
+
+        fenv = {"file": file, "object": str(id), "published": str(int(published)),
+                "edited": str(int(edited))}
 
         for var, val in meta.items():
             fenv["meta_" + var] = val
