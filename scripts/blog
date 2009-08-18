@@ -14,10 +14,11 @@ long_description="Blog is a minimalist, extendible command line weblog and publi
 usage=["COMMAND [ARGUMENTS]"]
 commands=[(["-h", "--help"], "", "Help screen"),
           (["add"], "FILES", "Adds files to the weblog index"),
-          (["config"], "(list [VARIABLE]|set VARIABLE VALUE|unset VARIABLE)",
+          (["config"], "(list [VARIABLE]|set VARIABLE VALUE|unset VARIABLES)",
            "Resp. lists, sets and unsets configuration variables."),
           (["help"], "COMMANDS", "Output help for the given commands."), 
           (["init"], "", "Initialize a new blog in the current directory"),
+          (["meta"], "OBJECT [(list|set VARIABLE VALUE|unset VARIABLES)]", "Shows, sets or unsets meta information on an object."), 
           (["remove", "rm"], "OBJECTS", "Remove objects from the weblog index. Does not remove the file itself."),
          ]
 examples = []
@@ -86,7 +87,7 @@ def execute_hook(blogloc, hook, env = {}):
     if ((os.stat(hook).st_mode & 0777) & 0100) == 64:
         common.debug("Executing hook %s." % hook)
         env.update(os.environ)
-        conf = get_config(conf_location(blogloc))
+        conf = read_dict_from_file(conf_location(blogloc))
         for x in conf:
             env["conf-%s" % x] = conf[x]
         return subprocess.Popen(hook, shell=True, env=env).wait()
@@ -197,14 +198,14 @@ def add_file_to_blog(file, blogloc=".blog", title="", authors="", url=""):
     execute_hook(blogloc, "post-add-hook", env)
     return id
 
-def get_config(location):
+def read_dict_from_file(location):
     if not path.isfile(location):
-        common.error("Configuration file '%s' does not exist" % location)
+        common.error("File '%s' does not exist" % location)
     f = open(location, "r")
     con = f.read()
     f.close()
 
-    config = {}
+    result = {}
 
     r = re.compile("\ *([a-z]+[a-z0-9]*)\ *=\ *\"(.*)\"", re.IGNORECASE)
     line = 1
@@ -212,11 +213,11 @@ def get_config(location):
         m = r.match(x)
         if m:
             var, val = m.groups()
-            config[var] = val
+            result[var] = val
         else:
-            common.error("Parse error on line %d" % line)
+            common.error("'%s': Parse error on line %d" % (location, line))
         line += 1
-    return config
+    return result
 
 def command_line_interface():
     if len(sys.argv) == 1:
@@ -235,8 +236,10 @@ def command_line_interface():
         cli_help_cmd(args)
     elif command in ["init"]:
         cli_init(args)
-    elif command in ["meta"]:
+    elif command in ["info"]:
         pass
+    elif command in ["meta"]:
+        cli_meta(args)
     elif command in ["publish"]:
         pass
     elif command in ["rm", "remove"]:
@@ -283,7 +286,7 @@ def cli_add(args):
 def cli_config(args):
     loc = existing_blog_location()
     confloc = conf_location(loc)
-    conf = get_config(confloc)
+    conf = read_dict_from_file(confloc)
 
     if args == []:
         return cli_config_list_all(conf)
@@ -308,7 +311,7 @@ def cli_config(args):
                 common.warning("pre-set-config-hook blocked this unset.")
                 return 
 
-            print "%s: %s" % (var, pipes.quote(val))
+            common.info("Setting %s to %s" % (var, val))
             conf[var] = val
             write_dict(confloc, conf)
             execute_hook(loc, "post-set-config-hook", env)
@@ -331,6 +334,54 @@ def cli_config(args):
             execute_hook(loc, "post-unset-config-hook", env)
         else:
             common.error("Expecting variable")
+    else:
+        common.error("Unknown config command '%s'" % com)
+
+def cli_meta(args):
+    if args == []:
+        common.error("Expecting object.")
+
+    loc = existing_blog_location()
+    object = args[0]
+
+    id = get_object_id(object, loc)
+    if id == -1:
+        common.error("Not a valid id: %s" % object)
+
+    metaloc = path.join(loc, "meta", str(id))
+
+    if len(args) == 1:
+        output_dict_file(metaloc)
+    elif args[1] == "list":
+        if len(args) != 2:
+            common.warning("meta list command does not take any arguments.")
+        output_dict_file(metaloc)
+    elif args[1] == "set":
+        if len(args) <= 3:
+            common.error("Expecting variable and value for meta set command.")
+        var = args[2]
+        val = " ".join(args[3:])
+        common.info("Setting %s to %s" % (var, val))
+        meta = read_dict_from_file( metaloc )
+        meta[var] = val
+        write_dict(metaloc, meta)
+    elif args[1] == "unset":
+        if len(args) < 3:
+            common.error("Expecting variables to unset")
+        meta = read_dict_from_file( metaloc )
+        for x in args[2:]:
+            if meta.has_key(x):
+                del meta[x]
+            else:
+                common.warning("%s was not set to begin with" % x)
+        write_dict(metaloc, meta)
+    else:
+        common.error("Unknown command '%s'" % args[1])
+
+def output_dict_file(loc):
+    for var, val in read_dict_from_file( loc ).items():
+        print "%s: %s" % (var, val)
+
 
 def cli_config_list_all(conf):
     for var, val in conf.items():
