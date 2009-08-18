@@ -253,7 +253,7 @@ def publish_blog(loc):
         file = path.realpath( path.join(loc, "objects", str(i)))
         if not path.exists(file):
             common.error("File %s (object: %d) no longer exists." % (file, i))
-        meta = read_dict_from_file( path.join(loc, "meta", str(i) ))
+        meta = get_meta(loc, i)
         pub = meta.get("pubdate", "")
 
         published = True
@@ -273,6 +273,61 @@ def publish_blog(loc):
 
     execute_hook(loc, "post-publish-hook", env)
 
+def get_meta(loc, id):
+    return read_dict_from_file( path.join(loc, "meta", str(id) ))
+
+def output_status(loc):
+    ids = get_object_ids(loc)
+    conf = get_config(loc)
+    meta = {}
+    published = {}
+    names = {}
+    exists = {}
+ 
+    maxname = 0
+    for i in ids:
+        meta[i] = get_meta(loc, i)
+        pub = meta[i].get("pubdate", "")
+        if pub == "":
+            published[i] = 0
+        else:
+            published[i] = time.mktime(time.strptime(pub))
+
+
+        file = path.realpath(path.join(loc, "objects", str(i)))
+        exists[i] = True
+        if not path.exists(file):
+            exists[i] = False
+        names[i] = file[len(loc) - 5:]
+        if len(names[i]) > maxname:
+            maxname = len(names[i])
+
+
+    lastpub = 0
+    if ids != []:
+        lastpub = published[max(published, key=lambda x: published[x])]
+
+    title = conf.get("title", "Untitled")
+    print "Location:", loc
+    print "Title:", title
+    if lastpub != 0:
+        print "Last publication:", time.ctime(lastpub)
+    else:
+        print "Unpublished"
+    print "-" * 50, "\n"
+
+    for i in ids:
+        fmt = "%%-%ds" % (maxname + 4)
+        
+        status = "Published on "
+        if not exists[i]:
+            status = "FILE NOT FOUND"
+        elif published[i] == 0:
+            status = "Unpublished"
+        else:
+            status += time.strftime("%A, %D", time.localtime(published[i]))
+        print fmt % names[i], status
+    print
 
 def command_line_interface():
     if len(sys.argv) == 1:
@@ -300,7 +355,7 @@ def command_line_interface():
     elif command in ["rm", "remove"]:
         cli_remove(args)
     elif command in ["status"]:
-        pass
+        cli_status(args)
     else:
         common.error("Unknown command: %s" % command)
 
@@ -445,6 +500,12 @@ def cli_meta(args):
         execute_hook(loc, "post-unset-meta-hook", env)
     else:
         common.error("Unknown command '%s'" % args[1])
+
+def cli_status(args):
+    if args != []:
+        common.warning("status takes no arguments")
+    loc = existing_blog_location()
+    output_status(loc)
 
 def update_dict(loc, var, val):
     d = read_dict_from_file(loc)
