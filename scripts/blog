@@ -6,6 +6,9 @@ import pipes
 import sys
 import re
 import subprocess
+import time
+
+
 import btools.common as common
 
 name="blog"
@@ -43,6 +46,10 @@ def existing_blog_location(base = ".", depth = 3):
 
 def conf_location(blogloc):
     return path.join(blogloc, "config")
+
+def get_config(blogloc):
+    confloc = conf_location(blogloc)
+    return read_dict_from_file(confloc)
 
 def get_index_location(blogloc):
     return path.join(blogloc, "index")
@@ -162,6 +169,7 @@ def blog_init(title = "Untitled Weblog", authors = "", url="", feed=""):
                       "url": url, "feed": feed})
     touch(get_index_location(loc))
 
+    touch(path.join(loc, "hooks", "publish-hook"))
     for x in ["add-hook", "remove-hook", "publish-hook", 
               "set-config-hook", "unset-config-hook",
               "set-meta-hook", "unset-meta-hook"]:
@@ -229,6 +237,43 @@ def read_dict_from_file(location):
         line += 1
     return result
 
+
+def publish_blog(loc):
+    ids = get_object_ids(loc)
+    if ids == []:
+        common.error("No objects to publish. You can add files to the index with the 'add' command.")
+
+    env = {}
+    ret = execute_hook(loc, "pre-publish-hook", env)
+    if ret != 0:
+        common.error("pre-publish-hook block this publication.")
+
+    conf = get_config(loc)
+    for i in ids:
+        file = path.realpath( path.join(loc, "objects", str(i)))
+        if not path.exists(file):
+            common.error("File %s (object: %d) no longer exists." % (file, i))
+        meta = read_dict_from_file( path.join(loc, "meta", str(i) ))
+        pub = meta.get("pubdate", "")
+
+        published = True
+        if pub == "":
+            published = False
+            update_dict( path.join(loc, "meta", str(i) ), "pubdate", time.ctime())
+            common.info("Publishing previously unpublished %s" % file)
+        else:
+            common.info("Publishing already published %s" % file)
+        fenv = {"file": file, "object": str(id), "published": str(int(published)) }
+
+        for var, val in meta.items():
+            fenv["meta_" + var] = val
+        for var, val in conf.items():
+            fenv["blog_" + var] = val
+        execute_hook(loc, "publish-hook", fenv)
+
+    execute_hook(loc, "post-publish-hook", env)
+
+
 def command_line_interface():
     if len(sys.argv) == 1:
         return cli_help()
@@ -251,7 +296,7 @@ def command_line_interface():
     elif command in ["meta"]:
         cli_meta(args)
     elif command in ["publish"]:
-        pass
+        cli_publish(args)
     elif command in ["rm", "remove"]:
         cli_remove(args)
     elif command in ["status"]:
@@ -378,9 +423,7 @@ def cli_meta(args):
             return 
 
         common.info("Setting %s to %s" % (var, val))
-        meta = read_dict_from_file( metaloc )
-        meta[var] = val
-        write_dict(metaloc, meta)
+        update_dict(metaloc, var, val)
         execute_hook(loc, "post-set-meta-hook", env)
     elif args[1] == "unset":
         if len(args) < 3:
@@ -403,6 +446,11 @@ def cli_meta(args):
     else:
         common.error("Unknown command '%s'" % args[1])
 
+def update_dict(loc, var, val):
+    d = read_dict_from_file(loc)
+    d[var] = val
+    write_dict(loc, d)
+
 def cli_info(args):
     if args == []:
         common.error("Expecting object arguments")
@@ -421,6 +469,10 @@ def output_dict_file(loc):
 def cli_config_list_all(conf):
     for var, val in conf.items():
         print "%s: %s" % (var, pipes.quote(val))
+
+def cli_publish(args):
+    loc = existing_blog_location()
+    publish_blog(loc)
 
 def cli_remove(args):
     loc = existing_blog_location()
