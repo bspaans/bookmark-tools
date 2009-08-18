@@ -17,6 +17,7 @@ commands=[(["-h", "--help"], "", "Help screen"),
           (["config"], "(list [VARIABLE]|set VARIABLE VALUE|unset VARIABLES)",
            "Resp. lists, sets and unsets configuration variables."),
           (["help"], "COMMANDS", "Output help for the given commands."), 
+          (["info"], "OBJECTS", "Provides same functionality as multiple `meta OBJECT list` commands"),
           (["init"], "", "Initialize a new blog in the current directory"),
           (["meta"], "OBJECT [(list|set VARIABLE VALUE|unset VARIABLES)]", "Shows, sets or unsets meta information on an object."), 
           (["remove", "rm"], "OBJECTS", "Remove objects from the weblog index. Does not remove the file itself."),
@@ -24,13 +25,20 @@ commands=[(["-h", "--help"], "", "Help screen"),
 examples = []
 
 
-def blog_location():
-    return path.join(path.realpath("."), ".blog")
+def blog_location(dir = "."):
+    return path.join(path.realpath(dir), ".blog")
 
-def existing_blog_location():
-    loc = blog_location()
-    if path.exists(loc):
-        return loc
+def existing_blog_location(base = ".", depth = 3):
+    p = path.realpath(base)
+
+    while depth != 0:
+        loc = blog_location(p)
+        if path.exists(loc):
+            return loc
+
+        p, _ = path.split(p)
+        depth -= 1
+
     common.error("Not in a weblog directory. Use `blog init` to start one.")
 
 def conf_location(blogloc):
@@ -237,7 +245,7 @@ def command_line_interface():
     elif command in ["init"]:
         cli_init(args)
     elif command in ["info"]:
-        pass
+        cli_info(args)
     elif command in ["meta"]:
         cli_meta(args)
     elif command in ["publish"]:
@@ -377,6 +385,16 @@ def cli_meta(args):
         write_dict(metaloc, meta)
     else:
         common.error("Unknown command '%s'" % args[1])
+
+def cli_info(args):
+    if args == []:
+        common.error("Expecting object arguments")
+
+    for x in args:
+        print "-" * 40
+        print "%s:\n" % x
+        cli_meta([x])
+    print "-" * 40
 
 def output_dict_file(loc):
     for var, val in read_dict_from_file( loc ).items():
