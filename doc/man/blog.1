@@ -2,6 +2,9 @@
 .SH NAME
 blog \- Command line blog tool
 .SH SYNOPSIS
+.B blog
+COMMAND [ARGUMENTS]
+.br
 
 .SH DESCRIPTION
 Command line blog tool
@@ -13,11 +16,20 @@ Help screen
 add FILES  
 Adds files to the weblog index
 .TP
-config (list [VARIABLE]|set VARIABLE VALUE|unset VARIABLE)  
+config (list [VARIABLE]|set VARIABLE VALUE|unset VARIABLES)  
 Resp. lists, sets and unsets configuration variables.
+.TP
+help COMMANDS  
+Output help for the given commands.
 .TP
 init   
 Initialize a new blog in the current directory
+.TP
+meta OBJECT [(list|set VARIABLE VALUE|unset VARIABLES)]  
+Shows, sets or unsets meta information on an object.
+.TP
+remove OBJECTS  rm OBJECTS  
+Remove objects from the weblog index. Does not remove the file itself.
 
 ." Use .TP to indent.
 .SH EXAMPLES
