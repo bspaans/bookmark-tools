@@ -361,7 +361,7 @@ def output_status(loc):
         elif published[i] == 0:
             status = "Unpublished"
         elif edited[i]:
-            status = "Edited"
+            status = "Edited since last publication"
         else:
             status += time.strftime("%A, %D", time.localtime(published[i]))
         print fmt % names[i], status
