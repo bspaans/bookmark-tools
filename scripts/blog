@@ -308,6 +308,7 @@ def output_status(loc):
     published = {}
     names = {}
     exists = {}
+    edited = {}
  
     maxname = 0
     for i in ids:
@@ -321,8 +322,18 @@ def output_status(loc):
 
         file = path.realpath(path.join(loc, "objects", str(i)))
         exists[i] = True
+        edited[i] = False
         if not path.exists(file):
             exists[i] = False
+        else:
+            f = open(file, "r")
+            con = f.read()
+            f.close()
+            md5sum = hashlib.md5(con).hexdigest()
+            prevmd5 = meta[i].get("md5sum", "")
+            if prevmd5 == "" or prevmd5 != md5sum:
+                edited[i] = True
+
         names[i] = file[len(loc) - 5:]
         if len(names[i]) > maxname:
             maxname = len(names[i])
@@ -349,6 +360,8 @@ def output_status(loc):
             status = "FILE NOT FOUND"
         elif published[i] == 0:
             status = "Unpublished"
+        elif edited[i]:
+            status = "Edited"
         else:
             status += time.strftime("%A, %D", time.localtime(published[i]))
         print fmt % names[i], status
