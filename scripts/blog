@@ -102,12 +102,13 @@ def execute_hook(blogloc, hook, env = {}):
         common.warning("Hook '%s' does not exist" % hook)
         return 0
 
+    env["blogdir"] = blogloc
     if ((os.stat(hook).st_mode & 0777) & 0100) == 64:
         common.debug("Executing hook %s." % hook)
         env.update(os.environ)
         conf = read_dict_from_file(conf_location(blogloc))
         for x in conf:
-            env["conf-%s" % x] = conf[x]
+            env["conf_%s" % x] = conf[x]
         return subprocess.Popen(hook, shell=True, env=env).wait()
     else:
         common.debug("Ignoring hook %s. Not executable." % hook)
@@ -291,8 +292,8 @@ def publish_blog(loc):
 
 
 
-        fenv = {"file": file, "object": str(id), "published": str(int(published)),
-                "edited": str(int(edited)), "content": contents }
+        fenv = {"file": file, "object": str(i), "published": str(int(published)),
+                "edited": str(int(edited)), "content": contents, "blogdir": loc }
 
         for var, val in meta.items():
             fenv["meta_" + var] = val
@@ -378,7 +379,7 @@ def output_status(loc):
     print
 
 
-def output_log(loc):
+def output_log(loc, outputObjects, verbose):
     ids = get_object_ids(loc)
 
     meta = {}
@@ -400,19 +401,27 @@ def output_log(loc):
         if len(names[i]) > maxname:
             maxname = len(names[i])
 
-    print "Location:", loc
-    print "-" * 50
-    print
+    if not outputObjects:
+        print "Location:", loc
+        print "-" * 50
+        print
 
     s = sorted(published.items(), key=lambda x: x[1], reverse=True)
 
-    if ids == []:
+    if ids == [] and not outputObjects:
         print "Empty index"
     for id, pub in s:
         fmt = "%%-%ds" % (maxname + 7)
         pub = time.strftime("%A, %D", time.localtime(pub)) if pub != 0 else "Unpublished"
-        print fmt % names[id], pub
-    print
+        if not verbose:
+            if not outputObjects:
+                print fmt % names[id], pub
+            else:
+                print fmt % str(id), pub
+        else:
+            print fmt % names[id], id, "      ", pub
+    if not outputObjects:
+        print
 
 
 def command_line_interface():
@@ -557,10 +566,15 @@ def cli_config(args):
         common.error("Unknown config command '%s'" % com)
 
 def cli_log(args):
-    if args != []:
-        common.warning("Not expecting any arguments (yet)")
+    verbose = False
+    outputObjects = False
+    for a in args:
+        if a in ["--verbose", "-v"]:
+            verbose = True
+        elif a in ["--object", "-o"]:
+            outputObjects = True
     loc = existing_blog_location()
-    output_log(loc)
+    output_log(loc, outputObjects, verbose)
 
 def cli_meta(args):
     if args == []:
@@ -578,9 +592,10 @@ def cli_meta(args):
     if len(args) == 1:
         output_dict_file(metaloc)
     elif args[1] == "list":
-        if len(args) != 2:
-            common.warning("meta list command does not take any arguments.")
-        output_dict_file(metaloc)
+        if len(args) == 2:
+            output_dict_file(metaloc)
+        else:
+            output_dict_file(metaloc, args[2:])
     elif args[1] == "set":
         if len(args) <= 3:
             common.error("Expecting variable and value for meta set command.")
@@ -637,9 +652,13 @@ def cli_info(args):
         cli_meta([x])
     print "-" * 40
 
-def output_dict_file(loc):
+def output_dict_file(loc, only = None):
     for var, val in read_dict_from_file( loc ).items():
-        print "%s: %s" % (var, val)
+        if only is not None:
+            if var in only:
+                print "%s: %s" % (var, val)
+        else:
+            print "%s: %s" % (var, val)
 
 
 def cli_config_list_all(conf):
