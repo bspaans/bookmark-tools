@@ -1,0 +1,62 @@
+#!/usr/bin/env python
+
+import sys
+import os
+import os.path as path
+import btools.common as common
+
+name = "fill-template"
+description = "Replaces variables with values in a given template."
+long_description = "Can be used in one of blog's hooks as a very simple template language. Replaces all the %variables% with given values."
+usage = [("TEMPLATE [--VARIABLE VALUE]", "Replaces every %VARIABLE% in TEMPLATE with VALUE.")]
+commands = [(["--help"], "", "Output help")]
+examples = []
+
+def replace_with(template, replaceDict):
+    f = open(template, "r")
+    contents = f.read()
+    f.close()
+
+    for r in replaceDict:
+        find = "%%%s%%" % r
+        contents = contents.replace(find, replaceDict[r]) 
+
+    return contents
+
+def cli_help():
+    common.cli_module_help(globals())
+
+def fill_template():
+
+    args = sys.argv[1:]
+
+    if args == []:
+        common.error("Expecting arguments")
+
+    template = args[0]
+    if args[0] == "--help":
+        return cli_help()
+    if not path.exists(template):
+        common.error("Template '%s' doesn't exist" % template)
+
+    var = ""
+    invar = False
+    replaceDict = {}
+    for a in args[1:]:
+        if not invar:
+            if len(a) >= 2 and a[0:2] == "--":
+                var = a[2:]
+                invar = True
+            else:
+                common.error("Expecting variable, got %s." % a)
+        else:
+            replaceDict[var] = a
+            var = ""
+            invar = False
+
+    if invar:
+        common.error("Expecting value for '%s' variable." % var)
+    return replace_with(template, replaceDict)
+
+if __name__ == "__main__":
+    print fill_template()
