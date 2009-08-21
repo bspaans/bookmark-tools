@@ -292,7 +292,7 @@ def publish_blog(loc):
 
 
         fenv = {"file": file, "object": str(id), "published": str(int(published)),
-                "edited": str(int(edited))}
+                "edited": str(int(edited)), "content": contents }
 
         for var, val in meta.items():
             fenv["meta_" + var] = val
