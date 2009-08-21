@@ -30,6 +30,7 @@ commands=[(["-h", "--help"], "", "Help screen"),
          ]
 examples = []
 
+common.loglevel = 2
 
 def blog_location(dir = "."):
     return path.join(path.realpath(dir), ".blog")
@@ -172,7 +173,9 @@ def blog_init(title = "Untitled Weblog", authors = "", url="", feed=""):
                       "url": url, "feed": feed})
     touch(get_index_location(loc))
 
-    touch(path.join(loc, "hooks", "publish-hook"))
+    for x in ["publish-hook", "publish-new-hook", "publish-edited-hook"]: 
+        touch(path.join(loc, "hooks", x))
+
     for x in ["add-hook", "remove-hook", "publish-hook", 
               "set-config-hook", "unset-config-hook",
               "set-meta-hook", "unset-meta-hook"]:
@@ -296,6 +299,10 @@ def publish_blog(loc):
         for var, val in conf.items():
             fenv["blog_" + var] = val
         execute_hook(loc, "publish-hook", fenv)
+        if not published:
+            execute_hook(loc, "publish-new-hook", fenv)
+        elif edited:
+            execute_hook(loc, "publish-edited-hook", fenv)
 
     execute_hook(loc, "post-publish-hook", env)
 
@@ -424,7 +431,10 @@ def parse_and_set_global_options(args):
     for i, x in enumerate(args):
         if not argumentPending:
             if x[0] == "-":
-                print "Unknown command", x
+                if x in ["--debug", "--verbose", "-v"]:
+                    common.loglevel = 4
+                else:
+                    print "Unknown command", x
             else:
                 return args[i+1:], x
         else:
