@@ -4,11 +4,11 @@
 <head>
 <meta name="generator" content="groff -Thtml, see www.gnu.org">
 <meta name="Content-Style" content="text/css">
-<title>bm-add-series</title>
+<title>fill-template</title>
 </head>
 <body>
 
-<h1 align=center>bm-add-series</h1>
+<h1 align=center>fill-template</h1>
 <a href="#NAME">NAME</a><br>
 <a href="#SYNOPSIS">SYNOPSIS</a><br>
 <a href="#DESCRIPTION">DESCRIPTION</a><br>
@@ -26,9 +26,8 @@
 <tr valign="top" align="left">
 <td width="10%"></td>
 <td width="89%">
-<p>bm-add-series &minus; Tries to extract a season number
-from a filename and adds it to the bookmark. Can be used as
-a bmsuggest -b hook.</p>
+<p>fill-template &minus; Replaces variables with values in a
+given template.</p>
 </td>
 </table>
 <a name="SYNOPSIS"></a>
@@ -39,7 +38,8 @@ a bmsuggest -b hook.</p>
 <tr valign="top" align="left">
 <td width="10%"></td>
 <td width="89%">
-<p><b>bm-add-series</b> FILE BOOKMARK</p>
+<p><b>fill-template</b> TEMPLATE [--VARIABLE VALUE] Replaces
+every %VARIABLE% in TEMPLATE with VALUE.</p>
 </td>
 </table>
 <a name="DESCRIPTION"></a>
@@ -50,27 +50,28 @@ a bmsuggest -b hook.</p>
 <tr valign="top" align="left">
 <td width="10%"></td>
 <td width="89%">
-<p>Tries to extract a season number from a filename and adds
-it to the bookmark. Can be used as a bmsuggest -b hook.</p>
+<p>Can be used in one of blog&rsquo;s hooks as a very simple
+template language. Replaces all the %variables% with given
+values.</p>
 </td>
 </table>
 <a name="OPTIONS"></a>
 <h2>OPTIONS</h2>
-<!-- INDENTATION -->
+<!-- TABS -->
 <table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
+       cols="5" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td width="10%"></td>
-<td width="89%">
-<p>-h --help</p></td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="21%"></td>
-<td width="77%">
-<p>Help screen</p>
+<td width="11%"></td>
+<td width="8%">
+
+<p>--help</p>
+</td>
+<td width="13%"></td>
+<td width="16%">
+
+<p>Output help</p>
+</td>
+<td width="49%">
 </td>
 </table>
 <a name="EXAMPLES"></a>
@@ -81,15 +82,7 @@ it to the bookmark. Can be used as a bmsuggest -b hook.</p>
 <tr valign="top" align="left">
 <td width="10%"></td>
 <td width="89%">
-<p>bm-add-series Some.Series.S04E04.avi some-series</p></td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="21%"></td>
-<td width="77%">
-<p>Returns some-series-4</p>
+<p>No examples available.</p>
 </td>
 </table>
 <a name="SEE ALSO"></a>
