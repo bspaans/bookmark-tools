@@ -74,18 +74,18 @@ function bmcmd {
         i="$(expr $i + 1)"
     done
 
-    if [ -f "$FILE" ]; then 
-        BM="$(bm $BOOKMARK)"
-        if [ $? == 0 ]; then
-            $CMD $ARGS $FILE $BM
-        else
-            echo "Error: Unknown bookmark '$BOOKMARK'"
-            return 1
-        fi
-    else
-        echo "Error: file '$FILE' does not exist"
-        return 1
-    fi
+	BM="$(bm $BOOKMARK)"
+	if [ $? == 0 ]; then
+		$CMD $ARGS $FILE $BM
+	else
+		echo "Error: Unknown bookmark '$BOOKMARK'"
+		return 1
+	fi
 }
 
 alias cpbm="bmcmd cp"
+alias lnbm="bmcmd ln"
+alias scpbm="bmcmd scp"
+
+# not so nice
+alias lsbm="bmcmd ls \"\""
