@@ -445,6 +445,9 @@ def parse_and_set_global_options(args):
             if x[0] == "-":
                 if x in ["--debug", "--verbose", "-v"]:
                     common.loglevel = 4
+                elif x in ["-h", "--help"]:
+                    cli_help()
+                    sys.exit(0)
                 else:
                     print "Unknown command", x
             else:

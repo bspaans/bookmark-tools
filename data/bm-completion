@@ -10,3 +10,30 @@ bmcomplete()
 }
 complete -F bmcomplete cdbm
 complete -F bmcomplete lsbm
+
+
+blogcomplete()
+{
+	local prev cur opts 
+	COMPREPLY=()
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	prev="${COMP_WORDS[COMP_CWORD-1]}"
+    opts="add config help info init log meta publish remove status"
+	globals="-v --verbose --debug -h --help"
+
+    if [[ ${cur} == -* ]] ; then
+        COMPREPLY=( $(compgen -W "${globals}" -- ${cur}) )
+        return 0
+    fi
+
+	case "$prev" in 
+		add|rm|remove)
+			COMPREPLY=( $(compgen -o default -f ${cur}) )
+			return 0
+			;;
+	esac
+
+	COMPREPLY=( $(compgen -o default -W "${opts}" -- ${cur}) )
+}
+
+complete -F blogcomplete blog
