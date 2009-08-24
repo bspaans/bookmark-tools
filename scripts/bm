@@ -141,6 +141,7 @@ def cli_print_bookmark(args):
     if execi > -1:
         execargs = args[execi + 1:]
         args = args[:execi]
+
     b = get_bookmark(" ".join(args), read_bookmarks(get_conf_location()))
 
     # Check exact match    
@@ -198,7 +199,7 @@ def cli_remove(args):
     if args == []:
         dir = os.getcwd()
         args = [os.path.basename(dir)]
-
+ 
     bms = read_bookmarks(get_conf_location())
     b = get_bookmark(" ".join(args), bms)
 

@@ -26,17 +26,23 @@ def get_conf_location():
 
 def read_bookmarks(file):
     """Returns a (tag, destination) list"""
-    f = open(file, "r")
+    try:
+        f = open(file, "r")
+    except:
+        print "The index is currently empty. You can add some bookmarks with --add."
+        sys.exit(1)
+
     rawdata = f.readlines()
     f.close()
 
     res = []
     for r in rawdata:
-        s = r.split()
-        if len(s) >= 2:
-            res.append((" ".join(s[1:]), s[0]))
-        elif len(s) == 1:
-            res.append(("", s[0]))
+        if r != "":
+            s = r.split()
+            if len(s) >= 2:
+                res.append((" ".join(s[1:]), s[0]))
+            elif len(s) == 1:
+                res.append(("", s[0]))
     return res
 
 def write_bookmarks(file, bookmarks):
@@ -54,7 +60,7 @@ def get_bookmark(tag, bookmarks):
         if 0 <= t < len(bookmarks):
             return [bookmarks[t]]
         else:
-            raise Exception("Index out of bounds: %d" % (t))
+            common.error("Index out of bounds: %d" % (t))
     possible = []
     for t, dest in bookmarks:
         if t.startswith(tag):
@@ -76,6 +82,7 @@ def clear_bookmarks(file):
 def display_bookmarks(file):
     """Outputs the bookmarks."""
     bm = read_bookmarks(file)
+    if bm == []: return
 
     nrpad = "%%%dd" % (int(math.ceil(math.log10(len(bm)))) + 1)
     pathpad = "%%-%ds" % (max(map(lambda x: len(x[1]), bm)) + 2)
@@ -88,6 +95,7 @@ def display_colored_bookmarks(file):
     """Outputs colorized bookmarks."""
     t = common.theme
     bm = read_bookmarks(file)
+    if bm == []: return
 
     nrpad = "%%%dd" % (int(math.ceil(math.log10(len(bm)))) + 1)
     pathpad = "%%-%ds" % (max(map(lambda x: len(x[1]), bm)) + 2)
