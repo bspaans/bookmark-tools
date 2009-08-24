@@ -3,3 +3,4 @@
 + Add --blog-dir option to blog
 + bm-blog publish hook should copy html to git user directory and post e-mail to google group.
 + btools push hook should add a tagged entry to the blog
++ add README and INSTALL

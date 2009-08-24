@@ -65,6 +65,7 @@ def get_index(blogloc):
     res2 = {}
     for x in f.read().splitlines():
         path, obj = x.split()
+        obj = int(obj)
         res1[obj] = path
         res2[path] = obj
     return res1, res2
