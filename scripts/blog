@@ -412,7 +412,9 @@ def output_log(loc, outputObjects, verbose):
         print "Empty index"
     for id, pub in s:
         fmt = "%%-%ds" % (maxname + 7)
-        pub = time.strftime("%A, %D", time.localtime(pub)) if pub != 0 else "Unpublished"
+
+        timefmt = "%A, %D" if not verbose else "%c" 
+        pub = time.strftime(timefmt, time.localtime(pub)) if pub != 0 else "Unpublished"
         if not verbose:
             if not outputObjects:
                 print fmt % names[id], pub
