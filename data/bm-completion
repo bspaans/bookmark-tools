@@ -8,6 +8,7 @@ bmcomplete()
     COMPREPLY=( $(compgen -W "${opts}" ${cur}) )
     return 0
 }
+complete -F bmcomplete bm
 complete -F bmcomplete cdbm
 complete -F bmcomplete lsbm
 
