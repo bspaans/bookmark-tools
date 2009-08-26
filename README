@@ -1,0 +1,60 @@
+================================================================================
+                                 Bookmark Tools
+================================================================================
+
+    Bookmark tools is a collection of useful shell commands and Python scripts
+    that aim to speed up navigation and organization in day to day work. 
+
+================================================================================
+
+    Commands
+
+    bm                  Directory bookmark utility
+    cdbm                Navigate to bookmark
+    cpbm                Copy to bookmark    
+    lnbm                Place link in bookmark
+    mvbm                Move files to bookmark
+    mkbm                Make new directory and bookmark
+    blog                A minimalist command line publishing tool 
+    fill-template       A simple template language
+    bm-match            Weighted file sorting 
+    bmsuggest           Suggest bookmarks for files
+    bmsuggest-move      Move files to suggested bookmark
+    bmsuggest-series    Move files to suggested bookmark and add a serie nr.
+    bm-add-series       Tries to add find a serie nr. in the file name
+
+
+================================================================================
+
+    Trouble-shooting
+
+    # bash: cdbm: command not found
+
+    First of all; make sure you have restarted your shell since installation.
+    Most of the commands will be installed in /usr/bin. Others are implemented
+    via shell functions and need to be sourced before they can be used. 
+    This is handled automatically by the setup script, which adds a source
+    directive to /etc/bash.bashrc which should make the functions available in
+    every login shell. This does mean you have to restart to make full use
+    of the tools.
+
+    When the cdbm command still can't be found, it's safe to assume that
+    /etc/bash.bashrc is not loaded by default on your platform. To work around
+    this issue you can source /usr/share/bm/bm.bash in your own ~/.bashrc file
+    by adding the line:
+
+        source /usr/share/bm.bash
+
+
+================================================================================
+
+    Resources
+
+    [1] http://www.bookmark-tools.com/
+        The official website
+    [2] http://groups.google.com/group/btools
+        A Google group for discussions.
+
+================================================================================
+
+================================================================================

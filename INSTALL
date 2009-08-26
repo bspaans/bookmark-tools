@@ -1,0 +1,7 @@
+Installation of btools is easy. Just run the command:
+
+   sudo python setup.py install
+
+..and everything will be taken care of. You have to restart any open shells to
+make use of the cdbm, cpbm, etc. commands, since they are implemented as shell
+functions (alternatively you could source /usr/share/bm/bm.bash yourself).
