@@ -30,12 +30,16 @@ class source_shell_script(install_data):
 
 
 setup(name="btools",
-      cmdclass={"install_data": source_shell_script},
-      version="0.99",
-      description="Command line bookmarking tools",
+      version="0.999",
+      description="Command line navigation and organization tools",
+      long_description=
+"""Bookmark tools is a collection of useful UNIX/Linux shell commands and Python scripts \
+that aim to speed up navigation and organization in day to day work. 
+"""
       author="Bart Spaans",
       author_email = "onderstekop@gmail.com",
-      license="BSD",
+      url="http://www.bookmark-tools.com/",
+      license="GPLv3",
       packages = ["btools", "btools.matching"],
       scripts = ["scripts/bm", "scripts/mkbm", "scripts/bm-match",
                  "scripts/bmsuggest", "scripts/bmsuggest-move", 
@@ -45,6 +49,7 @@ setup(name="btools",
                     ("/usr/share/bm/", ["data/bm.bash", "data/bm-config-template", "data/movies.patterns"]),
                     ("/usr/share/man/man1/", glob.glob("doc/man/*.1")),
                    ]
+      cmdclass={"install_data": source_shell_script},
 
      )
 
