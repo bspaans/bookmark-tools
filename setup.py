@@ -35,7 +35,7 @@ setup(name="btools",
       long_description=
 """Bookmark tools is a collection of useful UNIX/Linux shell commands and Python scripts \
 that aim to speed up navigation and organization in day to day work. 
-"""
+""",
       author="Bart Spaans",
       author_email = "onderstekop@gmail.com",
       url="http://www.bookmark-tools.com/",
@@ -48,7 +48,7 @@ that aim to speed up navigation and organization in day to day work.
       data_files = [("/etc/bash_completion.d/", ["data/bm-completion"]),
                     ("/usr/share/bm/", ["data/bm.bash", "data/bm-config-template", "data/movies.patterns"]),
                     ("/usr/share/man/man1/", glob.glob("doc/man/*.1")),
-                   ]
+                   ],
       cmdclass={"install_data": source_shell_script},
 
      )
