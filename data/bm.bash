@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
 function cdbm() {
     if [ -n "$1" ]; then
-        if [ `expr index "$1" -` == 1 ]; then
+        if [ `expr index "$1" -` -eq 1 ]; then
             bm "$@"
         else
             cd "`bm $1`";
@@ -27,7 +27,7 @@ function bmcmd {
 
     # Check for --help or -h parameter
     if [ -n $2 ]; then
-        if [ "$2" == "--help" ] || [ "$2" == "-h" ]; then
+        if [ "$2" = "--help" ] || [ "$2" = "-h" ]; then
             echo "$1bm - $1 extended with bookmark support (bmcmd)"
             echo "Copyright 2008, 2009, Bart Spaans"
             echo "Usage: $1bm [args] FILE BOOKMARK"
@@ -63,9 +63,9 @@ function bmcmd {
     for a in "$@";
     do
         if [ $i -gt 0 ]; then
-            if [ $i == "$(expr $# - 1)" ]; then
+            if [ $i -eq "$(expr $# - 1)" ]; then
                 BOOKMARK=$a
-            elif [ $i == "$(expr $# - 2)" ]; then
+            elif [ $i -eq "$(expr $# - 2)" ]; then
                 FILE=$a
             else
                 ARGS="$ARGS $a"
@@ -75,7 +75,7 @@ function bmcmd {
     done
 
 	BM="$(bm $BOOKMARK)"
-	if [ $? == 0 ]; then
+	if [ $? -eq 0 ]; then
 		$CMD $ARGS $FILE $BM
 	else
 		echo "Error: Unknown bookmark '$BOOKMARK'"
