@@ -1,4 +1,3 @@
-+ bash function script. To be sourced in .bashrc  or w/e
 + flatten script, to move files out of subdirectories into the parent tree
 + Add --blog-dir option to blog
 + bm-blog publish hook should copy html to git user directory and post e-mail to google group.
