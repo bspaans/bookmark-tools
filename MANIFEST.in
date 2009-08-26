@@ -4,3 +4,5 @@ recursive-include doc/man *
 include TODO
 include INSTALL
 include README
+include LICENSE
+include CHANGELOG
