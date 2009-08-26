@@ -15,20 +15,48 @@
     lnbm                Place link in bookmark
     mvbm                Move files to bookmark
     mkbm                Make new directory and bookmark
-    blog                A minimalist command line publishing tool 
+    blog                A minimalist and extendable publishing tool 
     fill-template       A simple template language
     bm-match            Weighted file sorting 
     bmsuggest           Suggest bookmarks for files
     bmsuggest-move      Move files to suggested bookmark
     bmsuggest-series    Move files to suggested bookmark and add a serie nr.
-    bm-add-series       Tries to add find a serie nr. in the file name
+    bm-add-series       Adds a serie nr. from the file name to a bookmark
+
+
+================================================================================
+
+    F.A.Q.
+
+
+    *** Where can I find out more about using the tools?
+
+    The man pages should provide you with information on the options and
+    arguments each of the tools accept. You can also browse these documents 
+    on-line, which might be more pleasent: http://www.bookmark-tools.com/
+    Other tutorials and tips should also become available on that website.
+
+
+    *** Can I use this with zsh?
+
+    Yes, all the tools and shell functions are completely functional and miss
+    only one thing that: tab completion. Adding this has currently a very low
+    priority for me, since I mostly use bash, but I'll gladly accept your
+    patches ;)
+
+
+    *** Is there a source repository I could follow?
+
+    Certainly, there is a git repository which you can clone with the following
+    command: `git clone git://www.bookmark-tools.com/btools.git btools`
+    It's also browsable on-line. See http://www.bookmark-tools.com/git/
 
 
 ================================================================================
 
     Trouble-shooting
 
-    # bash: cdbm: command not found
+    *** bash: cdbm: command not found
 
     First of all; make sure you have restarted your shell since installation.
     Most of the commands will be installed in /usr/bin. Others are implemented
@@ -41,9 +69,9 @@
     When the cdbm command still can't be found, it's safe to assume that
     /etc/bash.bashrc is not loaded by default on your platform. To work around
     this issue you can source /usr/share/bm/bm.bash in your own ~/.bashrc file
-    by adding the line:
+    (or equivalent) by adding the line:
 
-        source /usr/share/bm.bash
+        source /usr/share/bm/bm.bash
 
 
 ================================================================================
@@ -53,8 +81,34 @@
     [1] http://www.bookmark-tools.com/
         The official website
     [2] http://groups.google.com/group/btools
-        A Google group for discussions.
+        A Google group for discussions/bug reports/commit logs.
 
 ================================================================================
+
+    PLUGS!
+
+    If you like music and you like Python, why not check out mingus? It's a
+    general purpose music library with a small group of contributors that will 
+    make your life so much nicer. You're gonna love your notes. 
+    http://mingus.googlecode.com/
+
+================================================================================
+
+    Bookmark Tools, navigation and organization tools
+    Copyright (C) 2009, Bart Spaans <bart@bookmark-tools.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 ================================================================================
