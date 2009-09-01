@@ -33,7 +33,7 @@ setup(name="btools",
       version="0.999",
       description="Command line navigation and organization tools",
       long_description=
-"""Bookmark tools is a collection of useful UNIX/Linux shell commands and Python scripts \
+"""Bookmark tools is a collection of useful shell commands and Python scripts \
 that aim to speed up navigation and organization in day to day work. 
 """,
       author="Bart Spaans",

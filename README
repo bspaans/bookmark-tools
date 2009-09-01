@@ -11,6 +11,7 @@
 
     bm                  Directory bookmark utility
     cdbm                Navigate to bookmark
+    lsbm                List files in bookmark
     cpbm                Copy to bookmark    
     lnbm                Place link in bookmark
     mvbm                Move files to bookmark
