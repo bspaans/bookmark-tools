@@ -1,0 +1,258 @@
+#!/usr/bin/env python
+
+import os
+from os import path
+from os import environ as env
+from PIL import Image
+import ImageFont
+import ImageDraw
+import platform
+import tempfile
+import subprocess
+
+import btools.common as common
+
+PS1="\u:\w$ "
+LINEHEIGHT=13
+CHARWIDTH=6
+DELAY=200
+LOOP=0
+INPUT=""
+OUTPUT="animated.gif"
+TMP=""
+FONT=""
+FONTSIZE=12
+WIDTH=0
+HEIGHT=0
+OFFSETX, OFFSETY = 10, 5
+
+
+
+name="script2gif"
+description="Makes an animated gif out of shell commands and standard output"
+long_description="""This tool executes the commands given via the --input switch, or from\
+ standard input, and saves the standard output produced by the shell \
+commands. It then goes on to create GIFs from the process and combines them all \
+into one animated gif using ImageMagick's convert tool. The result can be useful \
+for demonstrations and tutorials."""
+usage = [ "[OPTIONS]" ]
+
+commands = [
+        (["-cw", "--charwidth"], "INTEGER", "Set the width of character. Default is 6"),
+        (["-d", "--delay"], "INTEGER",
+         "Set the delay between succesive images. Default is 200."),
+        (["-f", "--font"], "FILE", "The font to use for the text output."),
+        (["--help"], "", "Help screen"),
+        (["-h", "--height"], "INTEGER", "Set the height of the image."),
+        (["-i", "--input"], "FILE",
+         "Set the input file. Default is - for standard input."),
+        (["-l", "--loop"], "INTEGER",
+         "Set the number of times the animation should be repeated. Default is 0 "\
+         "for an infinite number of times."),
+        (["-lh", "--lineheight"], "INTEGER",
+         "Set the height of a line. Default is 15."),
+        (["-o", "--output"], "FILE",
+         "Set the file to output to. Default is 'animated.gif'."),
+        (["-p", "--ps1"], "STRING",
+         "Set the command prompt text. \$, \h, \u and \w are all supported. Default is '\u@\h:\w\$ '"),
+        (["-s", "--fontsize"], "INTEGER", "Set the size of the font. Only used together with --font."),
+        (["-w", "--width"], "INTEGER", "Set the width of the image."),
+        (["-x", "--offsetx"], "INTEGER", 
+         "Set the x offset of the text. Default is 10."),
+        (["-y", "--offsety"], "INTEGER", 
+         "Set the y offset of the text. Default is 5."),
+
+        ]
+examples = [("-i commands.txt -o output.gif", "Executes the commands in "
+             "commands.txt line by line and saves the animation in output.gif"),
+            ("-f font.ttf -s 14", "Reads commands from stdin and produces output "
+            "using the given font in 'animated.gif'.")]
+
+def get_PS1():
+    p = PS1.replace("\u", env["USER"])
+    p = p.replace("\w", os.getcwd().replace(env["HOME"], "~"))
+    p = p.replace("\h", platform.uname()[1])
+    p = p.replace("\$", "$")
+    return p
+
+def get_cmd_handler():
+    if INPUT in ["", "-"]:
+        return os.sys.stdin
+    return open(INPUT, "r")
+
+
+def exec_commands():
+    cmds = get_cmd_handler().read().splitlines()
+
+    res = []
+    for c in cmds:
+        stdout, _ = subprocess.Popen(c, shell=True, stdout=subprocess.PIPE).communicate()
+        res.append([get_PS1(), c] +  stdout.splitlines())
+        print os.getcwd(), env["PWD"]
+    return res
+
+
+def estimate_size(results):
+    width, height = 0, 0
+    for r in results:
+        ps, com = r[0], r[1]
+        result = r[2:]
+        if len(ps) + len(com) > width:
+            width = len(ps) + len(com) 
+
+        for re in result:
+            if len(re) > width:
+                width = len(re)
+
+        height += (len(result) + 1) * LINEHEIGHT
+    width, height = OFFSETX * 2 + width * CHARWIDTH, OFFSETY * 2 + height + LINEHEIGHT
+   
+    width = width if WIDTH == 0 else WIDTH
+    height = height if HEIGHT == 0 else HEIGHT
+    return width, height
+
+
+def write_image(id, size, cmds, font):
+    im = get_image(size)
+    draw = ImageDraw.Draw(im)
+
+    hoffset = OFFSETY
+    for cmd in cmds:
+        ps1, c = cmd[0], cmd[1]
+        res = cmd[2:]
+        
+        draw.text((OFFSETX,hoffset), ps1+c, font=font, fill=0)
+        hoffset += LINEHEIGHT
+
+        i = 1
+        for i, r in enumerate(res):
+            draw.text((OFFSETX,hoffset), r, font=font, fill=128)
+            hoffset += LINEHEIGHT
+
+
+    im.save("%s/test%d.gif" % (TMP,id))
+
+
+def get_image(size):
+    return Image.new("L", size, 255)
+
+
+def animate():
+    cmds = exec_commands()
+    size = estimate_size(cmds)
+    if FONT == "":
+        font = ImageFont.load_default()
+    else:
+        if FONT[-3:].lower() not in ["ttf", "otf"]:
+            font = ImageFont.load(FONT)
+        else:
+            font = ImageFont.truetype(FONT, FONTSIZE)
+
+    r = []
+    id = 0
+    write_image(id, size, [], font)
+    for c in cmds:
+        write_image(id + 1, size, r + [[c[0], ""]], font)
+        write_image(id + 2, size, r + [[c[0], c[1]]], font)
+        r.append(c)
+        write_image(id + 3, size, r, font)
+        id += 3
+
+    r = "convert -loop %d -delay %d " % (LOOP, DELAY)
+    for i in range(0, id + 1):
+        r += "%s/test%d.gif " % (TMP, i)
+        subprocess.Popen("convert %s/test%d.gif %s/test%d.gif" % (TMP, i, TMP, i),
+                         shell=True).wait()
+
+    subprocess.Popen(r + OUTPUT, shell=True).wait()
+    subprocess.Popen("rm -rf %s" % TMP, shell=True)
+
+def cli_help():
+    common.cli_module_help(globals())
+
+def command_line_interface():
+    global TMP, DELAY, LOOP, PS1, CHARWIDTH, LINEHEIGHT, INPUT, OUTPUT, FONT, \
+            WIDTH, HEIGHT, FONTSIZE, OFFSETX, OFFSETY
+           
+
+    args = os.sys.argv[1:]
+    
+    argpending = False
+    cmd = ""
+    conf = {"delay": 200,
+            "loop": 0,
+            "ps1": "\u@\h:\w\$ ",
+            "charwidth": 6,
+            "lineheight": 15,
+            "input": "-",
+            "output": "animated.gif",
+            "font": "",
+            "fontsize": 12,
+            "width": 0,
+            "height": 0,
+            "offsetx": 10,
+            "offsety": 5,
+           }
+
+    for a in args:
+        if not argpending:
+            if a in ["-cw", "--charwidth"]:
+                cmd="charwidth"
+            elif a in ["-d", "--delay"]:
+                cmd = "delay"
+            elif a in ["-f", "--font"]:
+                cmd="font"
+            elif a in ["--help"]:
+                return cli_help()
+            elif a in ["-h", "--height"]:
+                cmd="height"
+            elif a in ["-i", "--input"]:
+                cmd="input"
+            elif a in ["-l", "--loop"]:
+                cmd = "loop"
+            elif a in ["-lh", "--lineheight"]:
+                cmd="lineheight"
+            elif a in ["-o", "--output"]:
+                cmd="output"
+            elif a in ["-p", "--ps1"]:
+                cmd="ps1"
+            elif a in ["-s", "--fontsize"]:
+                cmd="fontsize"
+            elif a in ["-w", "--width"]:
+                cmd="width"
+            elif a in ["-x", "--offsetx"]:
+                cmd="offsetx"
+            elif a in ["-y", "--offsety"]:
+                cmd="offsety"
+            else:
+                common.error("Unknown options '%s'\n" % a)
+            argpending = True
+        else:
+            if cmd != "":
+                conf[cmd] = a
+            else:
+                print "Unknown command"
+            cmd = ""
+            argpending = False
+    if argpending:
+        common.error("Expecting argument for option '%s'" % cmd)
+
+    TMP= tempfile.mkdtemp()
+    DELAY=int(conf["delay"])
+    LOOP=int(conf["loop"])
+    CHARWIDTH=int(conf["charwidth"])
+    LINEHEIGHT=int(conf["lineheight"])
+    WIDTH=int(conf["width"])
+    HEIGHT=int(conf["height"])
+    OFFSETX=int(conf["offsetx"])
+    OFFSETY=int(conf["offsety"])
+    PS1=conf["ps1"]
+    OUTPUT=conf["output"]
+    INPUT=conf["input"]
+    FONT=conf["font"]
+    FONTSIZE=int(conf["fontsize"])
+    animate()
+
+
+if __name__ == "__main__":
+    command_line_interface()

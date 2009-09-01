@@ -30,7 +30,7 @@ class source_shell_script(install_data):
 
 
 setup(name="btools",
-      version="0.999",
+      version="0.9999",
       description="Command line navigation and organization tools",
       long_description=
 """Bookmark tools is a collection of useful shell commands and Python scripts \
@@ -44,7 +44,8 @@ that aim to speed up navigation and organization in day to day work.
       scripts = ["scripts/bm", "scripts/mkbm", "scripts/bm-match",
                  "scripts/bmsuggest", "scripts/bmsuggest-move", 
                  "scripts/bmsuggest-series", "scripts/bm-add-series", 
-                 "scripts/mvbm", "scripts/blog", "scripts/fill-template"],
+                 "scripts/mvbm", "scripts/blog", "scripts/fill-template",
+                 "scripts/script2gif"],
       data_files = [("/etc/bash_completion.d/", ["data/bm-completion"]),
                     ("/usr/share/bm/", ["data/bm.bash", "data/bm-config-template", "data/movies.patterns"]),
                     ("/usr/share/man/man1/", glob.glob("doc/man/*.1")),
