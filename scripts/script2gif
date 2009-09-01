@@ -54,7 +54,7 @@ commands = [
         (["-o", "--output"], "FILE",
          "Set the file to output to. Default is 'animated.gif'."),
         (["-p", "--ps1"], "STRING",
-         "Set the command prompt text. \$, \h, \u and \w are all supported. Default is '\u@\h:\w\$ '"),
+         "Set the command prompt text. \\$, \\h, \\u and \\w are all supported. Default is '\\u@\\h:\\w\\$ '"),
         (["-s", "--fontsize"], "INTEGER", "Set the size of the font. Only used together with --font."),
         (["-w", "--width"], "INTEGER", "Set the width of the image."),
         (["-x", "--offsetx"], "INTEGER", 

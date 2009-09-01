@@ -1,14 +1,14 @@
 <!-- Creator     : groff version 1.18.1 -->
-<!-- CreationDate: Wed Sep  2 00:50:01 2009 -->
+<!-- CreationDate: Wed Sep  2 00:50:02 2009 -->
 <html>
 <head>
 <meta name="generator" content="groff -Thtml, see www.gnu.org">
 <meta name="Content-Style" content="text/css">
-<title>bm</title>
+<title>script2gif</title>
 </head>
 <body>
 
-<h1 align=center>bm</h1>
+<h1 align=center>script2gif</h1>
 <a href="#NAME">NAME</a><br>
 <a href="#SYNOPSIS">SYNOPSIS</a><br>
 <a href="#DESCRIPTION">DESCRIPTION</a><br>
@@ -26,7 +26,8 @@
 <tr valign="top" align="left">
 <td width="10%"></td>
 <td width="89%">
-<p>bm \- Command line bookmarking tool</p>
+<p>script2gif \- Makes an animated gif out of shell commands
+and standard output</p>
 </td>
 </table>
 <a name="SYNOPSIS"></a>
@@ -37,11 +38,7 @@
 <tr valign="top" align="left">
 <td width="10%"></td>
 <td width="89%">
-<p><b>bm</b> [INDEX] Return entry at index<b><br>
-bm</b> [TAG] Return entry with TAG<b><br>
-bm</b> [TAG] --exec [COMMAND] Executes COMMAND. Use {} to
-get bookmark.<b><br>
-bm</b> [OPTION] [ARGUMENTS]</p>
+<p><b>script2gif</b> [OPTIONS]</p>
 </td>
 </table>
 <a name="DESCRIPTION"></a>
@@ -52,7 +49,12 @@ bm</b> [OPTION] [ARGUMENTS]</p>
 <tr valign="top" align="left">
 <td width="10%"></td>
 <td width="89%">
-<p>Command line bookmarking tool</p>
+<p>This tool executes the commands given via the --input
+switch, or from standard input, and saves the standard
+output produced by the shell commands. It then goes on to
+create GIFs from the process and combines them all into one
+animated gif using ImageMagick&rsquo;s convert tool. The
+result can be useful for demonstrations and tutorials.</p>
 </td>
 </table>
 <a name="OPTIONS"></a>
@@ -63,7 +65,7 @@ bm</b> [OPTION] [ARGUMENTS]</p>
 <tr valign="top" align="left">
 <td width="10%"></td>
 <td width="89%">
-<p>-a [DIRECTORY] [TAG] --add [DIRECTORY] [TAG]</p></td>
+<p>-cw INTEGER --charwidth INTEGER</p></td>
 </table>
 <!-- INDENTATION -->
 <table width="100%" border=0 rules="none" frame="void"
@@ -71,8 +73,7 @@ bm</b> [OPTION] [ARGUMENTS]</p>
 <tr valign="top" align="left">
 <td width="21%"></td>
 <td width="77%">
-<p>Adds DIRECTORY under TAG. If no directory is given this
-command is the same as --add-current.</p>
+<p>Set the width of character. Default is 6</p>
 </td>
 </table>
 <!-- INDENTATION -->
@@ -81,7 +82,7 @@ command is the same as --add-current.</p>
 <tr valign="top" align="left">
 <td width="10%"></td>
 <td width="89%">
-<p>--add-current [TAG] --current [TAG]</p></td>
+<p>-d INTEGER --delay INTEGER</p></td>
 </table>
 <!-- INDENTATION -->
 <table width="100%" border=0 rules="none" frame="void"
@@ -89,9 +90,8 @@ command is the same as --add-current.</p>
 <tr valign="top" align="left">
 <td width="21%"></td>
 <td width="77%">
-<p>Adds the current directory. If no arguments are given the
-tag will be set to the top level directory
-automatically.</p>
+<p>Set the delay between succesive images. Default is
+200.</p>
 </td>
 </table>
 <!-- INDENTATION -->
@@ -100,7 +100,7 @@ automatically.</p>
 <tr valign="top" align="left">
 <td width="10%"></td>
 <td width="89%">
-<p>-c --clear</p></td>
+<p>-f FILE --font FILE</p></td>
 </table>
 <!-- INDENTATION -->
 <table width="100%" border=0 rules="none" frame="void"
@@ -108,183 +108,7 @@ automatically.</p>
 <tr valign="top" align="left">
 <td width="21%"></td>
 <td width="77%">
-<p>Clear the index.</p>
-</td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="10%"></td>
-<td width="89%">
-<p>-d TAG -r TAG --delete TAG --remove TAG</p></td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="21%"></td>
-<td width="77%">
-<p>Remove entry matching tag from the index. If no TAG is
-given, the top level directory will be used.</p>
-</td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="10%"></td>
-<td width="89%">
-<p>-da TAG -ra TAG --delete-all-matching TAG
---remove-all-matching TAG</p></td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="21%"></td>
-<td width="77%">
-<p>Remove all entries matching TAG.</p>
-</td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="10%"></td>
-<td width="89%">
-<p>-e [FILE] --export [FILE]</p></td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="21%"></td>
-<td width="77%">
-<p>Writes a shell script that can be used to reproduce the
-bookmarks and directories. If FILE is not given, the script
-will be written to stdout.</p>
-</td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="10%"></td>
-<td width="89%">
-<p>-h [COMMANDS] --help [COMMANDS]</p></td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="21%"></td>
-<td width="77%">
-<p>Output help. If COMMANDS are given, output only the help
-for that command</p>
-</td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="10%"></td>
-<td width="89%">
-<p>-l --list</p></td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="21%"></td>
-<td width="77%">
-<p>List the whole index. Default action.</p>
-</td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="10%"></td>
-<td width="89%">
-<p>-m TAG --match TAG</p></td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="21%"></td>
-<td width="77%">
-<p>Output all entries that match TAG on prefix.</p>
-</td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="10%"></td>
-<td width="89%">
-<p>-s [DEST_DIR] --symlink [DEST_DIR]</p></td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="21%"></td>
-<td width="77%">
-<p>Turns bookmarks into symbolic links. Makes them in the
-current directory if no DEST_DIR is given.</p>
-</td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="10%"></td>
-<td width="89%">
-<p>-sd --sort-dirs</p></td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="21%"></td>
-<td width="77%">
-<p>Sort index on directory and save</p>
-</td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="10%"></td>
-<td width="89%">
-<p>-st --sort-tags</p></td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="21%"></td>
-<td width="77%">
-<p>Sort index on tags and save.</p>
-</td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="10%"></td>
-<td width="89%">
-<p>-v --version</p></td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="21%"></td>
-<td width="77%">
-<p>Output version information</p>
+<p>The font to use for the text output.</p>
 </td>
 </table>
 <!-- TABS -->
@@ -292,16 +116,190 @@ current directory if no DEST_DIR is given.</p>
        cols="5" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
 <td width="11%"></td>
-<td width="2%">
+<td width="8%">
 
-<p>-?</p>
+<p>--help</p>
 </td>
 <td width="13%"></td>
-<td width="54%">
+<td width="16%">
 
-<p>Output location of the bookmark file.</p>
+<p>Help screen</p>
 </td>
-<td width="17%">
+<td width="49%">
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>-h INTEGER --height INTEGER</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Set the height of the image.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>-i FILE --input FILE</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Set the input file. Default is - for standard input.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>-l INTEGER --loop INTEGER</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Set the number of times the animation should be repeated.
+Default is 0 for an infinite number of times.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>-lh INTEGER --lineheight INTEGER</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Set the height of a line. Default is 15.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>-o FILE --output FILE</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Set the file to output to. Default is
+&rsquo;animated.gif&rsquo;.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>-p STRING --ps1 STRING</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Set the command prompt text. \$, \h, \u and \w are all
+supported. Default is &rsquo;\u@\h:\w\$ &rsquo;</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>-s INTEGER --fontsize INTEGER</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Set the size of the font. Only used together with
+--font.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>-w INTEGER --width INTEGER</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Set the width of the image.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>-x INTEGER --offsetx INTEGER</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Set the x offset of the text. Default is 10.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>-y INTEGER --offsety INTEGER</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Set the y offset of the text. Default is 5.</p>
 </td>
 </table>
 <a name="EXAMPLES"></a>
@@ -312,7 +310,7 @@ current directory if no DEST_DIR is given.</p>
 <tr valign="top" align="left">
 <td width="10%"></td>
 <td width="89%">
-<p>bm -a test</p></td>
+<p>script2gif -i commands.txt -o output.gif</p></td>
 </table>
 <!-- INDENTATION -->
 <table width="100%" border=0 rules="none" frame="void"
@@ -320,7 +318,8 @@ current directory if no DEST_DIR is given.</p>
 <tr valign="top" align="left">
 <td width="21%"></td>
 <td width="77%">
-<p>Adds current directory under name test.</p>
+<p>Executes the commands in commands.txt line by line and
+saves the animation in output.gif</p>
 </td>
 </table>
 <!-- INDENTATION -->
@@ -329,7 +328,7 @@ current directory if no DEST_DIR is given.</p>
 <tr valign="top" align="left">
 <td width="10%"></td>
 <td width="89%">
-<p>bm -a ../ test2</p></td>
+<p>script2gif -f font.ttf -s 14</p></td>
 </table>
 <!-- INDENTATION -->
 <table width="100%" border=0 rules="none" frame="void"
@@ -337,79 +336,8 @@ current directory if no DEST_DIR is given.</p>
 <tr valign="top" align="left">
 <td width="21%"></td>
 <td width="77%">
-<p>Adds parent directory under test2.</p>
-</td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="10%"></td>
-<td width="89%">
-<p>bm test</p></td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="21%"></td>
-<td width="77%">
-<p>Returns directory tagged test.</p>
-</td>
-</table>
-<!-- TABS -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="3" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="11%"></td>
-<td width="5%">
-
-<p>bm 0</p>
-</td>
-<td width="82%">
-</td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="21%"></td>
-<td width="77%">
-<p>Jump to the first entry.</p>
-</td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="10%"></td>
-<td width="89%">
-<p>bm test --exec ls -al {}</p></td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="21%"></td>
-<td width="77%">
-<p>Finds directory tagged test, and lists its contents.</p>
-</td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="10%"></td>
-<td width="89%">
-<p>bm -m c</p></td>
-</table>
-<!-- INDENTATION -->
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="21%"></td>
-<td width="77%">
-<p>Outputs all the entries beginning with a c.</p>
+<p>Reads commands from stdin and produces output using the
+given font in &rsquo;animated.gif&rsquo;.</p>
 </td>
 </table>
 <a name="SEE ALSO"></a>

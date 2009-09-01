@@ -52,6 +52,8 @@ def fill_template(mod_dict, template):
     options = prepare_options(mod_dict["commands"])
     examples = prepare_examples(prog, mod_dict["examples"])
 
+   
+
     t = time.localtime()
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     date = months[t.tm_mon - 1] + " " + str(t.tm_year)
@@ -63,10 +65,11 @@ def fill_template(mod_dict, template):
 
     for r in d:
         template = template.replace("%" + r + "%", str(d[r]))
-    return template
+    return template.replace("\\", "\\\\")
 
 def build_documentation(dest = "."):
-    files = [ "bm", "bm-match", "mkbm", "mvbm",  "bmsuggest", "bm-add-series", "blog", "fill-template"]
+    files = [ "bm", "bm-match", "mkbm", "mvbm",  "bmsuggest", "bm-add-series", 
+             "blog", "fill-template", "script2gif"]
 
     t = open("man.template", "r")
     template = t.read()

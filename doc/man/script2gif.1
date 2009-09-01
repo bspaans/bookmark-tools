@@ -1,0 +1,69 @@
+.TH script2gif 1 "Sep 2009" "btools collection" "User Commands"
+.SH NAME
+script2gif \\- Makes an animated gif out of shell commands and standard output
+.SH SYNOPSIS
+.B script2gif
+[OPTIONS]
+.br
+
+.SH DESCRIPTION
+This tool executes the commands given via the --input switch, or from standard input, and saves the standard output produced by the shell commands. It then goes on to create GIFs from the process and combines them all into one animated gif using ImageMagick's convert tool. The result can be useful for demonstrations and tutorials.
+.SH OPTIONS
+.TP
+-cw INTEGER  --charwidth INTEGER  
+Set the width of character. Default is 6
+.TP
+-d INTEGER  --delay INTEGER  
+Set the delay between succesive images. Default is 200.
+.TP
+-f FILE  --font FILE  
+The font to use for the text output.
+.TP
+--help   
+Help screen
+.TP
+-h INTEGER  --height INTEGER  
+Set the height of the image.
+.TP
+-i FILE  --input FILE  
+Set the input file. Default is - for standard input.
+.TP
+-l INTEGER  --loop INTEGER  
+Set the number of times the animation should be repeated. Default is 0 for an infinite number of times.
+.TP
+-lh INTEGER  --lineheight INTEGER  
+Set the height of a line. Default is 15.
+.TP
+-o FILE  --output FILE  
+Set the file to output to. Default is 'animated.gif'.
+.TP
+-p STRING  --ps1 STRING  
+Set the command prompt text. \\$, \\h, \\u and \\w are all supported. Default is '\\u@\\h:\\w\\$ '
+.TP
+-s INTEGER  --fontsize INTEGER  
+Set the size of the font. Only used together with --font.
+.TP
+-w INTEGER  --width INTEGER  
+Set the width of the image.
+.TP
+-x INTEGER  --offsetx INTEGER  
+Set the x offset of the text. Default is 10.
+.TP
+-y INTEGER  --offsety INTEGER  
+Set the y offset of the text. Default is 5.
+
+." Use .TP to indent.
+.SH EXAMPLES
+.TP
+script2gif -i commands.txt -o output.gif
+.br
+Executes the commands in commands.txt line by line and saves the animation in output.gif
+.TP
+script2gif -f font.ttf -s 14
+.br
+Reads commands from stdin and produces output using the given font in 'animated.gif'.
+
+.SH SEE ALSO
+cdbm(1), mkbm(1), btools(5)
+.SH AUTHOR
+Bart Spaans (bart@bookmark-tools.com)
