@@ -65,7 +65,11 @@ def fill_template(mod_dict, template):
 
     for r in d:
         template = template.replace("%" + r + "%", str(d[r]))
-    return template.replace("\\", "\\\\")
+
+    # Hackety hack
+    template = template.replace("\\", "\\\\")
+    template = template.replace("\\\\-", "\\-")
+    return template
 
 def build_documentation(dest = "."):
     files = [ "bm", "bm-match", "mkbm", "mvbm",  "bmsuggest", "bm-add-series", 
