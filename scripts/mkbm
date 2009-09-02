@@ -10,6 +10,9 @@ import subprocess
 
 name = "mkbm"
 description = "Make new bookmarks and directories"
+long_description = """mkbm creates a new directory using mkdir and adds it automatically to the bookmark index. \
+A parent argument can also be set to specify in which directory or bookmark the new directory should be made. \
+The parent is by default set to the current working directory."""
 
 commands = [(["-h", "--help"], "", "Help screen"),
             (["-p", "--parent"], "(DIRECTORY|BOOKMARK)",
@@ -37,23 +40,25 @@ def make_bookmark(bookmark, parent):
             dest = os.path.realpath(p)
         else:
             d = pybookmark.get_bookmark(p, known)
+            dest = ""
             if len(d) == 0:
-                print "Error: no matches for parent bookmark:", p
-                sys.exit(1)
+                common.error("No matches for parent bookmark: %s" % p)
             elif len(d) == 1:
                 dest = d[0][1]
             else:
-                #warning what to do?
-                print "Error: Parent bookmark matches multiple directories"
-                sys.exit(1)
+                for b, des in d:
+                    if b == p:
+                        dest = des
+                if dest == "":
+                    common.error("Parent bookmark matches multiple directories")
     dest = os.path.join(dest, bm)
     cmd = "mkdir -vp \"%s\"" % dest
     ret = subprocess.Popen(cmd, shell = True).wait()
     if ret == 0:
         pybookmark.add_bookmark(pybookmark.get_conf_location(), bm, dest)
-        print "Added new bookmark %s to %s." % (bm, dest)
+        common.info("Added new bookmark %s to %s." % (bm, dest))
     else:
-        print "Error: making bookmark directory failed."
+        common.error("Making bookmark directory failed.")
 
 
 def cli_help():
@@ -85,8 +90,7 @@ def command_line_interface():
             parent.append(x)
 
     if inparent and parent == []:
-        print "Error: missing parent argument"
-        sys.exit(1)
+        common.error("Missing parent argument")
     make_bookmark(bm, parent)
 
 
