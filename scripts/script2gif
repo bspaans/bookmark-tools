@@ -15,8 +15,8 @@ import btools.common as common
 PS1="\u:\w$ "
 LINEHEIGHT=13
 CHARWIDTH=6
-DELAY=200
-LOOP=0
+DELAY=100
+LOOP=1
 INPUT=""
 OUTPUT="animated.gif"
 TMP=""
@@ -26,6 +26,7 @@ WIDTH=0
 HEIGHT=0
 OFFSETX, OFFSETY = 10, 5
 
+DEFAULT_FONT = "/usr/share/fonts/truetype/ttf-inconsolata/Inconsolata.otf"
 
 
 name="script2gif"
@@ -40,14 +41,14 @@ usage = [ "[OPTIONS]" ]
 commands = [
         (["-cw", "--charwidth"], "INTEGER", "Set the width of character. Default is 6"),
         (["-d", "--delay"], "INTEGER",
-         "Set the delay between succesive images. Default is 200."),
+         "Set the delay between succesive images. Default is 100."),
         (["-f", "--font"], "FILE", "The font to use for the text output."),
         (["--help"], "", "Help screen"),
         (["-h", "--height"], "INTEGER", "Set the height of the image."),
         (["-i", "--input"], "FILE",
          "Set the input file. Default is - for standard input."),
         (["-l", "--loop"], "INTEGER",
-         "Set the number of times the animation should be repeated. Default is 0 "\
+         "Set the number of times the animation should be repeated. Default is 1. Use 0 "\
          "for an infinite number of times."),
         (["-lh", "--lineheight"], "INTEGER",
          "Set the height of a line. Default is 15."),
@@ -150,19 +151,21 @@ def animate():
 
     r = []
     id = 0
-    write_image(id, size, [], font)
+    cid = 0
     for c in cmds:
         write_image(id + 1, size, r + [[c[0], ""]], font)
         write_image(id + 2, size, r + [[c[0], c[1]]], font)
+        subprocess.Popen("convert -delay %d %s/test%d.gif %s/test%d.gif %s/com%d.gif" % (DELAY / 4, TMP, id + 1, TMP, id + 2, TMP, cid), shell = True).wait()
+
         r.append(c)
         write_image(id + 3, size, r, font)
+        subprocess.Popen("convert -delay %d %s/com%d.gif %s/test%d.gif %s/command%d.gif" % (DELAY / 2, TMP, cid, TMP, id + 3, TMP, cid), shell = True).wait()
         id += 3
+        cid += 1
 
     r = "convert -loop %d -delay %d " % (LOOP, DELAY)
-    for i in range(0, id + 1):
-        r += "%s/test%d.gif " % (TMP, i)
-        subprocess.Popen("convert %s/test%d.gif %s/test%d.gif" % (TMP, i, TMP, i),
-                         shell=True).wait()
+    for i in range(0, cid):
+        r += "%s/command%d.gif " % (TMP, i)
 
     subprocess.Popen(r + OUTPUT, shell=True).wait()
     subprocess.Popen("rm -rf %s" % TMP, shell=True)
@@ -179,8 +182,8 @@ def command_line_interface():
     
     argpending = False
     cmd = ""
-    conf = {"delay": 200,
-            "loop": 0,
+    conf = {"delay": 100,
+            "loop": 1,
             "ps1": "\u@\h:\w\$ ",
             "charwidth": 6,
             "lineheight": 15,
@@ -250,6 +253,8 @@ def command_line_interface():
     OUTPUT=conf["output"]
     INPUT=conf["input"]
     FONT=conf["font"]
+    if FONT == "":
+        FONT = DEFAULT_FONT if path.exists(DEFAULT_FONT) else ""
     FONTSIZE=int(conf["fontsize"])
     animate()
 
