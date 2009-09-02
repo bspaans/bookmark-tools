@@ -18,6 +18,7 @@
     mkbm                Make new directory and bookmark
     blog                A minimalist and extendable publishing tool 
     fill-template       A simple template language
+    script2gif          Makes an animated gif out of shell commands and stdout
     bm-match            Weighted file sorting 
     bmsuggest           Suggest bookmarks for files
     bmsuggest-move      Move files to suggested bookmark
