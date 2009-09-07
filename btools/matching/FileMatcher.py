@@ -126,7 +126,7 @@ class FileMatcher:
                 e = e.replace("%file%", pipes.quote(file))
                 e = e.replace("%bookmark%", pipes.quote(x[0]))
                 e = e.replace("%match%", pipes.quote(dest))
-                e = " ".join(map(pipes.quote, common.replace_variables(e, self.variables).split() ))
+                e = common.replace_variables(e, self.variables)
                 common.info("Executing: %s" % e)
                 if self.interactive:
                     t = common.theme

@@ -134,7 +134,7 @@ class ExpressionParser(Parser):
     def get_match_function(self, slist, target):
         s = " ".join(slist)
         def match(file, variables):
-            c = " ".join(map(pipes.quote, common.replace_variables(s.replace("%file%", file), variables).split()))
+            c = common.replace_variables(s.replace("%file%", pipes.quote(file)), variables)
             try: return subprocess.Popen(c, shell = True).wait() == 0
             except: pass
             return False
