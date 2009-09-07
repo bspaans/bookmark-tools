@@ -17,9 +17,10 @@ from btools.matching.FileMatcher import FileMatcher
 
 name = "bm-match"
 description = "Weighted bookmark matching"
-commands = [ (["-h", "--help"], "", 
+commands = [(["-a", "--ask"], "FILES", "Ask if the match is right"),
+            (["-h", "--help"], "", 
             "This help screen."),
-            (["-i", "--inspect"], "FILE", 
+            (["-i", "--inspect"], "FILES", 
             "Outputs weighted table of matching destination bookmarks."),
             (["-n", "--new"], "",
             "Initialize new config file from template."),
@@ -46,12 +47,17 @@ def output_weighted_tabled(table):
 
 
 
+def inspect(fs, file):
+    if os.path.isdir(file):
+        map(lambda a: inspect(fs, os.path.join(file, a)), os.listdir(file))
+    else:
+        print "===", file, "==="
+        output_weighted_tabled(fs.get_weighted_table(file))
 
 def cli_inspect_file(args):
     if args == []:
         return
-    fs = get_FileSorter()
-    output_weighted_tabled(fs.get_weighted_table(args[0]))
+    map(lambda a: inspect(get_FileSorter(), a), args)
 
 def cli_new_config_file(forcenew = False):
     if os.path.exists(".bm-match"):
@@ -77,6 +83,10 @@ def cli_match(args):
     f = get_FileSorter()
     map(f.match, args)
 
+def cli_ask(args):
+    f = get_FileSorter()
+    f.interactive = True
+    map(f.match, args)
 
 
 def command_line_interface():
@@ -85,7 +95,9 @@ def command_line_interface():
     command = str.lower(sys.argv[1])
     args = sys.argv[2:]
 
-    if command in ["-i", "--inspect"]:
+    if command in ["-a", "--ask"]:
+        cli_ask(args)
+    elif command in ["-i", "--inspect"]:
         cli_inspect_file(args)
     elif command in ["-h", "--help"]:
         cli_output_help(sys.argv)

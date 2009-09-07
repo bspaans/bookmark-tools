@@ -17,6 +17,7 @@ class FileMatcher:
         self.variables = c.variables
         self.rules = c.rules
         self.bookmarks = c.bookmarks
+        self.interactive = False
 
 
     def strict(self):
@@ -59,7 +60,7 @@ class FileMatcher:
         ftable = self.get_weighted_table(file)
         if len(ftable) == 0:
             if not matching_dir:
-                self.exec_unmatched(file, depth = depth)
+                self.exec_unmatched(file)
             else:
                 return False
         elif self.strict():
@@ -127,6 +128,27 @@ class FileMatcher:
                 e = e.replace("%match%", pipes.quote(dest))
                 e = " ".join(map(pipes.quote, common.replace_variables(e, self.variables).split() ))
                 common.info("Executing: %s" % e)
+                if self.interactive:
+                    t = common.theme
+                    no = common.NOCOLOR
+                    print
+                    print "=" * 80
+                    print
+                    print "%s%s%s %s===>%s %s%s%s" % (t[2], file, no, t[1], no,
+                                                      t[3],  dest, no)
+                    print "%sMatched on %s%s" % (t[1], x[0], no)
+                    print "%sThe following command is about to be executed%s" % (t[1], no)
+                    print
+                    print "   ", e
+                    print
+                    proceed= raw_input("Proceed? [Y/n/q] ").lower()
+                    if proceed == "": proceed = "y"
+                    print
+                    if proceed[0] == "n":
+                        return
+                    elif proceed[0] == 'q':
+                        os.sys.exit(0)
+
                 subprocess.Popen(e, shell = True)
             else:
                 common.debug("Nothing to execute for %s. %s is empty." % (file, key))
