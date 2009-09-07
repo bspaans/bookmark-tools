@@ -8,6 +8,8 @@ import re
 import subprocess
 import time
 import hashlib
+import shutil
+
 
 import btools.common as common
 
@@ -47,6 +49,8 @@ examples = [("init", "Initialize a new blog"),
             ("export", "Export the published files."), ]
 
 common.loglevel = 2
+
+BLOG_SHARE = "/usr/share/blog/"
 
 def blog_location(dir = "."):
     return path.join(path.realpath(dir), ".blog")
@@ -191,16 +195,12 @@ def blog_init(title = "Untitled Weblog", authors = "", url="", feed=""):
                       "url": url, "feed": feed})
     touch(get_index_location(loc))
 
-    for x in ["publish-hook", "publish-new-hook", 
-              "publish-edited-hook", "export-hook"]: 
-        touch(path.join(loc, "hooks", x))
+    hooks = path.join(BLOG_SHARE, "hooks") 
+    for x in os.listdir(hooks):
+        src, dst = path.join(hooks, x), path.join(loc, "hooks", x)
+        common.debug("Copying %s to %s" % (src, dst))
+        shutil.copyfile(src, dst)
 
-    for x in ["add-hook", "remove-hook", "publish-hook", 
-              "set-config-hook", "unset-config-hook",
-              "set-meta-hook", "unset-meta-hook"]:
-        for y in ["post", "pre"]:
-            common.debug("Touching %s/hooks/%s-%s" % (loc, y, x))
-            touch(path.join(loc, "hooks", "%s-%s" % (y,x)))
     common.info("New blog succesfully created")
 
 def add_file_to_blog(file, blogloc=".blog", title="", authors="", url=""):
