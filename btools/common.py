@@ -4,7 +4,7 @@ import pipes
 
 
 loglevel = 4
-template = "/usr/share/bm/bm-config-template"
+template = "/usr/share/bm/bm-match-config"
 
 VERSION = "1.0rc4"
 OUTPUT_COLOR = True

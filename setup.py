@@ -65,7 +65,7 @@ for UNIX-like platforms that aim to speed up navigation and organization in day 
                  "scripts/mvbm", "scripts/blog", "scripts/fill-template",
                  "scripts/script2gif"],
       data_files = [("/etc/bash_completion.d/", ["data/bm-completion"]),
-                    ("/usr/share/bm/", ["data/bm.bash", "data/bm-config-template", "data/movies.patterns"]),
+                    ("/usr/share/bm/", ["data/bm.bash", "data/bm-match-config", "data/movies.patterns"]),
                     ("/usr/share/man/man1/", glob.glob("doc/man/*.1")),
                     ("/usr/share/blog/hooks/", glob.glob("data/blog/hooks/*")),
                    ],

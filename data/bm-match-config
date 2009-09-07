@@ -1,11 +1,13 @@
-################################################################################
-#
-#   pybm-match configuration file
-#
-################################################################################
+# bm-match configuration + rules
+
+
+# Use `bm-match FILES` in this directory to match the files against the rules 
+# in this configuration. 
+
 
 # Commands are separated on a line. Empty lines and lines starting with #
 # are ignored. Variables are set with the 'set' command.
+
 
 
 # You can specify an arbitrary bookmarks file with the bookmarks variable.
@@ -17,10 +19,13 @@
 #  1 WARN
 #  2 INFO
 #  3 DEBUG
+
 set loglevel = 2
 
 
-# The threshold is the minimum weight a match needs to be taken into account
+
+# The threshold is the minimum weight a match needs to be taken into account.
+
 set threshold = 1.0
 
 
@@ -31,15 +36,23 @@ set threshold = 1.0
 #   %match%        The destination directory
 #   %bookmark%     The destination bookmark/directory
 
+
+
 # exec_best is only executed on the best match
-# if symlink = 0 (see below). This is all that happens.
+# If symlink = 0 (see below) this is all that happens.
+
 set exec_best = echo %file% %match%
+
 #set exec_best = mv %file% %match%
 
+
 # exec_latter is executed for other, inferior matches 
-# if symlink is set to 1 (see below)
+# Only if symlink is set to 1 (see below)
+
 set exec_latter = echo %file% %match%
+
 #set exec_latter = ln -s %file% %match%
+
 
 # exec_unmatched is executed for files that can not be matched.
 # Only the %file% variable can be used
@@ -47,13 +60,18 @@ set exec_unmatched =
 
 
 
+
 # If strict = 0 => move file to best matching bookmark
 # if strict = 1 => move file if there is at least and at most one match
+
 set strict = 0
 
 # If strict = 0, you can set symlink to 1, which will place symlinks to 
 # the file in the best matching bookmarks in the other matching bookmarks.
+
 set symlink = 1
+
+
 
 # Directories:
 #   0.  treat in the same way as files. Match on the available rules.
@@ -67,6 +85,8 @@ set handle_directories = 2
 # Only applies if handle_directories >= 0
 
 set retain_structure = 1
+
+
 
 ################################################################################
 #   matches
