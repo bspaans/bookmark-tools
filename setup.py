@@ -1,9 +1,27 @@
 from distutils.core import setup
 from distutils.command.install_data import install_data
+from distutils.command.install import install
 
 import glob
 import os
+import platform
 from os import path
+
+
+class check_platform(install):
+
+    def run(self):
+        if platform.system() in ["Windows", "Win32"]:
+            print "=" * 80
+            print
+            print "I'm sorry, it's not that we don't like you; it's just that this package "
+            print "depends on UNIX-like features and does not work on the Windows platform."
+            print "I want to thank you for trying it out, though. Treat yourself to something nice."
+            print "And may your future endeavors be more fruitful. Fare thee well, traveler! "
+            print
+        else:
+            install.run(self)
+
 
 class source_shell_script(install_data):
     def run(self):
@@ -30,11 +48,11 @@ class source_shell_script(install_data):
 
 
 setup(name="btools",
-      version="0.9999",
+      version="0.99999",
       description="Command line navigation and organization tools",
       long_description=
 """Bookmark tools is a collection of useful shell commands and Python scripts \
-that aim to speed up navigation and organization in day to day work. 
+for UNIX-like platforms that aim to speed up navigation and organization in day to day work. 
 """,
       author="Bart Spaans",
       author_email = "onderstekop@gmail.com",
@@ -51,8 +69,8 @@ that aim to speed up navigation and organization in day to day work.
                     ("/usr/share/man/man1/", glob.glob("doc/man/*.1")),
                     ("/usr/share/blog/hooks/", glob.glob("data/blog/hooks/*")),
                    ],
-      cmdclass={"install_data": source_shell_script},
-
+      cmdclass={"install": check_platform, 
+                "install_data": source_shell_script},
      )
 
 

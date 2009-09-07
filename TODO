@@ -1,3 +1,2 @@
 + flatten script, to move files out of subdirectories into the parent tree
 + Add --blog-dir option to blog
-+ add platform check to setup script.
