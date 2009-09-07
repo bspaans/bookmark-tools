@@ -1,5 +1,5 @@
 <!-- Creator     : groff version 1.18.1 -->
-<!-- CreationDate: Wed Sep  2 05:29:23 2009 -->
+<!-- CreationDate: Mon Sep  7 02:20:34 2009 -->
 <html>
 <head>
 <meta name="generator" content="groff -Thtml, see www.gnu.org">
@@ -37,7 +37,8 @@
 <tr valign="top" align="left">
 <td width="10%"></td>
 <td width="89%">
-<p><b>blog</b> COMMAND [ARGUMENTS]</p>
+<p><b>blog</b> COMMAND [ARGUMENTS]<b><br>
+blog</b> --debug COMMAND [ARGUMENTS] Debug information</p>
 </td>
 </table>
 <a name="DESCRIPTION"></a>
@@ -48,9 +49,22 @@
 <tr valign="top" align="left">
 <td width="10%"></td>
 <td width="89%">
-<p>Blog is a minimalist, extendible command line weblog and
+<p>Blog is a minimalist, extendable command line weblog and
 publishing tool. It is used by adding files to it and by
-setting up some usuable hooks.</p>
+setting up some usuable hooks. To start using this tool,
+begin with an init command in the directory you want to use.
+This will create a &rsquo;.blog&rsquo; directory which
+contains configuration information, hooks and later the file
+index itself. Hooks are the bread and butter of this
+program. The blog tool itself does particurlarly little with
+the files. It only keeps an index and provides a way to
+store config and meta information. The hooks provide the
+functionality and can call out to any program they may need.
+A hook only works when it&rsquo;s set executable (eg.
+&rsquo;chmod +x hook&rsquo;); only then the program will
+execute it. For more information on writing these scripts
+and the variables that are available see the comments and
+the README file in .blog/hooks/.</p>
 </td>
 </table>
 <a name="OPTIONS"></a>
@@ -105,6 +119,23 @@ VARIABLES)</p></td>
 <td width="21%"></td>
 <td width="77%">
 <p>Resp. lists, sets and unsets configuration variables.</p>
+</td>
+</table>
+<!-- TABS -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="5" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="8%">
+
+<p>export</p>
+</td>
+<td width="13%"></td>
+<td width="33%">
+
+<p>Export published files.</p>
+</td>
+<td width="32%">
 </td>
 </table>
 <!-- INDENTATION -->
@@ -255,7 +286,118 @@ file itself.</p>
 <tr valign="top" align="left">
 <td width="10%"></td>
 <td width="89%">
-<p>No examples available.</p>
+<p>blog init</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Initialize a new blog</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>blog add hello_world.txt</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Add the file hello_world.txt to the index</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>blog meta hello_world.txt</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>List meta information</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>blog meta hello_world.txt set title &rsquo;Hello,
+World!&rsquo;</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Sets the title to &rsquo;Hello, World!&rsquo;</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>blog config set title &rsquo;My new blog&rsquo;</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Change the blog title to &rsquo;My new blog&rsquo;</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>blog publish</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Publish the files in the index.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>blog export</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Export the published files.</p>
 </td>
 </table>
 <a name="SEE ALSO"></a>

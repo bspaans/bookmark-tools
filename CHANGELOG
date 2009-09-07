@@ -1,0 +1,600 @@
+commit c99ceb7adcd80529ae3fe15e0082b6b31bd60dbc
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Sep 2 05:34:05 2009 +0200
+
+    Update to incorperate script2gif tool
+
+commit feeddacf12791bb57a78e0dfbf61f0e8d07074c9
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Sep 2 05:29:40 2009 +0200
+
+    Updated docs
+
+commit 9a6b97c7919cc91abed8a7d72de1aefe5f42fc7b
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Sep 2 05:29:11 2009 +0200
+
+    Updated mkbm docs and common interface
+
+commit 03a64ce21751eb38fe332da84fbd5515e19c43cf
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Sep 2 05:17:42 2009 +0200
+
+    Some updates in the script2gif tool
+
+commit 783ca86fa09b224ef1d6b48c171e3e5405bf3974
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Sep 2 00:52:31 2009 +0200
+
+    Updated docs again..
+
+commit a1bf210ed80c12463a1f05b5692510b6ca40fde7
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Sep 2 00:50:26 2009 +0200
+
+    Updated documentation.
+
+commit b9fdbb85e56c62e1d99fb259c44b53bfbb1d9482
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Sep 2 00:35:32 2009 +0200
+
+    Added script2gif tool
+    
+    Produces an animated gif from shell commands and their output.
+
+commit 7a0b86c22bc9fe6274fe843efd3c0e31bfdebd54
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Sep 1 23:40:57 2009 +0200
+
+    Added some fixes to README and setup description
+
+commit 1a5b02a28306c6fd226ba850a6730d92206789c0
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Aug 26 05:45:55 2009 +0200
+
+    Fixed bugs in setup script
+
+commit 5363363e370498a9ee65aff1868fcdb9c22dcee5
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Aug 26 04:42:53 2009 +0200
+
+    Updated setup script for PyPI submission.
+    
+    Going to try to submit version 0.999 to PyPI so it can be used with
+    easy_install and such. Up next: working towards 1.0rc1.
+
+commit 8ed59a666594d4727b59b0cea5a26dd6ae58876a
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Aug 26 04:36:17 2009 +0200
+
+    Added LICENSE and CHANGELOG
+
+commit f003c1ca632c0c6161eec2da441c828f55d1d538
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Aug 26 04:34:50 2009 +0200
+
+    Updated README and decided on the license.
+
+commit af1fc67b66ea600ada597d82164e8fa376e92c11
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Aug 26 04:34:40 2009 +0200
+
+    Added completion to the bm command itself
+
+commit 6413f490bfd8d3b08aaac4f6e00599a42a38b480
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Aug 26 03:27:59 2009 +0200
+
+    Updated manifest.in and todo
+
+commit 0c9d2822270792b2ceb1d4e61b23e5e6242b751e
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Aug 26 03:26:08 2009 +0200
+
+    Removed some bashisms from bm.bash
+    
+    I'm testing out the functions with zsh and it wouldn't work because of
+    the way I tested for equality with ==. I now replaced those tests with
+    appropriate -eq and =.
+
+commit dc4a10bb96bdbe83c9fb468f11ebe01ff664791e
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Aug 26 03:25:27 2009 +0200
+
+    Added INSTALL and README files
+
+commit bc1eea551bed53017817e45564c27764bc3580aa
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Mon Aug 24 15:20:49 2009 +0200
+
+    Added more extended shell commands.
+    
+    Added lsbm, lnbm and scpbm to the shell functions.
+
+commit f8e8cb2c3e0f100720096047187705725a171c69
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Mon Aug 24 15:06:34 2009 +0200
+
+    Added bash completion to blog tool
+
+commit 06fbc82b350f225a91c414fda3f96b5145ffaee2
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Mon Aug 24 12:16:03 2009 +0200
+
+    Fixed empty index bug in bm
+
+commit a10b42e6d1da42e0f9cc91bd448598a736dcae77
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Mon Aug 24 11:52:35 2009 +0200
+
+    Setup script: sourcing data/bm.bash in /etc/bash.bashrc
+    
+    This means that the cdbm command will now automatically be available
+    after installation.
+
+commit a495fe5da79f934883e44295150fbdf277d93c95
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Mon Aug 24 10:35:41 2009 +0200
+
+    Fixed 'blog rm OBJECTID' bug
+
+commit fa4786225262395eff538be3ae7fbe4b0ad701ca
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Mon Aug 24 09:07:12 2009 +0200
+
+    Made verbose log more verbose
+
+commit 92635ee6f0d211d2289abd1d3863df896edf1a13
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Fri Aug 21 14:44:28 2009 +0200
+
+    Updated blog log docs
+
+commit f57c980f78d2deee405af8fba3b2e30174a78a5f
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Fri Aug 21 14:30:30 2009 +0200
+
+    Finishing touches in blog tool
+
+commit 9fda6bf284c5c2296de75b4b265297c527d7822d
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Fri Aug 21 13:09:44 2009 +0200
+
+    Blog is fully functional
+
+commit 10b5aa885bc9279b43fade28fb2251dbd53fc345
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Fri Aug 21 12:56:39 2009 +0200
+
+    Generated new documentation for fill-template
+
+commit 2716c76cc297accb61f6cb8436e01e6c1d28dd05
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Fri Aug 21 12:55:33 2009 +0200
+
+    Added new fill-template tool
+
+commit 39b8329eee7fc020751b4aa5ecb9734adb463c2c
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Fri Aug 21 11:21:44 2009 +0200
+
+    Added publish-new and publish-edited hooks
+
+commit 4ae679aae9ca13f0fde9e1c00c185ae8513bd6ac
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 18 07:25:47 2009 +0200
+
+    Updated build_man script to use module's long_description if present.
+
+commit 5188e8c12477268a7adb1ee1dddea490cc18f7a7
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 18 06:59:43 2009 +0200
+
+    Started on extra command line options in blog
+
+commit 9b51607b3e670f0b287b9f1773a2833f88795012
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 18 06:12:25 2009 +0200
+
+    Updated documentation.
+
+commit 5a1744ca515318034c51ce259ccf5280677d92e3
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 18 05:47:34 2009 +0200
+
+    Added md5sum check to status command
+
+commit 8d940068d7482cfa4024ae7fd4708cef4d3988dc
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 18 05:46:48 2009 +0200
+
+    Added md5sum check to publish command.
+
+commit 3fd293def0ebd080aab569d08699b6c5596724ec
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 18 05:44:14 2009 +0200
+
+    Added md5sum check to publish command.
+
+commit a286a578e62edc5aff046d0eedf121295653823b
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 18 05:27:46 2009 +0200
+
+    Added status command to blog.
+
+commit dfd50ea3d337076cec7e42369b0a53cb00b114cc
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 18 04:44:27 2009 +0200
+
+    Added publish command
+
+commit 478282c48c09ae64ed2b60615969bf7a57182009
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 18 04:06:18 2009 +0200
+
+    Added meta set and unset hooks
+
+commit a4c5bdc21e7ecbed3a42772aa85c8cab0cd6b978
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 18 04:01:11 2009 +0200
+
+    Added info command and depth-searching for the .blog directory.
+
+commit 771cdc925ec582826f19005e95a80cfba2e48d2f
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 18 03:35:47 2009 +0200
+
+    Updated docs
+
+commit ca28ef7ead169c4fd852beea6ab9acba8c0d9bd7
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 18 03:35:25 2009 +0200
+
+    Added meta command to blog that lists, sets and unsets variables on objects in the index.
+
+commit 92a213229198f6e708f341c34972f1993fdf9e96
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Sun Aug 16 15:32:06 2009 +0200
+
+    Added help switch to blog. Functionality in common and now also used in bm.
+
+commit 48bdfb5c9003c9ebe7b05b000043e6792e4d4ff6
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Sun Aug 16 14:42:25 2009 +0200
+
+    Added basic hooking mechanism to blog
+
+commit 1a74e8c627a69059cf2146b83bc5b0f1ebfe5ba1
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Sun Aug 16 14:09:31 2009 +0200
+
+    Added object removal to the blog tool.
+
+commit 965c8f6121be28f41e8f05dea23a10bf2c1404fc
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Sat Aug 15 17:07:54 2009 +0200
+
+    Updated blog tool and docs. blog now generates execution hooks.
+
+commit f0138cd46d0e543097b76fbe143e4ee9471b15d3
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Sat Aug 15 16:29:30 2009 +0200
+
+    Added config variables frontend to blog.
+
+commit 7450f273be15d838a4910f58d9777cd883d0751f
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Sat Aug 15 12:27:09 2009 +0200
+
+    Added blog tool
+
+commit a6bb18f7c7f9aa52de10ef01711177c36d9cce85
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Fri Aug 14 05:23:57 2009 +0200
+
+    Updated man pages.
+
+commit 5cf3b1f10d361435e8947188cbdb9d29ec68e98d
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Fri Aug 14 05:18:19 2009 +0200
+
+    Added frontend for symlinking to bm.
+
+commit cefae1f5464345ad5a40e7fc5a3602b5c9d9301d
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 11 05:29:42 2009 +0200
+
+    Bumped version number down
+
+commit 4b36b0b71cc9f06b43c3c41b54288e232600e515
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 11 04:12:41 2009 +0200
+
+    Last title update. Adding auto html documentation hook failed for now
+
+commit fd3c2a9b527a4c92d8ca3ea2ff551c848c7731ac
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 11 04:10:36 2009 +0200
+
+    Title update
+
+commit 513b1fc1a0910057033fa01bd75c263acb24204c
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 11 04:04:10 2009 +0200
+
+    Title update
+
+commit c86f9c58c68a50bd7cf869db5579df679136ab33
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 11 04:01:34 2009 +0200
+
+    Testing hooks again..hopeless
+
+commit 63bfc71ce77b92eea891442e8ab6ad94e38f1ce3
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 11 03:58:05 2009 +0200
+
+    Changed bul to bull
+
+commit e9e8972560d67aac7d3787db2a8f626f2c2ca25c
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 11 03:51:59 2009 +0200
+
+    Updated doc title
+
+commit 1c32a5ca103cb9d5606ed2ac2fea1d8db2b47780
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 11 03:48:00 2009 +0200
+
+    Testing hooks again..sigh
+
+commit 341e61f056cafef3827393d0b9d112001e185d8a
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 11 03:40:15 2009 +0200
+
+    Updated nav
+
+commit 3ac576e61f3c60ad7f5865271b4dd744faf779ee
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 11 03:37:31 2009 +0200
+
+    Updated nav template instead.
+
+commit 3da048d3be6d4c54c9a639762e6bde2b48f9e83c
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 11 03:33:59 2009 +0200
+
+    Fixed picture placement in navigation
+
+commit 684eef8db66f8555dac685db73f589984eb813b9
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 11 03:27:55 2009 +0200
+
+    Fixed frames
+
+commit ebeebc1c82c9ce8e460c0146d838c0cde6d0e395
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 11 03:13:17 2009 +0200
+
+    Trying to remove frame borders and test hooks
+
+commit 0de274d56337ea5f88bb9cf28588cedd732f650d
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Tue Aug 11 03:07:03 2009 +0200
+
+    Update html navigation and hooks
+
+commit e0e6223282f56962924464b33bdeefa616a64795
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Mon Aug 10 18:58:43 2009 +0200
+
+    Updated index
+
+commit e3d3cf59893c144b4e38c1484ab438cedc973bc9
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Mon Aug 10 18:52:03 2009 +0200
+
+    Updated html documentation + build process. Added index and navigation screen.
+
+commit 64bdfd69d4fa7485d9c15bc2abee5af6ab232a6b
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Sun Aug 9 08:13:13 2009 +0200
+
+    Separated building scripts from docs
+
+commit e92c55e7db2d415061edb2d50032e829f531b6c5
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Sun Aug 9 08:06:05 2009 +0200
+
+    Added html docs
+
+commit c4809054f5c8e5f02025309e8c2e66c2238fb52b
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Sun Aug 9 07:27:23 2009 +0200
+
+    Fixed sentence in bm docs
+
+commit 6f362d427657e5b9d1b72fdc0dc6c11098622754
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Sun Aug 9 06:19:36 2009 +0200
+
+    Updated man documentation
+
+commit 2bf39ac39126ff2f0374f69d159851f466d56841
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Sun Aug 9 06:18:31 2009 +0200
+
+    Setting the proper permissions on the generated export script
+
+commit 45b1fc53950efee9e7323cc926a11dabde020cd1
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Sun Aug 9 06:05:17 2009 +0200
+
+    Added export functionality to bm
+
+commit 8c10d237b1f5c155341d81d93abb9c2aca78a716
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Sat Aug 8 03:14:27 2009 +0200
+
+    Added untracked files. Updated bmsuggest-series
+
+commit 88444ec49b01a20cab7182c905443775afd98c78
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Sat Aug 8 03:10:29 2009 +0200
+
+    Prettified bm output
+
+commit 0d66df730c6620b53a9953a8b035333bee00e28e
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Sat Aug 8 02:46:20 2009 +0200
+
+    Fixed some bugs in bm
+
+commit 7d9f95c350da65e2cfd105dbb305b6b0214a5c16
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Sat Aug 8 02:29:52 2009 +0200
+
+    Added and documented new bash functions. Need to add error codes to bm to make it work properly
+
+commit 925d6286f2ddad45b370d07fea5ce45e47b47331
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Sat Aug 8 02:29:24 2009 +0200
+
+    Fixed shell expansion in mvbm
+
+commit 86f3145f7acb223ac24d306815ee9512c451909b
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 08:46:32 2009 +0200
+
+    Fixed bug in adding directory without a tag in bm
+
+commit b89f3c2bb59bb4df969be678a73164f53e77f157
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 08:35:59 2009 +0200
+
+    Fixed %file% shell bug
+
+commit 665cadcc7b3fb0062e63d840fa67f4dc0b26cdad
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 07:08:37 2009 +0200
+
+    Updated documentation for mvbm and bmsuggest
+
+commit 723e6b24932ffba7d0ac4621b9b8a1553f151ef6
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 07:01:34 2009 +0200
+
+    Make the vacation scripts use the new help interface + manpages
+
+commit 9c0623f96ad439ab1ef1097a9f3f14eaac8a4150
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 06:40:57 2009 +0200
+
+    Updated older scripts
+
+commit cc151ab412f5a5ea244246b92d39293e04421a08
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 06:36:27 2009 +0200
+
+    Imported vacation work.
+
+commit 491d0c4b6ed14cdac2961517a261b0dd2c4b9657
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 06:29:16 2009 +0200
+
+    Updated doc build script to include date
+
+commit 5c4ac57b22068933ab02bdb075fc08960c5340e0
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 06:22:20 2009 +0200
+
+    Installing man pages
+
+commit 2a1dc54644b518f40e77c12583f4f77e21aa393f
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 05:53:54 2009 +0200
+
+    Including documents in source distribution
+
+commit 8e49873d03340ab4d9472d9bb82b5bc5ccee1b6d
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 05:48:30 2009 +0200
+
+    Succesfully generating manuals docs
+
+commit 7d7f08f8fe1f961a1371d2caae2bdc39bb2ed87e
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 04:59:04 2009 +0200
+
+    Updated bm-match to use new help interface. All old scripts are done.
+
+commit ff581f67a02f97a6872cd234f34b09f7baa28eb9
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 04:46:44 2009 +0200
+
+    Making bm use the new help interface
+
+commit 5a42d3e91f6ebfc23089d9a87f844aea70394210
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 04:30:22 2009 +0200
+
+    Distilled usage and example information from mkbm. Added full help interface to common
+
+commit 9710fb8c2577f6d0c1041924494922f114d2b72b
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 03:50:17 2009 +0200
+
+    Updated bm to use new help interface
+
+commit 30a9f8c9bb42324241322c0e993bbb40062836b4
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 03:46:09 2009 +0200
+
+    Moved some help-generating helper functions into common
+
+commit 1207091501881b770e5883b103f576f38d57626f
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 03:39:29 2009 +0200
+
+    Added documentation and removed unneccessary SYSTEM_WIDE_CONFIG
+
+commit 45813f401a8458f4c073ae62ff197ac14456aa11
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 03:33:57 2009 +0200
+
+    Moved color related stuff and versioning info into common
+
+commit 265f782205749418e5f93108c2dc4035ba055dab
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 03:20:50 2009 +0200
+
+    Moved common to top level directory
+
+commit 57ffc9271d154684497533f444130c3680b9cbea
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Thu Aug 6 03:17:42 2009 +0200
+
+    Started on man pages
+    
+    The idea is to create templates for all the scripts in btools --
+    aided by some scripting of course -- and to fill in the blanks
+    by looking at the source code for the tools. The `commands` variable
+    used by the help sections could easily be used for this for example.
+
+commit 3a56f256d72c9ab886f962c933e6e9747beb8aa2
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Jul 29 18:14:45 2009 +0200
+
+    Updated bookmark removal to take no arguments.
+
+commit fd04ce9a1f5219cee031b4e5348688678a739bac
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Jul 29 18:08:15 2009 +0200
+
+    Fixed perfect match bug in remove bookmark
+
+commit 375c4969ef0238d4a91030c808ba3e41aa123f39
+Author: Bart Spaans <onderstekop@gmail.com>
+Date:   Wed Jul 29 18:02:46 2009 +0200
+
+    Initial commit.

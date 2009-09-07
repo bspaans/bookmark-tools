@@ -5,9 +5,14 @@ blog \- Command line blog tool
 .B blog
 COMMAND [ARGUMENTS]
 .br
+.B blog
+--debug COMMAND [ARGUMENTS]   Debug information
+.br
 
 .SH DESCRIPTION
-Blog is a minimalist, extendible command line weblog and publishing tool. It is used by adding files to it and by setting up some usuable hooks.
+Blog is a minimalist, extendable command line weblog and publishing tool. It is used by adding files to it and by setting up some usuable hooks. 
+To start using this tool, begin with an init command in the directory you want to use. This will create a '.blog' directory which contains configuration information, hooks and later the file index itself. Hooks are the bread and butter of this program. The blog tool itself does particurlarly little with the files. It only keeps an index and provides a way to store config and meta information. The hooks provide the functionality and can call out to any program they may need. A hook only works when it's set executable (eg. 'chmod +x hook'); only then the program will execute it. For more information on writing these scripts and the variables that are available see the comments and the README file in .blog/hooks/. 
+
 .SH OPTIONS
 .TP
 -h   --help   
@@ -18,6 +23,9 @@ Adds files to the weblog index
 .TP
 config (list [VARIABLE]|set VARIABLE VALUE|unset VARIABLES)  
 Resp. lists, sets and unsets configuration variables.
+.TP
+export   
+Export published files.
 .TP
 help COMMANDS  
 Output help for the given commands.
@@ -45,7 +53,34 @@ Output the status of the files in the index
 
 ." Use .TP to indent.
 .SH EXAMPLES
-No examples available.
+.TP
+blog init
+.br
+Initialize a new blog
+.TP
+blog add hello_world.txt
+.br
+Add the file hello_world.txt to the index
+.TP
+blog meta hello_world.txt
+.br
+List meta information
+.TP
+blog meta hello_world.txt set title 'Hello, World!'
+.br
+Sets the title to 'Hello, World!'
+.TP
+blog config set title 'My new blog'
+.br
+Change the blog title to 'My new blog'
+.TP
+blog publish
+.br
+Publish the files in the index.
+.TP
+blog export
+.br
+Export the published files.
 
 .SH SEE ALSO
 cdbm(1), mkbm(1), btools(5)

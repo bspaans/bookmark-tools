@@ -13,12 +13,22 @@ import btools.common as common
 
 name="blog"
 description="Command line blog tool"
-long_description="Blog is a minimalist, extendible command line weblog and publishing tool. It is used by adding files to it and by setting up some usuable hooks."
-usage=["COMMAND [ARGUMENTS]"]
+long_description="""Blog is a minimalist, extendable command line weblog and publishing tool. It is used by adding files to it and by setting up some usuable hooks. \
+
+To start using this tool, begin with an init command in the directory you want to use. This will create a '.blog' directory which contains configuration information, \
+hooks and later the file index itself. Hooks are the bread and butter of this program. The blog tool itself does particurlarly little with the files. It only keeps an index \
+and provides a way to store config and meta information. The hooks provide the functionality and can call out to any program they may need. \
+A hook only works when it's set executable (eg. 'chmod +x hook'); only then the program will execute it. \
+For more information on writing these scripts and the variables that are available see the comments and the README file in .blog/hooks/. \
+
+"""
+usage=["COMMAND [ARGUMENTS]", 
+       ("--debug COMMAND [ARGUMENTS]", "Debug information")]
 commands=[(["-h", "--help"], "", "Help screen"),
           (["add"], "FILES", "Adds files to the weblog index"),
           (["config"], "(list [VARIABLE]|set VARIABLE VALUE|unset VARIABLES)",
            "Resp. lists, sets and unsets configuration variables."),
+          (["export"], "", "Export published files."),
           (["help"], "COMMANDS", "Output help for the given commands."), 
           (["info"], "OBJECTS", "Provides same functionality as multiple `meta OBJECT list` commands"),
           (["init"], "", "Initialize a new blog in the current directory"),
@@ -28,7 +38,13 @@ commands=[(["-h", "--help"], "", "Help screen"),
           (["remove", "rm"], "OBJECTS", "Remove objects from the weblog index. Does not remove the file itself."),
           (["status"], "", "Output the status of the files in the index"),
          ]
-examples = []
+examples = [("init", "Initialize a new blog"),
+            ("add hello_world.txt", "Add the file hello_world.txt to the index"),
+            ("meta hello_world.txt", "List meta information"),
+            ("meta hello_world.txt set title 'Hello, World!'", "Sets the title to 'Hello, World!'"),
+            ("config set title 'My new blog'", "Change the blog title to 'My new blog'"),
+            ("publish", "Publish the files in the index."),
+            ("export", "Export the published files."), ]
 
 common.loglevel = 2
 
@@ -175,7 +191,8 @@ def blog_init(title = "Untitled Weblog", authors = "", url="", feed=""):
                       "url": url, "feed": feed})
     touch(get_index_location(loc))
 
-    for x in ["publish-hook", "publish-new-hook", "publish-edited-hook"]: 
+    for x in ["publish-hook", "publish-new-hook", 
+              "publish-edited-hook", "export-hook"]: 
         touch(path.join(loc, "hooks", x))
 
     for x in ["add-hook", "remove-hook", "publish-hook", 
@@ -307,6 +324,12 @@ def publish_blog(loc):
             execute_hook(loc, "publish-edited-hook", fenv)
 
     execute_hook(loc, "post-publish-hook", env)
+
+def cli_export(args):
+    loc = existing_blog_location()
+    execute_hook(loc, "export-hook", {})
+       
+
 
 def get_meta(loc, id):
     return read_dict_from_file( path.join(loc, "meta", str(id) ))
@@ -464,6 +487,8 @@ def parse_and_exec_command(command, args):
         cli_add(args)
     elif command in ["config"]:
         cli_config(args)
+    elif command in ["export"]:
+        cli_export(args)
     elif command in ["help"]:
         cli_help_cmd(args)
     elif command in ["init"]:
