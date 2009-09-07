@@ -84,6 +84,8 @@ class ConfParser:
             if self.is_valid_bookmark(bm):
                 self.parse_rule(bm, line[i + 9:])
                 self.rules_started = True
+            elif os.path.isdir(bm):
+                common.debug("%s is a directory. Not supported yet.")
             else:
                 common.warning("Unknown tag '%s'. Ignoring rule: %s" % (bm, line))
         else:

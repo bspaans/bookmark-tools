@@ -17,7 +17,7 @@ class check_platform(install):
             print "I'm sorry, it's not that we don't like you; it's just that this package "
             print "depends on UNIX-like features and does not work on the Windows platform."
             print "I want to thank you for trying it out, though. Treat yourself to something nice."
-            print "And may your future endeavors be more fruitful. Fare thee well, traveler! "
+            print "And may your future endeavors be more fruitful. Fare thee well! "
             print
         else:
             install.run(self)
