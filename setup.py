@@ -49,6 +49,7 @@ that aim to speed up navigation and organization in day to day work.
       data_files = [("/etc/bash_completion.d/", ["data/bm-completion"]),
                     ("/usr/share/bm/", ["data/bm.bash", "data/bm-config-template", "data/movies.patterns"]),
                     ("/usr/share/man/man1/", glob.glob("doc/man/*.1")),
+                    ("/usr/share/blog/hooks/", glob.glob("data/blog/hooks/*")),
                    ],
       cmdclass={"install_data": source_shell_script},
 
