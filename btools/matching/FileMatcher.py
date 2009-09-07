@@ -1,5 +1,6 @@
 import os
 import subprocess
+import pipes
 
 import btools.pybookmark as pybookmark
 import btools.common as common
@@ -116,10 +117,10 @@ class FileMatcher:
             x = bms[0]
             e = self.variables[key]
             if e != "":
-                e = e.replace("%file%", os.path.realpath(file).replace("'", "\'"))
-                e = e.replace("%bookmark%", x[0])
-                e = e.replace("%match%", x[1])
-                e = common.replace_variables(e, self.variables)
+                e = e.replace("%file%", pipes.quote(os.path.realpath(file)))
+                e = e.replace("%bookmark%", pipes.quote(x[0]))
+                e = e.replace("%match%", pipes.quote(x[1]))
+                e = " ".join(map(pipes.quote, common.replace_variables(e, self.variables).split() ))
                 common.info("Executing: %s" % e)
                 subprocess.Popen(e, shell = True)
             else:
