@@ -63,10 +63,10 @@ set handle_directories = 2
 
 # Structure:
 #   0.  Flatten directory structure. Move files directly to match
-#   1.  Remain directory structure. Move files to subdirectory in match
+#   1.  Retain directory structure. Move files to subdirectory in match
 # Only applies if handle_directories >= 0
 
-set remain_structure = 1
+set retain_structure = 1
 
 ################################################################################
 #   matches

@@ -18,6 +18,7 @@ class ConfParser:
                            "exec_latter" : "ln -s %file% %match%",
                            "exec_unmatched" : "",
                            "handle_directories": "2",
+                           "retain_structure": "1",
                            "loglevel": str(common.loglevel),
                            }
         self.parsers = [ y() for y in RuleParsers.__dict__.values() if \
@@ -85,8 +86,8 @@ class ConfParser:
                 self.parse_rule(bm, line[i + 9:])
                 self.rules_started = True
             elif os.path.isdir(bm):
-                common.debug("%s is a directory.")
-                self.parse_rule(bm, line[i + 9:])
+                common.debug("%s is a directory." % bm)
+                self.parse_rule(os.path.realpath(bm), line[i + 9:])
                 self.rules_started = True
             else:
                 common.warning("Unknown tag '%s'. Ignoring rule: %s" % (bm, line))

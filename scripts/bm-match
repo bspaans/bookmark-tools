@@ -31,6 +31,7 @@ usage = [("COMMAND [ARGUMENTS]", "Execute command"),
 examples = [("-nf", "Force a new empty configuration file in the current directory"),
             ("test.txt", "Match and move test.txt using the rules in .bm-match")]
 
+common.loglevel = 2
 
 def get_FileSorter():
     return FileMatcher()
