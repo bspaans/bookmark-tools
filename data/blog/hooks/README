@@ -1,0 +1,77 @@
+================================================================================
+    Variables
+================================================================================
+
+=== The blogdir Variable ===
+
+The blogdir variable is available in every hook and simply points to the .blog
+directory. You can use this, for example, to get the root of the blog: '$blogdir/..'
+
+
+
+=== Configuration Variables ===
+
+Global configuration variables are found under the 'conf_' prefix and are
+available in every hook. For example: to echo the title variable, use:
+echo $conf_title
+
+
+
+=== Meta Variables ===
+
+Meta variables are sometimes available under the 'meta_' prefix. For
+instance, in the *publish-hooks you can use '$meta_title' to get the title 
+of the article being published.
+
+
+
+=== Other ===
+
+The variables 'id' and 'object' are often available to uniquely identify the
+file that is currently being handled. This makes querying for information a lot
+easier. For instance, in the *remove-hook, you can
+use $id as follows to get the title: echo $(blog meta $id list title)
+
+
+
+================================================================================
+    Hooks
+================================================================================
+
+Hooks are simply shell scripts. They must be set to executable before the
+blog tool will use them.  For example: to start using the publish-hook, do:
+chmod +x publish-hook
+
+This will ensure the hook gets executed everytime a 'blog publish' command is
+issued.
+
+
+
+=== Pre Hooks ===
+
+Pre hooks are executed before an action takes place. They can be used to
+prepare for the command or to block it.
+
+If a pre-hook returns anything other than zero the issued command will be
+blocked. For example: if the pre-add-hook returns 1; the add command is rendered
+useless. You can use this to block certain actions/files/conditions.
+
+
+
+=== Post Hooks ===
+
+Post hooks are executed after an action has been completed. They are mostly used to
+clean up, set some extra information or to notify the administrator. 
+
+
+
+================================================================================
+    More information
+================================================================================
+
+
+The comments in the hooks should provide specific information on the available
+variables. See http://www.bookmark-tools.com/articles/5.html for a global tutorial.
+
+
+
