@@ -121,7 +121,7 @@ class FileMatcher:
             e = self.variables[key]
             if e != "":
                 file = os.path.realpath(file)
-                dest = self.get_dest_retained_structure(file, os.path.realpath(x[1]), depth)
+                dest = self.get_dest_retained_structure(file, os.path.realpath(x[1]), depth, makedir = False)
 
                 e = e.replace("%file%", pipes.quote(file))
                 e = e.replace("%bookmark%", pipes.quote(x[0]))
@@ -149,20 +149,22 @@ class FileMatcher:
                     elif proceed[0] == 'q':
                         os.sys.exit(0)
 
+                dest = self.get_dest_retained_structure(file, os.path.realpath(x[1]), depth, makedir =True)
                 subprocess.Popen(e, shell = True)
             else:
                 common.debug("Nothing to execute for %s. %s is empty." % (file, key))
         else:
             common.warning("Bookmark matches too many directories. Can't move file.")
 
-    def get_dest_retained_structure(self, file, dest, depth):
+    def get_dest_retained_structure(self, file, dest, depth, makedir = False):
         if depth > 0 and self.retain_structure():
             dirs = file.split(os.sep)[-(depth + 1):]
             for d in dirs[:-1]:
                 tmp = os.path.join(dest, d)
                 if not os.path.exists(tmp):
                     common.debug("Making sub directory in destination.  %s." % tmp)
-                    os.mkdir(tmp)
+                    if makedir:
+                        os.mkdir(tmp)
                 dest = tmp
             dest = os.path.join(dest, dirs[-1])
         return dest
