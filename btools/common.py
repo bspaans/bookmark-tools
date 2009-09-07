@@ -32,6 +32,7 @@ pattern_collections = { "movies" : "/usr/share/bm/movies.patterns",
                         "artists" : "/usr/share/bm/artists.patterns"}
 
 
+BLOG_SHARE = "/usr/share/blog/"
 
 
 def debug(msg):

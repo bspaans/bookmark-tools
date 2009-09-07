@@ -50,7 +50,6 @@ examples = [("init", "Initialize a new blog"),
 
 common.loglevel = 2
 
-BLOG_SHARE = "/usr/share/blog/"
 
 def blog_location(dir = "."):
     return path.join(path.realpath(dir), ".blog")
@@ -195,7 +194,7 @@ def blog_init(title = "Untitled Weblog", authors = "", url="", feed=""):
                       "url": url, "feed": feed})
     touch(get_index_location(loc))
 
-    hooks = path.join(BLOG_SHARE, "hooks") 
+    hooks = path.join(common.BLOG_SHARE, "hooks") 
     for x in os.listdir(hooks):
         src, dst = path.join(hooks, x), path.join(loc, "hooks", x)
         common.debug("Copying %s to %s" % (src, dst))
