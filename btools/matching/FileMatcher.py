@@ -70,9 +70,13 @@ class FileMatcher:
             match = ftable[0]
             self.exec_matched(file, match)
             if self.symlink():
-                bms = pybookmark.get_bookmark(match[0], self.bookmarks)[0]
+                bms = pybookmark.get_bookmark(match[0], self.bookmarks)
+                if len(bms) != 1 and os.path.isdir(match[0]):
+                    dir = match[0]
+                else:
+                    dir = bms[0][1]
                 for m in ftable[1:]:
-                    self.exec_latter(os.path.join(bms[1], file), m)
+                    self.exec_latter(os.path.join(dir, file), m)
 
     def match_directory(self, dir):
         if self.variables["handle_directories"] in ["0", "2"]:
@@ -105,6 +109,9 @@ class FileMatcher:
 
     def _exec_help(self, key, file, match):
         bms = pybookmark.get_bookmark(match[0], self.bookmarks)
+        if len(bms) != 1 and os.path.isdir(match[0]):
+            bms = [(match[0], match[0])]
+
         if len(bms) == 1:
             x = bms[0]
             e = self.variables[key]
