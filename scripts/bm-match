@@ -4,7 +4,7 @@
 # Copyright 2008, 2009 Bart Spaans
 #
 # TODO:
-#    configuration flag: pybm-match -c ~/.bm-match [FILES]
+#    configuration flag: bm-match -c ~/.bm-match [FILES]
 #    matching on username, permissions, height and width (?)
 #    defining new rule-aliases for expressions
 #    parameter expansion in expressions
@@ -14,10 +14,10 @@ import sys
 import btools.common as common
 from btools.matching.FileMatcher import FileMatcher
 
-
 name = "bm-match"
 description = "Weighted bookmark matching"
 commands = [(["-a", "--ask"], "FILES", "Ask if the match is right"),
+            (["-e", "--edit"], "", "Edit the configuration file with the default editor"),
             (["-h", "--help"], "", 
             "This help screen."),
             (["-i", "--inspect"], "FILES", 
@@ -31,6 +31,10 @@ usage = [("COMMAND [ARGUMENTS]", "Execute command"),
          ("[FILES]", "Match FILES")]
 examples = [("-nf", "Force a new empty configuration file in the current directory"),
             ("test.txt", "Match and move test.txt using the rules in .bm-match")]
+
+long_description="""bm-match reads rules from a configuration file (named .bm-match)
+to be able to categorize files based on a number of heuristics.
+"""
 
 common.loglevel = 2
 
@@ -46,13 +50,16 @@ def output_weighted_tabled(table):
         print ("%" + str(width) + "s    %.4f") % (bookmark, weight)
 
 
-
 def inspect(fs, file):
     if os.path.isdir(file):
         map(lambda a: inspect(fs, os.path.join(file, a)), os.listdir(file))
     else:
         print "===", file, "==="
         output_weighted_tabled(fs.get_weighted_table(file))
+
+def cli_edit(args):
+    file = common.get_conf_location()
+    common.edit_file(file)
 
 def cli_inspect_file(args):
     if args == []:
@@ -73,6 +80,7 @@ def cli_new_config_file(forcenew = False):
     f.write(tmp)
     f.close()
     print ".bm-match written succesfully."
+    common.edit_file(".bm-match")
 
 
 def cli_output_help(args):
@@ -97,6 +105,8 @@ def command_line_interface():
 
     if command in ["-a", "--ask"]:
         cli_ask(args)
+    elif command in ["-e", "--edit"]:
+        cli_edit(args)
     elif command in ["-i", "--inspect"]:
         cli_inspect_file(args)
     elif command in ["-h", "--help"]:

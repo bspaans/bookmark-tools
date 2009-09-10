@@ -1,10 +1,21 @@
 import os
 import sys
 import pipes
+import subprocess
 
 
-loglevel = 4
+
+## Hard coded paths
 template = "/usr/share/bm/bm-match-config"
+BLOG_SHARE = "/usr/share/blog/"
+DEFAULT_EDITOR = "/etc/alternatives/editor"
+
+# This should ideally be moved to a separate package..btools-data?
+pattern_collections = { "movies" : "/usr/share/bm/movies.patterns",
+                        "tv" : "/usr/share/bm/tv.patterns",
+                        "albums": "/usr/share/bm/albums.patterns",
+                        "artists" : "/usr/share/bm/artists.patterns"}
+
 
 VERSION = "1.0rc4"
 OUTPUT_COLOR = True
@@ -27,13 +38,9 @@ theme = themes[0]
 
 
 
-pattern_collections = { "movies" : "/usr/share/bm/movies.patterns",
-                        "tv" : "/usr/share/bm/tv.patterns",
-                        "albums": "/usr/share/bm/albums.patterns",
-                        "artists" : "/usr/share/bm/artists.patterns"}
 
 
-BLOG_SHARE = "/usr/share/blog/"
+loglevel = 4
 
 
 def debug(msg):
@@ -51,6 +58,7 @@ def warning(msg):
 def error(msg):
     sys.stderr.write("[ERROR]   %s\n" % msg)
     os.sys.exit(1)
+
 
 
 def get_conf_location():
@@ -143,3 +151,11 @@ def cli_command_help(args, cmd):
                 print "Usage: %s %s" % (fmt % ", ".join(c[0]) , c[1])
                 print "      ", c[2]
 
+def default_editor():
+    return os.environ.get("EDITOR", DEFAULT_EDITOR)
+
+
+def edit_file(file):
+    subprocess.Popen("%s %s" % (default_editor(), 
+                                pipes.quote(file)),
+                    shell=True).wait()
