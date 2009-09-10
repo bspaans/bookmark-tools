@@ -6,6 +6,7 @@ from os import environ as env
 from PIL import Image
 import ImageFont
 import ImageDraw
+import ImageColor
 import platform
 import tempfile
 import subprocess
@@ -25,6 +26,9 @@ FONTSIZE=12
 WIDTH=0
 HEIGHT=0
 OFFSETX, OFFSETY = 10, 5
+COLOR_BACK = "#fff"
+COLOR_COMMAND = "#000"
+COLOR_OUPUT = "#333"
 
 DEFAULT_FONT = "/usr/share/fonts/truetype/ttf-inconsolata/Inconsolata.otf"
 
@@ -39,6 +43,9 @@ for demonstrations and tutorials."""
 usage = [ "[OPTIONS]" ]
 
 commands = [
+        (["-cb", "--color-background"], "COLOR", "Set the background to COLOR. Default #fff"),
+        (["-cc", "--color-command"], "COLOR", "Set the command color to COLOR. Default #000"),
+        (["-co", "--color-output"], "COLOR", "Set the color of the command output. Default #333"),
         (["-cw", "--charwidth"], "INTEGER", "Set the width of character. Default is 6"),
         (["-d", "--delay"], "INTEGER",
          "Set the delay between succesive images. Default is 100."),
@@ -89,7 +96,6 @@ def exec_commands():
     for c in cmds:
         stdout, _ = subprocess.Popen(c, shell=True, stdout=subprocess.PIPE).communicate()
         res.append([get_PS1(), c] +  stdout.splitlines())
-        print os.getcwd(), env["PWD"]
     return res
 
 
@@ -122,20 +128,26 @@ def write_image(id, size, cmds, font):
         ps1, c = cmd[0], cmd[1]
         res = cmd[2:]
         
-        draw.text((OFFSETX,hoffset), ps1+c, font=font, fill=0)
+        draw.text((OFFSETX,hoffset), ps1+c, font=font, fill= COLOR_COMMAND)
         hoffset += LINEHEIGHT
 
         i = 1
         for i, r in enumerate(res):
-            draw.text((OFFSETX,hoffset), r, font=font, fill=128)
+            draw.text((OFFSETX,hoffset), r, font=font, fill= COLOR_OUPUT)
             hoffset += LINEHEIGHT
 
 
     im.save("%s/test%d.gif" % (TMP,id))
 
+def get_color(colorstr):
+    try: 
+        return ImageColor.getrgb(colorstr)
+    except:
+        common.error("Unknown color value %s" % colorstr)
+
 
 def get_image(size):
-    return Image.new("L", size, 255)
+    return Image.new("RGB", size, COLOR_BACK)
 
 
 def animate():
@@ -175,7 +187,8 @@ def cli_help():
 
 def command_line_interface():
     global TMP, DELAY, LOOP, PS1, CHARWIDTH, LINEHEIGHT, INPUT, OUTPUT, FONT, \
-            WIDTH, HEIGHT, FONTSIZE, OFFSETX, OFFSETY
+            WIDTH, HEIGHT, FONTSIZE, OFFSETX, OFFSETY, COLOR_BACK, \
+            COLOR_COMMAND, COLOR_OUPUT
            
 
     args = os.sys.argv[1:]
@@ -195,11 +208,20 @@ def command_line_interface():
             "height": 0,
             "offsetx": 10,
             "offsety": 5,
+            "colorback": "#fff",
+            "colorcmd": "#000",
+            "coloroutput": "#333",
            }
 
     for a in args:
         if not argpending:
-            if a in ["-cw", "--charwidth"]:
+            if a in ["-cb", "--background-color"]:
+                cmd="colorback"
+            elif a in ["-cc", "--command-color"]:
+                cmd="colorcmd"
+            elif a in ["-co", "--output-color"]:
+                cmd="coloroutput"
+            elif a in ["-cw", "--charwidth"]:
                 cmd="charwidth"
             elif a in ["-d", "--delay"]:
                 cmd = "delay"
@@ -253,6 +275,9 @@ def command_line_interface():
     OUTPUT=conf["output"]
     INPUT=conf["input"]
     FONT=conf["font"]
+    COLOR_BACK=get_color(conf["colorback"])
+    COLOR_COMMAND=get_color(conf["colorcmd"])
+    COLOR_OUPUT=get_color(conf["coloroutput"])
     if FONT == "":
         FONT = DEFAULT_FONT if path.exists(DEFAULT_FONT) else ""
     FONTSIZE=int(conf["fontsize"])

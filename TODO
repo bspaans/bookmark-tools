@@ -1,3 +1,4 @@
 + flatten script, to move files out of subdirectories into the parent tree
 + Add --blog-dir option to blog
 + bm-match: remove directory if recursive matching yields an empty directory
++ create and provide .deb packages
