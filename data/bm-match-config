@@ -39,7 +39,6 @@ set threshold = 1.0
 
 
 # exec_best is only executed on the best match
-# If symlink = 0 (see below) this is all that happens.
 
 set exec_best = echo %file% %match%
 

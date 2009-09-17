@@ -1,26 +1,38 @@
 from distutils.core import setup
 from distutils.command.install_data import install_data
-from distutils.command.install import install
 
 import glob
 import os
 import platform
 from os import path
 
+WINDOWS = platform.system() == "Windows"
 
-class check_platform(install):
 
-    def run(self):
-        if platform.system() in ["Windows", "Win32"]:
-            print "=" * 80
-            print
-            print "I'm sorry, it's not that we don't like you; it's just that this package "
-            print "depends on UNIX-like features and does not work on the Windows platform."
-            print "I want to thank you for trying it out, though. Treat yourself to something nice."
-            print "And may your future endeavors be more fruitful. Fare thee well! "
-            print
-        else:
-            install.run(self)
+## Attention packagers:
+#  The following paths are hard-coded.
+#  If you need to change anything, make sure you also change the path in btools/common.py
+
+if not WINDOWS:
+    scripts = glob.glob("scripts/*")
+    data = [("/etc/bash_completion.d/", ["data/bm-completion"]),
+            ("/usr/share/bm/", ["data/bm.bash", "data/bm-match-config", "data/movies.patterns"]),
+            ("/usr/share/man/man1/", glob.glob("doc/man/*.1")),
+            ("/usr/share/blog/hooks/", glob.glob("data/blog/hooks/*")),
+           ]
+else:
+    try:
+        import py2exe
+    except: pass
+
+    pf = os.environ["PROGRAMFILES"]
+    scripts = [] # scripts are added to the 'bin' folder instead
+    data = [(os.path.join(pf, "btools", "bm-match"), ["data/bm-match-config",
+                                                      "data/movies.patterns"]),
+            (os.path.join(pf, "btools", "blog"), glob.glob("data/blog/hooks/*")),
+            (os.path.join(pf, "btools", "bin"), glob.glob("data/windows/*") + glob.glob("scripts/*"))]
+       
+
 
 
 class source_shell_script(install_data):
@@ -47,30 +59,22 @@ class source_shell_script(install_data):
                 f.close()
 
 
+
 setup(name="btools",
-      version="0.99999",
+      version="0.9999999",
       description="Command line navigation and organization tools",
       long_description=
-"""Bookmark tools is a collection of useful shell commands and Python scripts \
-for UNIX-like platforms that aim to speed up navigation and organization in day to day work. 
+"""Bookmark tools is a collection of useful, cross platform shell commands and Python scripts \
+that aim to speed up navigation and organization in day to day work. 
 """,
       author="Bart Spaans",
       author_email = "onderstekop@gmail.com",
       url="http://www.bookmark-tools.com/",
       license="GPLv3",
       packages = ["btools", "btools.matching"],
-      scripts = ["scripts/bm", "scripts/mkbm", "scripts/bm-match",
-                 "scripts/bmsuggest", "scripts/bmsuggest-move", 
-                 "scripts/bmsuggest-series", "scripts/bm-add-series", 
-                 "scripts/mvbm", "scripts/blog", "scripts/fill-template",
-                 "scripts/script2gif"],
-      data_files = [("/etc/bash_completion.d/", ["data/bm-completion"]),
-                    ("/usr/share/bm/", ["data/bm.bash", "data/bm-match-config", "data/movies.patterns"]),
-                    ("/usr/share/man/man1/", glob.glob("doc/man/*.1")),
-                    ("/usr/share/blog/hooks/", glob.glob("data/blog/hooks/*")),
-                   ],
-      cmdclass={"install": check_platform, 
-                "install_data": source_shell_script},
+      scripts = scripts,
+      data_files = data,
+      cmdclass={ "install_data": source_shell_script},
      )
 
 

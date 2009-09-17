@@ -2,23 +2,43 @@ import os
 import sys
 import pipes
 import subprocess
+import platform
+
+WINDOWS = platform.system() == "Windows"
 
 
 
-## Hard coded paths
-template = "/usr/share/bm/bm-match-config"
-BLOG_SHARE = "/usr/share/blog/"
-DEFAULT_EDITOR = "/etc/alternatives/editor"
+## Packagers beware: Hard coded paths
 
-# This should ideally be moved to a separate package..btools-data?
-pattern_collections = { "movies" : "/usr/share/bm/movies.patterns",
-                        "tv" : "/usr/share/bm/tv.patterns",
-                        "albums": "/usr/share/bm/albums.patterns",
-                        "artists" : "/usr/share/bm/artists.patterns"}
+if not WINDOWS:
+    template = "/usr/share/bm/bm-match-config"
+    BLOG_SHARE = "/usr/share/blog/"
+    DEFAULT_EDITOR = "/etc/alternatives/editor"
+
+    # This should ideally be moved to a separate package..btools-data?
+    pattern_collections = { "movies" : "/usr/share/bm/movies.patterns",
+                            "tv" : "/usr/share/bm/tv.patterns",
+                            "albums": "/usr/share/bm/albums.patterns",
+                            "artists" : "/usr/share/bm/artists.patterns"}
+else:
+    pf = os.environ["PROGRAMFILES"]
+    template = os.path.join(pf, "btools", "bm-match", "bm-match-config")
+    BLOGSHARE = os.path.join(pf, "btools", "blog", "")
+    DEFAULT_EDITOR = "notepad"
+    pattern_collections = { "movies" : os.path.join(pf, "btools", "bm-match", "movies.patterns")}
+
+
 
 
 VERSION = "1.0rc4"
-OUTPUT_COLOR = True
+
+
+# Disable color codes on Windows
+if not WINDOWS:
+    OUTPUT_COLOR = True
+else:
+    OUTPUT_COLOR = False
+
 
 RED = "\033[0;31m"
 GREEN = "\033[0;32m"
@@ -35,8 +55,6 @@ themes = [("gray-blue-green", GRAY, BLUE, GREEN),
           ("gray-green-blue", GRAY, GREEN, BLUE),
          ]
 theme = themes[0]
-
-
 
 
 

@@ -20,6 +20,8 @@ def get_conf_location():
             return os.path.join(c, BOOKMARK_DATA)
     if "HOME" in os.environ:
         return os.path.join(os.environ["HOME"],  BOOKMARK_DATA)
+    elif "HOMEPATH" in os.environ:
+        return os.path.join(os.environ["HOMEPATH"],  BOOKMARK_DATA)
     else:
         raise Exception("HOME variable not found in environment.")
 
