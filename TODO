@@ -2,3 +2,9 @@
 + Add --blog-dir option to blog
 + bm-match: remove directory if recursive matching yields an empty directory
 + create and provide .deb packages
++ Windows: 
+	+ create bat loader for every script. 
+	+ Port cdbm. 
+	+ Automatically add %PROGRAMFILES%/btools/bin/ to PATH
+	+ Add scripts to console in setup.py (for py2exe) and create windows executables
+	+ Build a simple installer
