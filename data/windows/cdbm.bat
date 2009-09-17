@@ -1,10 +1,15 @@
 @echo off
 
-set command=%1 
+set firstarg=%1
 
-
-
-if %command:~0,1% == "-" do bm 
-
-for /f %%X in ('bm %i') do cd %%X
+IF [%firstarg%]==[] (
+	bm
+) ELSE (
+	set firstchar=%firstarg:~0,1%
+	if [%firstchar%]==[-] (
+		bm %firstarg%
+	) ELSE (
+		for /f %%X in ('bm %firstarg%') do cd %%X
+	)
+)
 
