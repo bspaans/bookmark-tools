@@ -92,6 +92,17 @@
     in your registry on installation, but sometimes the new value won't be
     signaled to your current session. You may need to logout and login again. 
 
+
+
+    *** cmd.exe: 'python' is not recognized as an internal or external command, 
+                 operable program or batch file.
+    
+    If you get this when running eg. cdbm, it means that the directory that 
+    holds the Python executable is not in your %PATH%. You can add it by editing
+    the registry, using the setx command, or with by using the non-permanent
+        path=%PATH%;c:\Python2.6
+
+
 ================================================================================
 
     Resources
