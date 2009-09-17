@@ -7,9 +7,9 @@ IF [%firstarg%]==[] (
 ) ELSE (
 	set firstchar=%firstarg:~0,1%
 	if [%firstchar%]==[-] (
-		bm %firstarg%
+		bm %*
 	) ELSE (
-		for /f %%X in ('bm %firstarg%') do cd %%X
+		for /f %%X in ('bm %*') do cd %%X
 	)
 )
 
