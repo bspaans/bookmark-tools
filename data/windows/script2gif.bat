@@ -1,3 +1,3 @@
 @echo off
 
-python script2gif
+python script2gif %*

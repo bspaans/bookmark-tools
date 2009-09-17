@@ -1,3 +1,3 @@
 @echo off
 
-python bmsuggest-move
+python bmsuggest-move %*

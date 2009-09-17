@@ -1,3 +1,3 @@
 @echo off
 
-python bm-match
+python bm-match %*

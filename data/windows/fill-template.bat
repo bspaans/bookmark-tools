@@ -1,3 +1,3 @@
 @echo off
 
-python fill-template
+python fill-template %*

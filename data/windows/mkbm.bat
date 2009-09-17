@@ -1,3 +1,3 @@
 @echo off
 
-python mkbm
+python mkbm %*

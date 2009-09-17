@@ -1,3 +1,3 @@
 @echo off
 
-python bm
+python bm %*
