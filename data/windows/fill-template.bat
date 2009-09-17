@@ -1,3 +1,3 @@
 @echo off
 
-python %PROGRAMFILES%\btools\bin\fill-template %*
+python "%PROGRAMFILES%\btools\bin\fill-template" %*

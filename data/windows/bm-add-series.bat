@@ -1,3 +1,3 @@
 @echo off
 
-python %PROGRAMFILES%\btools\bin\bm-add-series %*
+python "%PROGRAMFILES%\btools\bin\bm-add-series" %*
