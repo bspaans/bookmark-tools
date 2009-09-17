@@ -1,3 +1,3 @@
 @echo off
 
-python blog %*
+python %PROGRAMFILES%\btools\bin\blog %*

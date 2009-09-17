@@ -1,3 +1,3 @@
 @echo off
 
-python mvbm %*
+python %PROGRAMFILES%\btools\bin\mvbm %*

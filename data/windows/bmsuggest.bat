@@ -1,3 +1,3 @@
 @echo off
 
-python bmsuggest %*
+python %PROGRAMFILES%\btools\bin\bmsuggest %*

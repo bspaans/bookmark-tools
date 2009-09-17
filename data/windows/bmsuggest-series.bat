@@ -1,3 +1,3 @@
 @echo off
 
-python bmsuggest-series %*
+python %PROGRAMFILES%\btools\bin\bmsuggest-series %*

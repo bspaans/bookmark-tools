@@ -1,3 +1,3 @@
 @echo off
 
-python bm-match %*
+python %PROGRAMFILES%\btools\bin\bm-match %*

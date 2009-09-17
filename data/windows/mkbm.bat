@@ -1,3 +1,3 @@
 @echo off
 
-python mkbm %*
+python %PROGRAMFILES%\btools\bin\mkbm %*

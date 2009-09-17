@@ -1,3 +1,3 @@
 @echo off
 
-python bmsuggest-move %*
+python %PROGRAMFILES%\btools\bin\bmsuggest-move %*

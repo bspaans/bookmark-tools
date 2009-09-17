@@ -1,3 +1,3 @@
 @echo off
 
-python script2gif %*
+python %PROGRAMFILES%\btools\bin\script2gif %*
