@@ -102,14 +102,14 @@ class source_shell_script(install_data):
 
 
 setup(name="btools",
-      version="0.9999999",
+      version="0.999999",
       description="Command line navigation and organization tools",
       long_description=
 """Bookmark tools is a collection of useful, cross platform shell commands and Python scripts \
 that aim to speed up navigation and organization in day to day work. 
 """,
       author="Bart Spaans",
-      author_email = "onderstekop@gmail.com",
+      author_email = "bart@bookmark-tools.com",
       url="http://www.bookmark-tools.com/",
       license="GPLv3",
       packages = ["btools", "btools.matching"],
