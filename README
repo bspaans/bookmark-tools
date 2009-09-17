@@ -33,10 +33,10 @@
 
     *** Where can I find out more about using the tools?
 
-    The man pages should provide you with information on the options and
-    arguments each of the tools accept. You can also browse these documents 
-    on-line, which might be more pleasent: http://www.bookmark-tools.com/
-    Other tutorials and tips should also become available on that website.
+    The man pages contain information on the options and arguments each 
+    of the tools accept. You can also browse these documents 
+    on-line, which might be more pleasant: http://www.bookmark-tools.com/
+    Other, more in-depth tutorials and tips are also available on that website.
 
 
     *** Can I use this with zsh?
@@ -45,6 +45,14 @@
     only one thing that: tab completion. Adding this has currently a very low
     priority for me, since I mostly use bash, but I'll gladly accept your
     patches ;)
+
+
+    *** Can I use this with Windows?
+
+    The tools were originally developed on Linux, but support for Windows is
+    growing. Most of the programs will work, but some shell specific functions
+    and help files may be missing. All files will be installed to 
+    %PROGRAMFILES%\btools and the bin directory will be added to the PATH.
 
 
     *** Is there a source repository I could follow?
@@ -75,6 +83,14 @@
 
         source /usr/share/bm/bm.bash
 
+    
+
+    *** cmd.exe: 'cdbm' is not recognized as an internal or external command, 
+                 operable program or batch file.
+
+    This is an issue with your PATH. The path value is automatically updated
+    in your registry on installation, but sometimes the new value won't be
+    signaled to your current session. You may need to logout and login again. 
 
 ================================================================================
 
