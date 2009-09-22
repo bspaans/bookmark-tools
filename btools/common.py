@@ -11,15 +11,16 @@ WINDOWS = platform.system() == "Windows"
 ## Packagers beware: Hard coded paths
 
 if not WINDOWS:
-    template = "/usr/share/bm/bm-match-config"
-    BLOG_SHARE = "/usr/share/blog/"
+    share = "/usr/share" 
+    template = share + "/bm/bm-match-config"
+    BLOG_SHARE = share + "/blog/"
     DEFAULT_EDITOR = "/etc/alternatives/editor"
 
     # This should ideally be moved to a separate package..btools-data?
-    pattern_collections = { "movies" : "/usr/share/bm/movies.patterns",
-                            "tv" : "/usr/share/bm/tv.patterns",
-                            "albums": "/usr/share/bm/albums.patterns",
-                            "artists" : "/usr/share/bm/artists.patterns"}
+    pattern_collections = { "movies" : share + "/bm/movies.patterns",
+                            "tv" : share + "/bm/tv.patterns",
+                            "albums": share + "/bm/albums.patterns",
+                            "artists" : share + "/bm/artists.patterns"}
 else:
     pf = os.environ["PROGRAMFILES"]
     template = os.path.join(pf, "btools", "bm-match", "bm-match-config")
@@ -110,7 +111,7 @@ def cli_output_help(prog, description, usage, commands, examples, option_title =
 def cli_version(name, description):
     name = os.path.basename(name)
     print "%s %s - %s" % (name, VERSION, description)
-    print "Copyright 2008, 2009, Bart Spaans <onderstekop@gmail.com>"
+    print "© 2008, 2009, Bart Spaans <bart@bookmark-tools.com>"
 
 def cli_usage(prog, usagelist):
     prog = os.path.basename(prog)
