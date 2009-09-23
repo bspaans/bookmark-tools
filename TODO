@@ -2,6 +2,9 @@
 + Add --blog-dir option to blog
 + bm-match: remove directory if recursive matching yields an empty directory
 + create and provide .deb packages
++ remove source_shell_script from the setup file and make it clear that shell functions need to be sourced
++ add .btoolsrc configuration script parsing in common.py 
++ fix the unix path issues with data files
 + Windows: 
 	+ Add scripts to console in setup.py (for py2exe) and create windows executables
 	+ Build a simple installer
