@@ -15,26 +15,36 @@ complete -F bmcomplete lsbm
 
 blogcomplete()
 {
-	local prev cur opts 
+	local prev cur opts command
 	COMPREPLY=()
+    command="${COMP_WORDS[1]}"
 	cur="${COMP_WORDS[COMP_CWORD]}"
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="add config help info init log meta publish remove status"
-	globals="-v --verbose --debug -h --help"
+    opts="add config export help hook info init log meta publish remove status"
+	globals="-v --verbose --debug -h --help -?"
 
     if [[ ${cur} == -* ]] ; then
         COMPREPLY=( $(compgen -W "${globals}" -- ${cur}) )
         return 0
     fi
 
-	case "$prev" in 
+	case "$command" in 
 		add|rm|remove)
-			COMPREPLY=( $(compgen -o default -f ${cur}) )
+			COMPREPLY=( $(compgen -f ${cur}) )
 			return 0
 			;;
 	esac
 
+    case "$command" in
+        hook)
+            blogdir="$(blog -?)"
+            hooks="$(ls $blogdir/hooks/)"
+            COMPREPLY=( $(compgen -W "$hooks" ${cur}))
+            return 0
+            ;;
+    esac
+
 	COMPREPLY=( $(compgen -o default -W "${opts}" -- ${cur}) )
 }
 
-complete -F blogcomplete blog
+complete -o nospace -F blogcomplete blog

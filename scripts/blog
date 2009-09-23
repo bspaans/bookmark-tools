@@ -32,6 +32,7 @@ commands=[(["-h", "--help"], "", "Help screen"),
            "Resp. lists, sets and unsets configuration variables."),
           (["export"], "", "Export published files."),
           (["help"], "COMMANDS", "Output help for the given commands."), 
+          (["hook"], "HOOK", "Opens the editor with HOOK loaded"),
           (["info"], "OBJECTS", "Provides same functionality as multiple `meta OBJECT list` commands"),
           (["init"], "", "Initialize a new blog in the current directory"),
           (["log"], "[(--verbose|--objects)]", "Outputs the publication log of this index ordered on publication date."),
@@ -39,6 +40,7 @@ commands=[(["-h", "--help"], "", "Help screen"),
           (["publish"], "", "Execute the publish hooks"),
           (["remove", "rm"], "OBJECTS", "Remove objects from the weblog index. Does not remove the file itself."),
           (["status"], "", "Output the status of the files in the index"),
+          (["-?"], "", "Returns the location of the .blog directory"),
          ]
 examples = [("init", "Initialize a new blog"),
             ("add hello_world.txt", "Add the file hello_world.txt to the index"),
@@ -449,6 +451,21 @@ def output_log(loc, outputObjects, verbose):
         print
 
 
+def cli_edit_hook(args):
+    loc = existing_blog_location()
+    hookdir = path.join(loc, "hooks")
+
+    if args == []:
+        common.error("Expecting hook")
+
+    hook = path.join(hookdir, args[0])
+
+    if path.isfile(hook):
+        editor = common.edit_file(hook)
+    else:
+        common.error("Not a valid hook: %s" % hook)
+
+
 def command_line_interface():
     if len(sys.argv) == 1:
         return cli_help()
@@ -467,6 +484,10 @@ def parse_and_set_global_options(args):
             if x[0] == "-":
                 if x in ["--debug", "--verbose", "-v"]:
                     common.loglevel = 4
+                elif x == "-?":
+                    loc = existing_blog_location()
+                    print loc
+                    sys.exit(0)
                 elif x in ["-h", "--help"]:
                     cli_help()
                     sys.exit(0)
@@ -490,6 +511,8 @@ def parse_and_exec_command(command, args):
         cli_export(args)
     elif command in ["help"]:
         cli_help_cmd(args)
+    elif command in ["hook"]:
+        cli_edit_hook(args)
     elif command in ["init"]:
         cli_init(args)
     elif command in ["info"]:
