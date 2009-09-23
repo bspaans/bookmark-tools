@@ -6,3 +6,4 @@ include INSTALL
 include README
 include LICENSE
 include CHANGELOG
+include THANKS
