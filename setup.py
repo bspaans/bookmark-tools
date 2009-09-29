@@ -86,7 +86,7 @@ class source_shell_script(install_data):
             _winreg.SetValueEx(key, "PATH", 0, type_id, ";".join(current + [path]))
             print "Updated %s\\PATH registry value" % (regpath)
         except:
-            print "Error updating %s\\PATH value" % (regpath)
+            print "Error updating %s\\PATH registry value" % (regpath)
 
 
 
@@ -102,7 +102,7 @@ class source_shell_script(install_data):
 
 
 setup(name="btools",
-      version="0.999999",
+      version="0.9999999",
       description="Command line navigation and organization tools",
       long_description=
 """Bookmark tools is a collection of useful, cross platform shell commands and Python scripts \
@@ -116,6 +116,24 @@ that aim to speed up navigation and organization in day to day work.
       scripts = scripts,
       data_files = data,
       cmdclass={ "install_data": source_shell_script},
+      classifiers = [
+            'Development Status :: 3 - Alpha',
+            'Environment :: Console'
+            'Intended Audience :: Developers',
+            'Intended Audience :: System Administrators',a
+            'License :: OSI Approved :: GNU General Public License (GPL)',
+            'Natural Language :: English',
+            'Operating System :: Microsoft :: Windows'
+            'Operating System :: POSIX',
+            'Programming Language :: Other',
+            'Programming Language :: Python :: 2.5',
+            'Topic :: Other/Nonlisted Topic',
+            'Topic :: System',
+            'Topic :: System :: Archiving',
+            'Topic :: System :: Shells',
+            'Topic :: Text Processing',
+            'Topic :: Utilities',
+        ]
      )
 
 
