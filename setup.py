@@ -120,7 +120,7 @@ that aim to speed up navigation and organization in day to day work.
             'Development Status :: 3 - Alpha',
             'Environment :: Console'
             'Intended Audience :: Developers',
-            'Intended Audience :: System Administrators',a
+            'Intended Audience :: System Administrators',
             'License :: OSI Approved :: GNU General Public License (GPL)',
             'Natural Language :: English',
             'Operating System :: Microsoft :: Windows'
