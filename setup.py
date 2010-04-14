@@ -16,7 +16,7 @@ WINDOWS = platform.system() == "Windows"
 if not WINDOWS:
     scripts = glob.glob("scripts/*")
     data = [("/etc/bash_completion.d/", ["data/bm-completion"]),
-            ("/usr/share/bm/", ["data/bm.bash", "data/bm-match-config", "data/movies.patterns"]),
+            ("/usr/share/bm/", ["data/bm.sh", "data/bm-match-config", "data/movies.patterns"]),
             ("/usr/share/man/man1/", glob.glob("doc/man/*.1")),
             ("/usr/share/blog/hooks/", glob.glob("data/blog/hooks/*")),
            ]
@@ -39,16 +39,16 @@ else:
 class source_shell_script(install_data):
 
     def source_bash_script(self, to="/etc/bash.bashrc"):
-        if path.exists(to) and path.exists("/usr/share/bm/bm.bash"):
+        if path.exists(to) and path.exists("/usr/share/bm/bm.sh"):
             f = open(to)
             bashrc = f.read()
             f.close()
 
-            cmd = "source /usr/share/bm/bm.bash"
+            cmd = "source /usr/share/bm/bm.sh"
             if cmd in bashrc.splitlines():
                 return
             else:
-                print "Sourcing bm.bash"
+                print "Sourcing bm.sh"
                 try:
                     f = open(to, "a")
                 except:
