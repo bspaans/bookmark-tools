@@ -41,10 +41,9 @@
 
     *** Can I use this with zsh?
 
-    Yes, all the tools and shell functions are completely functional and miss
-    only one thing that: tab completion. Adding this has currently a very low
-    priority for me, since I mostly use bash, but I'll gladly accept your
-    patches ;)
+    Yes, all the tools and shell functions are completely functional and tab 
+    completion is also provided (You'll need to copy the _bm file in data/ 
+    to somewhere in your $fpath to enable it)
 
 
     *** Can I use this with Windows?
