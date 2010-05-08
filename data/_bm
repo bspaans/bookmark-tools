@@ -1,0 +1,28 @@
+#compdef bm cdbm 
+
+local context state line pat pats
+typeset -A opt_args
+
+_bm_complete() {
+  local cur=$words[CURRENT]
+  pats=($(bm -m ${cur} | awk '{print $2}' | sed 's/\[\(.*\)\]/\1 /'))
+  compadd -QU - $pats
+}
+
+_arguments \
+  "-a+[Adds DIRECTORY under TAG]:directory:" \
+  '--add-current+[Add current directory]:tag:' \
+  '-c[Clear the index]' \
+  '-d+[Delete tag]:tag:_bm_complete' \
+  '--delete-all-matching+[Delete all matching tags]:tag:_bm_complete' \
+  '-e[Export bookmark file]' \
+  '--help[Output help]' \
+  '-l[List the whole index (Default action)]' \
+  '-m+[Output all entries that match TAG on prefix]:tag:_bm_complete' \
+  '--symlink[Turn bookmarks into symbolic links]' \
+  '--sort-dirs[Sort index on directory and save]' \
+  '--sort-tags[Sort index on tags and save]' \
+  '-v[Show version information]' 
+  '_bm_complete' && return 0
+
+
