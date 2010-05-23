@@ -142,12 +142,15 @@ def cli_print_bookmark(args):
         execargs = args[execi + 1:]
         args = args[:execi]
 
-    b = get_bookmark(" ".join(args), read_bookmarks(get_conf_location()))
+    req = " ".join(args).split(os.path.sep)
+    matchon = req[0]
+
+    b = get_bookmark(matchon, read_bookmarks(get_conf_location()))
 
     # Check exact match    
     if len(b) > 1:
         for bm, dest in b:
-            if bm == " ".join(args):
+            if bm == matchon:
                 b = [(bm, dest)]
 
     if len(b) == 1:
@@ -157,7 +160,7 @@ def cli_print_bookmark(args):
             print " ".join(execargs)
             call(execargs, shell = True)
         else:
-            print b[0][1]
+            print os.path.join(b[0][1], os.path.sep.join(req[1:]))
     else:
         sys.exit(1)
 
