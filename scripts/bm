@@ -172,7 +172,9 @@ def cli_print_all_matching_bookmarks(args):
     if execi > -1:
         execargs = args[execi + 1:]
         args = args[:execi]
-    for tag, dest in get_bookmark(" ".join(args), read_bookmarks(get_conf_location())):
+    req = " ".join(args).split(os.path.sep)
+    matchon = req[0]
+    for tag, dest in get_bookmark(matchon, read_bookmarks(get_conf_location())):
         if "{}" in execargs:
             i = execargs.index("{}")
             tmp = execargs[i]
@@ -180,7 +182,21 @@ def cli_print_all_matching_bookmarks(args):
             call(execargs)
             execargs[i] = tmp
         else:
-            print "%s [%s]" % (dest, tag)
+            if req[1:] == []:
+                print "%s [%s]" % (dest, tag)
+            else:
+                suf = os.path.sep.join(req[1:])
+                newdest = os.path.join(dest, suf)
+                if os.path.exists(newdest):
+                    print "%s [%s]" % (newdest, os.path.join(tag, suf))
+                else:
+                    last = os.path.sep.join(req[1:-1])
+                    testpath = os.path.join(dest, last)
+                    if os.path.exists(testpath):
+                        for x in os.listdir(testpath):
+                            if x.startswith(req[-1]) and os.path.isdir(os.path.join(testpath, x)):
+                                print "%s [%s]" % (os.path.join(testpath, x), os.path.join(tag, last, x))
+                    
 
 
 def cli_clear(args):
