@@ -16,7 +16,7 @@ WINDOWS = platform.system() == "Windows"
 if not WINDOWS:
     scripts = glob.glob("scripts/*")
     data = [("/etc/bash_completion.d/", ["data/bm-completion"]),
-            ("/usr/share/bm/", ["data/bm.sh", "data/bm-match-config", "data/movies.patterns"]),
+            ("/usr/share/bm/", ["data/bm.sh", "data/bm-match-config", "data/movies.patterns", "data/_bm"]),
             ("/usr/share/man/man1/", glob.glob("doc/man/*.1")),
             ("/usr/share/blog/hooks/", glob.glob("data/blog/hooks/*")),
            ]
