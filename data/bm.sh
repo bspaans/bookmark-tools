@@ -2,7 +2,7 @@
 
 function cdbm() {
     if [ -n "$1" ]; then
-        if [ "$a" != "${a#--}" ] ; then
+        if [ "$1" != "${1#-}" ] ; then
             bm "$@"
         else
             cd "`bm $1`";
